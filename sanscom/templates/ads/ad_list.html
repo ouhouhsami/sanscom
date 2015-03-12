@@ -1,0 +1,208 @@
+{% extends 'ads/list.html' %}
+{% load humanize leaflet_tags l10n static %}
+
+{% block head %}
+{{ block.super }}
+
+{% leaflet_js plugins="forms" %}
+{% leaflet_css plugins="forms" %}
+
+<script>
+/*
+Override _controlDrawOptions to prevent rectangle draw
+*/
+NoRectangleGeometryField = L.GeometryField.extend({
+    _controlDrawOptions: function () {
+        return {
+            edit: {
+                featureGroup: this.drawnItems
+            },
+            draw: {
+                polyline: this.options.is_linestring,
+                polygon: this.options.is_polygon,
+                circle: false, // Turns off this drawing tool
+                rectangle: false, // Turns off this drawing tool too
+                marker: this.options.is_point,
+            }
+        };
+    }
+});
+</script>
+
+{{ form.media }}
+<style type="text/css">
+#id_location_map {
+    width:100%;
+}
+
+</style>
+{% endblock %}
+
+{% block content-title %}
+<ul class="nav nav-tabs nav-justified">
+      <li role="presentation" class="active"><a href="{% url  'ads_ad_list'%}">Acheteurs : Trouvez un bien</a></li>
+      <li role="presentation"><a href="{% url  'ads_search_list'%}">Vendeurs : Trouvez des acheteurs</a></li>
+</ul>
+{% endblock %}
+
+{% block form %}
+
+{% if form.errors %}
+<div class="alert alert-danger">
+    {% for field in form %}
+    {% for error in field.errors %}
+    {{ field.label }} : {{ error|escape }}<br>
+    {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}<br>
+    {{ error|escape }}
+    {% endfor %}
+</div>
+{% endif %}
+
+<form role="form" method="get" action=".">
+
+    {{ form.non_field_errors }}
+
+
+    <div class="alert alert-info" role="alert">
+        Dessiner votre zone de recherche sur la carte en cliquant sur l'icône
+        <span id="icon-draw"></span> ci-dessous.
+    </div>
+
+
+    <div class="row">
+
+        <div class="col-md-8">
+            <div class="form-group {% if form.location.errors %}has-error{% endif %}">
+                <label class="sr-only">Zone</label>
+                {{ form.location }}
+                {% if form.location.errors %}
+                <p class="text-danger">
+                    {% for error in form.location.errors %}
+                    {{ error|escape }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <a class="btn btn-default" id="localize">
+                            Centrer la carte sur votre localisation
+                    </a>
+                </div>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input class="form-control" id="address" placeholder="ou indiquer une adresse"/>
+                        <span class="input-group-btn">
+                            <a id="address_localize" class="btn btn-default">
+                                Centrer
+                            </a>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="col-md-4">
+         <div class="form-group {% if form.price_max.errors %}has-error{% endif %}">
+            <label class="control-label">Prix maximum</label>
+            <div class="input-group">
+                <span class="input-group-addon">€</span>
+                {{ form.price_max }}
+            </div>
+            {% if form.price_max.errors %}
+            <p class="text-danger">
+                {% for error in form.price_max.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+        <div class="form-group {% if form.surface_min.errors %}has-error{% endif %}">
+            <label class="control-label">Surface minimale</label>
+            <div class="input-group">
+                <span class="input-group-addon">m<sup>2</sup></span>
+                {{ form.surface_min }}
+
+            </div>
+            {% if form.surface_min.errors %}
+            <p class="text-danger">
+                {% for error in form.surface_min.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="form-group {% if form.habitation_types.errors %}has-error{% endif %}">
+            <label class="control-label">Type d'habitation</label>
+            {{ form.habitation_types }}
+            {% if form.habitation_types.errors %}
+            <p class="text-danger">
+                {% for error in form.habitation_types.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+        {% if valid %}
+        <input type="submit" class="btn btn-default btn-block btn-primary" name="save_ad" value="Enregistrer votre recherche">
+        <input type="submit" class="btn btn-default btn-block" value="Actualiser la recherche">
+        {% else %}
+        <input type="submit" class="btn btn-primary btn-block btn-lg" value="Lancer la recherche">
+        {% endif %}
+    </div>
+
+
+</div>
+
+
+</form>
+{% endblock %}
+
+
+{% block list_title %}
+<h3>
+    {% if valid %}
+    Résultats de votre recherche
+    {% else %}
+    Les dernières annonces de vente
+    {% endif %}
+</h3>
+{% endblock %}
+
+
+{% block search_result_header %}
+<th></th>
+<th>Type de bien</th>
+<th>Prix</th>
+<th>Surface</th>
+<th>Date</th>
+{% endblock %}
+
+
+{% block search_result %}
+<tr onclick="document.location='{{ object.get_absolute_url }}';">
+    <td>
+        <a class="show-marker btn btn-default btn-xs" data-lng="{{ object.location.y|unlocalize }}" data-lat="{{ object.location.x|unlocalize }}" data-href="{{ object.get_absolute_url }}">Localiser</a>
+    </td>
+    <td>
+        <a href="{{ object.get_absolute_url }}">{{ object.habitation_type }}</a>
+    </td>
+    <td>
+        {{ object.price|intcomma }} €
+    </td>
+    <td>
+        {{ object.surface }} m<sup>2</sup>
+    </td>
+</td>
+<td>
+    {{ object.modified|naturaltime }}
+</td>
+</tr>
+{% endblock %}

@@ -1,0 +1,11 @@
+# Re-init db
+
+dropdb sanscom
+createdb sanscom
+psql sanscom
+CREATE EXTENSION postgis;
+CREATE EXTENSION postgis_topology;
+
+# coverage test
+coverage run --source='.' manage.py test ads
+coverage html

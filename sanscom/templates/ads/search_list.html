@@ -1,0 +1,119 @@
+{% extends 'ads/list.html' %}
+{% load humanize %}
+
+
+{% block head %}
+{{ block.super }}
+{{ form.media }}
+{% endblock %}
+
+{% block content-title %}
+
+<ul class="nav nav-tabs nav-justified">
+      <li role="presentation"><a href="{% url  'ads_ad_list'%}">Acheteurs : Trouvez un bien</a></li>
+      <li role="presentation" class="active"><a href="{% url  'ads_search_list'%}">Vendeurs : Trouvez des acheteurs</a></li>
+</ul>
+{% endblock %}
+
+{% block form %}
+<form class="form-inline" role="form" method="get" action=".">
+    {{ form.non_field_errors }}
+    <div class="form-group {% if form.address.errors %}has-error{% endif %}">
+
+        <label class="sr-only">Adresse</label>
+        {{ form.address }}
+        {% if form.address.errors %}
+        <p class="text-danger">
+            {% for error in form.address.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
+
+    </div>
+    <div class="form-group {% if form.price.errors %}has-error{% endif %}">
+        <label class="sr-only">Prix</label>
+        <div class="input-group">
+            {{ form.price }}
+            <span class="input-group-addon">€</span>
+        </div>
+        {% if form.price.errors %}
+        <p class="text-danger">
+            {% for error in form.price.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
+    </div>
+    <div class="form-group {% if form.surface.errors %}has-error{% endif %}">
+        <label class="sr-only">Surface</label>
+        <div class="input-group">
+            {{ form.surface }}
+            <span class="input-group-addon">m<sup>2</sup></span>
+        </div>
+        {% if form.surface.errors %}
+        <p class="text-danger">
+            {% for error in form.surface.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
+    </div>
+
+    <div class="form-group {% if form.habitation_type.errors %}has-error{% endif %}">
+        <label class="sr-only">Type</label>
+        {{ form.habitation_type }}
+        {% if form.habitation_type.errors %}
+        <p class="text-danger">
+            {% for error in form.habitation_type.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
+    </div>
+
+    {% if valid %}
+    <input type="submit" class="btn btn-default" name="save_ad" value="Enregistrer votre annonce">
+    <input type="submit" class="btn btn-default" value="Actualiser">
+    {% else %}
+    <input type="submit" class="btn btn-default btn-primary" value="Lancer la recherche">
+    {% endif %}
+</form>
+{% endblock %}
+
+{% block list_title %}
+<h3>
+    {% if valid %}
+    Résultats de votre recherche
+    {% else %}
+    Les dernières annonces de recherche
+    {% endif %}
+</h3>
+{% endblock %}
+
+{% block search_result_header %}
+<th>Type de bien</th>
+<th>Prix maximum</th>
+<th>Surface mininale</th>
+<th>Date de mise à jour</th>
+{% endblock %}
+
+
+{% block search_result %}
+<tr onclick="document.location='{{ object.get_absolute_url }}';">
+    <td>
+        <a href="{{ object.get_absolute_url }}">
+            {{ object.habitation_types.all|join:', ' }}
+        </a>
+    </td>
+    <td>
+     {{ object.price_max|intcomma }} €
+ </td>
+ <td>
+    {{ object.surface_min }} m<sup>2</sup>
+</td>
+<td>
+    {{ object.modified|naturaltime }}
+</td>
+</tr>
+{% endblock %}

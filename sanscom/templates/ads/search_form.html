@@ -1,0 +1,133 @@
+{% extends 'ads/form.html' %}
+
+{% load leaflet_tags %}
+
+{% block head %}
+{{ block.super }}
+{{ form.media }}
+{% leaflet_js plugins="forms" %}
+{% leaflet_css plugins="forms" %}
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <h2>Acheteurs : Trouvez un bien à acheter</h2>
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            {% for field in form %}
+            {% for error in field.errors %}
+            {{ field.label }} : {{ error|escape }}<br>
+            {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}<br>
+            {{ error|escape }}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" action=".">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-md-6">
+                    <a class="btn btn-default" id="localize">
+                        Centrer la carte sur votre localisation
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input class="form-control" id="address" placeholder="ou indiquer une adresse"/>
+                        <span class="input-group-btn">
+                            <a id="address_localize" class="btn btn-default">
+                                Centrer
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="sr-only">Zone de recherche</label>
+                {{ form.location }}
+                {% if form.location.errors %}
+                <p class="text-danger">
+                    {% for error in form.location.errors %}
+                    {{ error|escape }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.price_max.errors %}has-error{% endif %}">
+                <label class="control-label" for="{{ form.price_max.auto_id }}">Prix maximum</label>
+                <div class="input-group">
+                    <span class="input-group-addon">€</span>
+                    {{ form.price_max }}
+                </div>
+                {% if form.price_max.errors %}
+                <p class="text-danger">
+                    {% for error in form.price_max.errors %}
+                    {{ error|escape }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.surface_min.errors %}has-error{% endif %}">
+                <label class="control-label" for="{{ form.surface_min.auto_id }}">Surface minimum</label>
+                <div class="input-group">
+                    <span class="input-group-addon">m<sup>2</sup></span>
+                    {{ form.surface_min }}
+
+                </div>
+                {% if form.surface_min.errors %}
+                <p class="text-danger">
+                    {% for error in form.surface_min.errors %}
+                    {{ error|escape }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.habitation_types.errors %}has-error{% endif %}">
+                <label class="control-label" for="{{ form.habitation_types.auto_id }}">Types de bien</label>
+                {{ form.habitation_types }}
+                {% if form.habitation_types.errors %}
+                <p class="text-danger">
+                    {% for error in form.habitation_types.errors %}
+                    {{ error|escape }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.description.errors %}has-error{% endif %}">
+                <label class="control-label" for="{{ form.description.auto_id }}">Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <p class="text-danger">
+                    {% for error in form.description.errors %}
+                    {{ error|escape }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+
+            {{ block.super }}
+            <hr />
+
+            <input type="submit" class="btn btn-primary btn-block" value="Enregistrer votre recherche"/>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
