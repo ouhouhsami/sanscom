@@ -3,3 +3,4 @@ static
 htmlcov
 media
 *.pyc
+settings-prod.py
