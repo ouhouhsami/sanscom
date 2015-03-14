@@ -19,8 +19,8 @@
             {{ field.label }} : {{ error|escape }}<br>
             {% endfor %}
             {% endfor %}
-            {% for error in form.non_field_errors %}<br>
-            {{ error|escape }}
+            {% for error in form.non_field_errors %}
+            {{ error|escape }}<br>
             {% endfor %}
         </div>
         {% endif %}

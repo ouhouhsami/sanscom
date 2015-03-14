@@ -6,20 +6,36 @@ Modifier le profil
 {% endblock %}
 
 {% block panel-body %}
+
 {% if form.errors %}
-{{ form.errors }}
+<div class="alert alert-danger">
+    {% for field in form %}
+    {% for error in field.errors %}
+    {{ field.label }} : {{ error|escape }}<br>
+    {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+    {{ error|escape }}<br>
+    {% endfor %}
+</div>
 {% endif %}
 
 <form method="post" action=".">
     {% csrf_token %}
 
 
-    <div class="form-group">
-        <label>
+    <div class="form-group {% if form.phone.errors %}has-error{% endif %}">
+        <label class="control-label">
             {{ form.phone.label }}
         </label>
         {{ form.phone }}
-        {{ form.phone.errors }}
+        {% if form.phone.errors %}
+        <p class="text-danger">
+            {% for error in form.phone.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
     </div>
 
     <input type="submit" value="Valider" class="btn btn-default btn-block btn-primary">

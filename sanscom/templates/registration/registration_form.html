@@ -7,35 +7,72 @@ Créer un compte
 
 {% block panel-body %}
 
+{% if form.errors %}
+<div class="alert alert-danger">
+    {% for field in form %}
+    {% for error in field.errors %}
+    {{ field.label }} : {{ error|escape }}<br>
+    {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+    {{ error|escape }}<br>
+    {% endfor %}
+</div>
+{% endif %}
+
 <form method="POST" action="{% url 'registration_register' %}">
     {% csrf_token %}
-    <div class="form-group">
-        <label>
+    <div class="form-group {% if form.username.errors %}has-error{% endif %}">
+        <label class="control-label">
             {{ form.username.label }}
         </label>
         {{ form.username }}
-        {{ form.username.errors }}
+        {% if form.username.errors %}
+        <p class="text-danger">
+            {% for error in form.username.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
     </div>
-    <div class="form-group">
-        <label>
+    <div class="form-group {% if form.email.errors %}has-error{% endif %}">
+        <label class="control-label">
             {{ form.email.label }}
         </label>
         {{ form.email }}
-        {{ form.email.errors }}
+        {% if form.email.errors %}
+        <p class="text-danger">
+            {% for error in form.email.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
     </div>
-    <div class="form-group">
-        <label>
+    <div class="form-group {% if form.password1.errors %}has-error{% endif %}">
+        <label class="control-label">
             {{ form.password1.label }}
         </label>
         {{ form.password1 }}
-        {{ form.password1.errors }}
+        {% if form.password1.errors %}
+        <p class="text-danger">
+            {% for error in form.password1.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
     </div>
-    <div class="form-group">
-        <label>
+    <div class="form-group {% if form.password2.errors %}has-error{% endif %}">
+        <label class="control-label">
             {{ form.password2.label }}
         </label>
         {{ form.password2 }}
-        {{ form.password2.errors }}
+        {% if form.password2.errors %}
+        <p class="text-danger">
+            {% for error in form.password2.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
     </div>
     <input type="submit" value="Créer votre compte" class="btn btn-default btn-block btn-primary">
 </form>

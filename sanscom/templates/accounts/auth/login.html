@@ -8,31 +8,53 @@ Se connecter
 {% block panel-body %}
 
 {% if form.errors %}
-            <p>Votre nom d'utilisateur et votre mot de passe ne correspondent pas à un compte utilisateur, réessayez.</p>
-            {% endif %}
-            <form method="POST" action="{% url 'django.contrib.auth.views.login' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label>
-                        {{ form.username.label }}
-                    </label>
-                    {{ form.username }}
-                    {{ form.username.errors }}
-                </div>
-                <div class="form-group">
-                    <label>
-                        {{ form.password.label }}
-                    </label>
-                    {{ form.password }}
-                    {{ form.password.errors }}
-                </div>
-                <input type="hidden" name="next" value="{{ next }}" />
-                <input type="submit" value="Se connecter" class="btn btn-default btn-block btn-primary">
-            </form>
-            <div>
-                <br />
-                <a href="{% url 'password_reset' %}" class="alert-link">Mot de passe perdu ?</a>
-            </div>
+        <div class="alert alert-danger">
+            {% for field in form %}
+            {% for error in field.errors %}
+            {{ field.label }} : {{ error|escape }}<br>
+            {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            {{ error|escape }}<br>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+<form method="POST" action="{% url 'django.contrib.auth.views.login' %}">
+    {% csrf_token %}
+    <div class="form-group {% if form.username.errors %}has-error{% endif %}">
+        <label class="control-label">
+            {{ form.username.label }}
+        </label>
+        {{ form.username }}
+        {% if form.username.errors %}
+        <p class="text-danger">
+            {% for error in form.username.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
+    </div>
+    <div class="form-group {% if form.password.errors %}has-error{% endif %}">
+        <label class="control-label">
+            {{ form.password.label }}
+        </label>
+        {{ form.password }}
+        {% if form.password.errors %}
+        <p class="text-danger">
+            {% for error in form.password.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
+    </div>
+    <input type="hidden" name="next" value="{{ next }}" />
+    <input type="submit" value="Se connecter" class="btn btn-default btn-block btn-primary">
+</form>
+<div>
+    <br />
+    <a href="{% url 'password_reset' %}" class="alert-link">Mot de passe perdu ?</a>
+</div>
 
 {% endblock %}
 

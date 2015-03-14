@@ -4,3 +4,5 @@ htmlcov
 media
 *.pyc
 settings-prod.py
+SNIPPETS
+TODO
