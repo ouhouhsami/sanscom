@@ -46,12 +46,16 @@
           </li>
           {% else %}
           <li>
-            <a href="{% url 'login' %}">Se connecter</a>
-          </li>
-          <li>
             <a href="{% url 'registration_register' %}"><span style="color:#20B2AB;">Créer un compte</span></a>
           </li>
+          <li>
+            <a href="{% url 'login' %}">Se connecter</a>
+          </li>
           {% endif %}
+          <li class="visible-xs-block"><a href="{% url  'ads_ad_list'%}">Acheteurs : Trouvez un bien</a>
+          </li>
+          <li class="visible-xs-block"><a href="{% url  'ads_search_list'%}">Vendeurs : Trouvez des acheteurs</a>
+          </li>
         </ul>
       </div>
     </div>
