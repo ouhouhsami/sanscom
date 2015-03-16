@@ -65,6 +65,13 @@ def add_session_to_request(request):
     request.session.save()
 # End of hacky part 2
 
+# To get a clean dictionnary from a model instance
+# which will transform None to empty string
+
+def none_to_empty_string(dict):
+    return {key: (value if value is not None else "") for key, value in dict.items()}
+
+
 # CRUD Ads
 class ReadAdsViewTestCase(TestCase):
 
@@ -90,13 +97,13 @@ class ReadAdsViewTestCase(TestCase):
     def test_ad_read_logged_user_adsearch_for_ad(self):
         # We create a search
         habitation_types = HabitationType.objects.all()
-        ad_search = SearchFactory.create(habitation_types=habitation_types)
+        ad_search = SearchFactory.create(habitation_types=habitation_types, rooms_min=2)
         ad_search_centroid = ad_search.location[0].centroid
         lng = ad_search_centroid.x
         lat = ad_search_centroid.y
         address = address_from_geo(lat, lng)
         # We create an add that corresponds to the search
-        ad = AdFactory.create(address=address, price=ad_search.price_max-1, surface=ad_search.surface_min+1)
+        ad = AdFactory.create(address=address, price=ad_search.price_max-1, surface=ad_search.surface_min+1, rooms=ad_search.rooms_min)
         ad.habitation_type = habitation_types[0]
         request = RequestFactory().get('/fake-path')
         request.user = ad_search.user
@@ -129,7 +136,7 @@ class CreateAdsViewTestCase(TestCase):
         response = view(request)
         self.assertEqual(response.status_code, 200)
         # Prepare data for the form (from the valid ad created at the begining)
-        ad_dict = model_to_dict(ad, exclude=('id', 'location'))
+        ad_dict = none_to_empty_string(model_to_dict(ad, exclude=('id', 'location')))
         image = Image.new('RGB', (100, 100))
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file)
@@ -170,7 +177,7 @@ class CreateAdsViewTestCase(TestCase):
         view = CreateAdView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
-        ad_dict = model_to_dict(ad, exclude=('id', 'location'))
+        ad_dict = none_to_empty_string(model_to_dict(ad, exclude=('id', 'location')))
 
         image = Image.new('RGB', (100, 100))
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
@@ -205,7 +212,7 @@ class CreateAdsViewTestCase(TestCase):
         self.assertEqual(len(Ad.objects.all()), 2)
 
     def test_ad_create_not_logged_user_but_having_username(self):
-       # Get the view
+        # Get the view
         ad = AdFactory.create()
         username = "sam"
         password = "gld"
@@ -216,7 +223,7 @@ class CreateAdsViewTestCase(TestCase):
         view = CreateAdView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
-        ad_dict = model_to_dict(ad, exclude=('id', 'location'))
+        ad_dict = none_to_empty_string(model_to_dict(ad, exclude=('id', 'location')))
 
         image = Image.new('RGB', (100, 100))
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
@@ -241,11 +248,10 @@ class CreateAdsViewTestCase(TestCase):
         response = view(request)
         # Redirection
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, Ad.objects.get(user=user).get_absolute_url())
-        # Test that create ad belongs to the newly registered user
-        self.assertEqual(Ad.objects.all()[1].user.username, user_credentials['login_username'])
+        created_ad = Ad.objects.get(user=user)
+        self.assertEqual(response.url, created_ad.get_absolute_url())
         # Test that picture is also saved with the ad
-        self.assertEqual(len(Ad.objects.all()[1].adpicture_set.all()), 1)
+        self.assertEqual(len(created_ad.adpicture_set.all()), 1)
         self.assertEqual(len(Ad.objects.all()), 2)
 
 
@@ -259,7 +265,7 @@ class UpdateAdsViewTestCase(TestCase):
         response = view(request, slug=ad.slug)
         self.assertEqual(response.status_code, 200)
 
-        ad_dict = model_to_dict(ad, exclude=('id', 'location'))
+        ad_dict = none_to_empty_string(model_to_dict(ad, exclude=('id', 'location')))
         image = Image.new('RGB', (100, 100))
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file)
@@ -324,7 +330,7 @@ class AdListViewTestCase(TestCase):
     def test_create_search_from_ad_list(self):
         # need to have a clean search
         search = SearchFactory.create(habitation_types = HabitationType.objects.all())
-        search_dict = model_to_dict(search, exclude=('id'))
+        search_dict = none_to_empty_string(model_to_dict(search, exclude=('id')))
         search_dict['location'] = search_dict['location'].geojson
         search_dict['save_ad'] = True
         request = RequestFactory().get('/fake-path', search_dict)
@@ -334,6 +340,7 @@ class AdListViewTestCase(TestCase):
         params = QueryDict(response.url.split('?')[1])
         self.assertEqual(int(params['price_max']), search_dict['price_max'])
         self.assertEqual(int(params['surface_min']), search_dict['surface_min'])
+        self.assertEqual(int(params['rooms_min']), search_dict['rooms_min'])
         self.assertEqual(params['location'], str(search_dict['location']))
         self.assertEqual(map(lambda x: int(x), params.getlist('habitation_types')), search_dict['habitation_types'])
 
@@ -345,13 +352,15 @@ class CreateSearchViewTestCase(TestCase):
     def test_search_create_logged_user(self):
         # Get the view
         search = SearchFactory.create(habitation_types = HabitationType.objects.all())
+        #print search.__dict__
         request = RequestFactory().get('/fake-path')
         request.user = search.user
         view = CreateSearchView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
         # Prepare data for the form (from the valid ad created at the begining)
-        search_dict = model_to_dict(search, exclude=('id'))
+        search_dict = none_to_empty_string(model_to_dict(search, exclude=('id')))
+        #search_dict = {key: (value if value is not None else "") for key, value in search_dict.items()}
         search_dict['location'] = search_dict['location'].geojson
         request = RequestFactory().post('/fake-path', search_dict)
         request.user = search.user
@@ -370,7 +379,7 @@ class CreateSearchViewTestCase(TestCase):
         response = view(request)
         self.assertEqual(response.status_code, 200)
 
-        search_dict = model_to_dict(search, exclude=('id'))
+        search_dict = none_to_empty_string(model_to_dict(search, exclude=('id')))
         search_dict['location'] = search_dict['location'].geojson
 
         user_credentials = {
@@ -404,7 +413,7 @@ class CreateSearchViewTestCase(TestCase):
         view = CreateSearchView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
-        search_dict = model_to_dict(search, exclude=('id'))
+        search_dict = none_to_empty_string(model_to_dict(search, exclude=('id')))
         search_dict['location'] = search_dict['location'].geojson
 
         user_credentials = {
@@ -448,13 +457,13 @@ class ReadSearchViewTestCase(TestCase):
     def test_search_read_logged_user_ad_for_search(self):
         # We create a search
         habitation_types = HabitationType.objects.all()
-        ad_search = SearchFactory.create(habitation_types=habitation_types)
+        ad_search = SearchFactory.create(habitation_types=habitation_types, rooms_min=1)
         ad_search_centroid = ad_search.location[0].centroid
         lng = ad_search_centroid.x
         lat = ad_search_centroid.y
         address = address_from_geo(lat, lng)
-        # We create an add that corresponds to the search
-        ad = AdFactory.create(address=address, price=ad_search.price_max-1, surface=ad_search.surface_min+1)
+        # We create an ad that corresponds to the search
+        ad = AdFactory.create(address=address, price=ad_search.price_max-1, surface=ad_search.surface_min+1, rooms=ad_search.rooms_min+1)
         ad.habitation_type = habitation_types[0]
         request = RequestFactory().get('/fake-path')
         request.user = ad.user
@@ -524,7 +533,7 @@ class SearchListViewTestCase(TestCase):
     def test_create_ad_from_ad_list(self):
         # need to have a clean search
         ad = AdFactory.create()
-        ad_dict = model_to_dict(ad, exclude=('id', 'location'))
+        ad_dict = none_to_empty_string(model_to_dict(ad, exclude=('id', 'location')))
         ad_dict['address'] = ad_dict['address']
         ad_dict['save_ad'] = True
         request = RequestFactory().get('/fake-path', ad_dict)
@@ -550,7 +559,7 @@ class NotificationTestCase(HackyTransactionTestCase):
         # create an ad
         ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
         # create a search with ad.location inside search.location
-        search = SearchFactory(location=geos.MultiPolygon(ad.location.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+        search = SearchFactory(location=geos.MultiPolygon(ad.location.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], rooms_min=None)
         # here we should have results ...
         self.assertEqual(AdSearchRelation.objects.all().count(), 1)
 
@@ -559,7 +568,7 @@ class NotificationTestCase(HackyTransactionTestCase):
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
         # create a search with search.location contaning ad.location
         pnt = GEOSGeometry(geo_from_address("22 rue esquirol Paris"))
-        search = SearchFactory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+        search = SearchFactory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], rooms_min=None)
         # create an ad
         ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
         # here we should have results ...
@@ -572,7 +581,7 @@ class NotificationTestCase(HackyTransactionTestCase):
         ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
         pnt = GEOSGeometry(geo_from_address(u"52 W 52nd St, New York, NY 10019, États-Unis"))
         # create a search with ad.location inside search.location
-        search = SearchFactory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+        search = SearchFactory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], rooms_min=None)
         # here we should have results ...
         self.assertEqual(AdSearchRelation.objects.all().count(), 0)
 
@@ -585,7 +594,7 @@ class NotificationTestCase(HackyTransactionTestCase):
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
         # create a search with search.location contaning ad.location
         pnt = GEOSGeometry(geo_from_address("22 rue esquirol Paris"))
-        search = SearchFactory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+        search = SearchFactory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], rooms_min=None)
         # create an ad
         ad = AdFactory(address=u"52 W 52nd St, New York, NY 10019, États-Unis", price=600000, surface=60, habitation_type=apartment)
         # here we should have results ...

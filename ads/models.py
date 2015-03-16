@@ -184,8 +184,6 @@ class Search(BaseModel):
     location = models.MultiPolygonField(_(u"Localisation"))
     #price_min = models.PositiveIntegerField(_(u"Prix min"), null=True, blank=True)
     price_max = models.PositiveIntegerField(_(u"Prix maximum"))
-    #habitation_types = models.CharField(_(u"Type de bien"), max_length=1,
-    #                                   choices=HABITATION_TYPE_CHOICES, null=True, blank=True)
     habitation_types = models.ManyToManyField(HabitationType)
     surface_min = models.PositiveIntegerField(_(u"Surface minimale"))
     #surface_max = models.PositiveIntegerField(_(u"Surface max"), null=True, blank=True)

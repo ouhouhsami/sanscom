@@ -32,9 +32,9 @@ apartment =  HabitationType.objects.get(label="Appartement")
 
 # Around Paris
 TOP = 48.89
-LEFT = 2.45
+RIGHT = 2.45
 BOTTOM = 48.79
-RIGHT = 2.21
+LEFT = 2.21
 
 
 class FuzzyPoint(FuzzyText):
@@ -51,7 +51,11 @@ class FuzzyAddress(FuzzyText):
 
 class FuzzyMultiPolygon(FuzzyText):
     def fuzz(self):
-        pos = {'top': random.uniform(TOP, BOTTOM), 'left': random.uniform(LEFT, RIGHT), 'bottom': random.uniform(TOP, BOTTOM), 'right': random.uniform(LEFT, RIGHT)}
+        top = random.uniform(TOP, BOTTOM)
+        bottom = random.uniform(top, BOTTOM)
+        left = random.uniform(LEFT, RIGHT)
+        right = random.uniform(left, RIGHT)
+        pos = {'top': top, 'left': left, 'bottom': bottom, 'right': right}
         return 'MULTIPOLYGON (((%(left)s %(top)s, %(left)s %(bottom)s, %(right)s %(bottom)s, %(right)s %(top)s, %(left)s %(top)s)))' % pos
 
 
@@ -173,7 +177,7 @@ class SearchFactory(BaseFactory):
     #habitation_types = FuzzyChoice(choices=[house, apartment])
     surface_min = FuzzyInteger(8, 300)
     #surface_max = FuzzyInteger(8, 1300)
-    #rooms_min = FuzzyInteger(1, 10)
+    rooms_min = FuzzyChoice(choices=[None, 1, 2, 3, 4, 5])
     #rooms_max = FuzzyInteger(1, 20)
     #bedrooms_min = FuzzyInteger(1, 10)
     #bedrooms_max = FuzzyInteger(3, 10)
