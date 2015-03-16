@@ -40,8 +40,8 @@ NoRectangleGeometryField = L.GeometryField.extend({
 
 {% block content-title %}
 <ul class="nav nav-tabs nav-justified">
-      <li role="presentation" class="active"><a href="{% url  'ads_ad_list'%}">Acheteurs : Trouvez un bien</a></li>
-      <li role="presentation" class="hidden-xs"><a href="{% url  'ads_search_list'%}">Vendeurs : Trouvez des acheteurs</a></li>
+  <li role="presentation" class="active"><a href="{% url  'ads_ad_list'%}">Acheteurs : Trouvez un bien</a></li>
+  <li role="presentation" class="hidden-xs"><a href="{% url  'ads_search_list'%}">Vendeurs : Trouvez des acheteurs</a></li>
 </ul>
 {% endblock %}
 
@@ -90,7 +90,7 @@ NoRectangleGeometryField = L.GeometryField.extend({
 
                 <div class="col-md-4">
                     <a class="btn btn-default" id="localize">
-                            Centrer la carte sur votre localisation
+                        Centrer la carte sur votre localisation
                     </a>
                 </div>
                 <div class="col-md-8">
@@ -109,7 +109,7 @@ NoRectangleGeometryField = L.GeometryField.extend({
 
         </div>
         <div class="col-md-4">
-         <div class="form-group {% if form.price_max.errors %}has-error{% endif %}">
+           <div class="form-group {% if form.price_max.errors %}has-error{% endif %}">
             <label class="control-label">Prix maximum</label>
             <div class="input-group">
                 <span class="input-group-addon">€</span>
