@@ -217,11 +217,14 @@ class AdListView(ListView):
         self.form = SearchAdForm(data or None)
         if self.form.is_valid():
             price_max = self.form.cleaned_data['price_max']
+            rooms_min = self.form.cleaned_data['rooms_min']
             surface_min = self.form.cleaned_data['surface_min']
             habitation_types = self.form.cleaned_data['habitation_types']
             location = self.form.cleaned_data['location']
             self._urlencode_get = data.urlencode()
             q = q.filter(price__lte=price_max).filter(surface__gte=surface_min).filter(habitation_type__in=habitation_types)
+            if rooms_min:
+                q = q.filter(rooms__gte=rooms_min)
             self._valid = True
         return q
 

@@ -189,7 +189,7 @@ class Search(BaseModel):
     habitation_types = models.ManyToManyField(HabitationType)
     surface_min = models.PositiveIntegerField(_(u"Surface minimale"))
     #surface_max = models.PositiveIntegerField(_(u"Surface max"), null=True, blank=True)
-    #rooms_min = models.PositiveIntegerField(_(u"Nb de pièce min"), null=True, blank=True)
+    rooms_min = models.PositiveIntegerField(_(u"Nb de pièces minimum"), null=True, blank=True)
     #rooms_max = models.PositiveIntegerField(_(u"Nb de pièce max"), null=True, blank=True)
     #bedrooms_min = models.PositiveIntegerField(_(u"Nb de chambres min"), null=True, blank=True)
     #bedrooms_max = models.PositiveIntegerField(_(u"Nb de chambres min"), null=True, blank=True)
@@ -240,28 +240,30 @@ class AdSearchRelation(TimeStampedModel):
 
 
 def update_adsearch_relation_from_ad(sender, instance, **kwargs):
-    #print 'update_adsearch_relation_from_ad'
     ad = instance
+    # @todo: seems like for required field in search, Q(price_max=None)
+    # Q(surface_min=None), Q(habitation_types=None) and
+    # Q(location__contains=ad.location) are useless
+    # but they are usefull for rooms_min, which is not required param
     s = Search.objects\
             .filter(Q(price_max__gte=ad.price) | Q(price_max=None))\
             .filter(Q(surface_min__lte=ad.surface) | Q(surface_min=None))\
             .filter(Q(habitation_types=ad.habitation_type) | Q(habitation_types=None))\
-            .filter(Q(location__contains=ad.location) | Q(location=None))
+            .filter(Q(location__contains=ad.location) | Q(location=None))\
+            .filter(Q(rooms_min__lte=ad.rooms) | Q(rooms_min=None))
             #.filter(Q(price__min__lte=ad.price) | Q(price__min=None))\
             #.filter(Q(surface_max__gte=ad.surface) | Q(surface_max=None))\
-            #.filter(Q(rooms_min__lte=ad.rooms) | Q(rooms_moin=None))\
             #.filter(Q(rooms_max__gte=ad.rooms) | Q(rooms_max=None))\
             #.filter(Q(bedrooms_min__lte=ad.bedrooms) | Q(bedrooms_min=None))\
             #.filter(Q(bedrooms_max__gte=ad.bedrooms) | Q(bedrooms_max=None))\
-    #print s
+
     asr = AdSearchRelation.objects.filter(ad=ad).values_list('search', flat=True)
-    #print asr
-    #search in s and not in asr => add
+    # Search in s and not in asr => add
     for search in s:
         if search not in asr:
             a = AdSearchRelation(ad=ad, search=search, valid=True)
             a.save()
-    #search in s and in asr => nothing
+    # Search in s and in asr => nothing
     for search in asr:
         if search in s:
             a = AdSearchRelation.objects.get(ad=ad, search=search)
@@ -279,6 +281,8 @@ def update_adsearch_relation_from_search(sender, instance, **kwargs):
                            .filter(surface__gte=search.surface_min)\
                            .filter(habitation_type__in=search.habitation_types.all())\
                            .filter(location__within=search.location)
+    if search.rooms_min:
+            q_ad = q_ad.filter(rooms__gte=search.rooms_min)
     asr = AdSearchRelation.objects.filter(search=search).values_list('ad', flat=True)
     for ad in asr:
         if ad not in q_ad:

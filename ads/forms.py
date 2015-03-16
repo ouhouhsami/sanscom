@@ -196,7 +196,7 @@ class SearchAdForm(forms.ModelForm):
 
     class Meta:
         model = Search
-        fields = ('location', 'price_max', 'surface_min', 'habitation_types', )
+        fields = ('location', 'price_max', 'surface_min', 'habitation_types', 'rooms_min')
         widgets = {
             'location': ExtendedLeafletWidget(),
             #'price_max': forms.TextInput(attrs={'placeholder': 'Prix max.', }),
