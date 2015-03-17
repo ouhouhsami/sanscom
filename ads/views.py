@@ -199,6 +199,7 @@ class AdListView(ListView):
     paginate_by = 10
 
     _valid = False
+    _total = False
     _urlencode_get = ''
 
     def get(self, request, *args, **kwargs):
@@ -225,6 +226,7 @@ class AdListView(ListView):
             q = q.filter(price__lte=price_max).filter(surface__gte=surface_min).filter(habitation_type__in=habitation_types)
             if rooms_min:
                 q = q.filter(rooms__gte=rooms_min)
+            self._total = q.count()
             self._valid = True
         return q
 
@@ -232,6 +234,7 @@ class AdListView(ListView):
         context = super(AdListView, self).get_context_data(**kwargs)
         context['form'] = self.form
         context['valid'] = self._valid
+        context['total'] = self._total
         if self._urlencode_get != '':
             context['urlencode_get'] = '&%s' % self._urlencode_get
         return context

@@ -31,15 +31,6 @@ NoRectangleGeometryField = L.GeometryField.extend({
 });
 </script>
 
-<script type="text/javascript">
-function map_init_basic (map, options) {
-    var json = {{ form.instance.location|geojsonfeature|safe }};
-    var feature = L.geoJson(json)
-    feature.addTo(map);
-    map.fitBounds(feature.getBounds());
-}
-</script>
-
 {% endblock %}
 
 {% block content %}
@@ -68,7 +59,7 @@ function map_init_basic (map, options) {
             {{ form.non_field_errors }}
             </div>
             {% endif %}
-
+            <!--
             <div class="row">
                 <div class="col-md-6">
                     <a class="btn btn-default" id="localize">
@@ -86,9 +77,10 @@ function map_init_basic (map, options) {
                     </div>
                 </div>
             </div>
+        -->
 
             <div class="form-group">
-                <label class="sr-only">Zone de recherche</label>
+                <label>Zone de recherche</label>
                 {{ form.location }}
                 {% if form.location.errors %}
                 <p class="text-danger">
@@ -146,7 +138,7 @@ function map_init_basic (map, options) {
                 <label class="control-label">Nb. de pièces minimum</label>
                 <div class="input-group">
                     {{ form.rooms_min }}
-                    <span class="input-group-addon">pièce(s)</span>
+                    <span class="input-group-addon">pièce</span>
                 </div>
                 {% if form.rooms_min.errors %}
                 <p class="text-danger">
