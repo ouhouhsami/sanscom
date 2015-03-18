@@ -244,6 +244,7 @@ $(window).on("map:init", function (e) {
 <th></th>
 <th>Type de bien</th>
 <th>Prix</th>
+<th>Nb. de pièces</th>
 <th>Surface</th>
 <th>Date</th>
 {% endblock %}
@@ -259,6 +260,9 @@ $(window).on("map:init", function (e) {
     </td>
     <td>
         {{ object.price|intcomma }} €
+    </td>
+    <td>
+        {{ object.rooms }}
     </td>
     <td>
         {{ object.surface }} m<sup>2</sup>

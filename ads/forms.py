@@ -64,10 +64,9 @@ class WithLogin(forms.ModelForm):
     login_password = forms.CharField(label=_("Password"), widget=forms.PasswordInput({}), required=False)
 
 
-
-
 class EditSearchForm(forms.ModelForm):
     habitation_types = forms.ModelMultipleChoiceField(queryset=HabitationType.objects.all(), widget=forms.CheckboxSelectMultiple(attrs={}))
+    #ground_floor = forms.NullBooleanField(initial=1)
 
     def clean_location(self):
         location = self.cleaned_data['location']
@@ -82,7 +81,8 @@ class EditSearchForm(forms.ModelForm):
             'location': ExtendedLeafletWidget(),
             'price_max': forms.TextInput(attrs={'placeholder': 'Prix max.', }),
             'surface_min': forms.TextInput(attrs={'placeholder': 'Surface min.', }),
-            'description': forms.Textarea({'placeholder': 'Description de votre recherche', })
+            'description': forms.Textarea({'placeholder': 'Description de votre recherche', }),
+            #'ground_floor': forms.RadioSelect(default=2)
         }
 
 

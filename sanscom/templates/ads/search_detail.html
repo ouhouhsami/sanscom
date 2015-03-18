@@ -13,6 +13,14 @@ function map_init_basic (map, options) {
     var feature = L.geoJson(json)
     feature.addTo(map);
     map.fitBounds(feature.getBounds());
+    // Disable map interaction
+    map.touchZoom.disable();
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
+    map.boxZoom.disable();
+    map.keyboard.disable();
+    map.dragging.disable();
+    $(".leaflet-control-zoom").css("visibility", "hidden");
 }
 </script>
 {% endblock %}
@@ -21,17 +29,60 @@ function map_init_basic (map, options) {
 
 <h2 class="page-header">Recherche {{ object.habitation_types.all|join:', ' }} {{ object.surface_min }}m² min. {{ object.price_max|intcomma }} € max.</h2>
 <p  class="small">
-        Mise en ligne par <a href="{% url 'user_account' object.user.username %}">{{ object.user }}</a> le {{ object.created|date:"SHORT_DATE_FORMAT" }} à {{ object.created|time:'H:i' }}{#, modifié le {{ object.modified|date:"SHORT_DATE_FORMAT" }} à {{ object.modified|time:"H:i" }}#}
+    Mise en ligne par <a href="{% url 'user_account' object.user.username %}">{{ object.user }}</a> le {{ object.created|date:"SHORT_DATE_FORMAT" }} à {{ object.created|time:'H:i' }}{#, modifié le {{ object.modified|date:"SHORT_DATE_FORMAT" }} à {{ object.modified|time:"H:i" }}#}
 </p>
 {% leaflet_map "map" callback="window.map_init_basic"%}<br />
 
 <div class="row">
 
     <div class="col-md-6">
-        {{ object.description }} <br />
+
+        <ul class="list-group">
+            <li class="list-group-item">
+                Prix maximum : {{ object.price_max|intcomma }} € max.
+            </li>
+            <li class="list-group-item">Type d'habitation : {{ object.habitation_types.all|join:', ' }} </li>
+            <li class="list-group-item">Surface minimale : {{ object.surface_min }} m² </li>
+            <li class="list-group-item">Nombre de pièce minimal : {{ object.rooms_min }} </li>
+            {% if object.bedrooms_min %}<li class="list-group-item">Nombre de chambre minimal : {{ object.bedrooms_min }} </li>{% endif %}
+            {% if object.ground_surface_min %}<li class="list-group-item">Surface de terrain minimale: {{ object.ground_surface_min }} m² </li>{% endif %}
+        </ul>
+
+        <ul class="list-group">
+            {% if object.ground_floor %}<li class="list-group-item">Au rez-de-chaussé </li> {% endif %}
+            {% if object.top_floor %}<li class="list-group-item">Au dernier étage </li> {% endif %}
+            {% if object.not_overlooked %}<li class="list-group-item">Sans vis-à-vis </li> {% endif %}
+            {% if object.elevator %}<li class="list-group-item">Avec ascenceur </li> {% endif %}
+            {% if object.intercom %}<li class="list-group-item">Avec interphone </li> {% endif %}
+            {% if object.digicode %}<li class="list-group-item">Avec digicode </li> {% endif %}
+            {% if object.doorman %}<li class="list-group-item">Avec gardien </li> {% endif %}
+            {% if object.kitchen %}<li class="list-group-item">Avec cuisine equipée </li> {% endif %}
+            {% if object.duplex %}<li class="list-group-item">Duplex </li> {% endif %}
+            {% if object.swimming_pool %}<li class="list-group-item">Avec piscine </li> {% endif %}
+            {% if object.alarm %}<li class="list-group-item">Avec alarme </li> {% endif %}
+            {% if object.air_conditioning %}<li class="list-group-item">Avec air conditionné </li> {% endif %}
+            {% if object.fireplace %}<li class="list-group-item">Avec cheminée </li> {% endif %}
+            {% if object.terrace %}<li class="list-group-item">Avec terrace </li> {% endif %}
+            {% if object.balcony %}<li class="list-group-item">Avec balcon </li> {% endif %}
+            {% if object.separate_dining_room %}<li class="list-group-item">Avec salle à manger </li> {% endif %}
+            {% if object.separate_toilet %}<li class="list-group-item">Avec toilette séparée </li> {% endif %}
+            {% if object.bathroom %}<li class="list-group-item">Avec salle de bain </li> {% endif %}
+            {% if object.shower %}<li class="list-group-item">Avec salle d'eau </li> {% endif %}
+            {% if object.separate_entrance %}<li class="list-group-item">Avec entrée séparée </li> {% endif %}
+            {% if object.cellar %}<li class="list-group-item">Avec cave </li> {% endif %}
+            {% if object.parking %}<li class="list-group-item">Avec parking </li> {% endif %}
+        </ul>
+
+        {{ object.description }}
     </div>
     <div class="col-md-6">
 
+
+    {% if owner %}
+    <div class="alert alert-info">
+        Vous avez mis en ligne cette recherche, <a href="{% url 'ads_search_update' object.slug %}" class="alert-link">vous pouvez si besoin la modifier</a>.
+    </div>
+    {% else %}
 
         {% if user.is_authenticated %}
 
@@ -64,27 +115,23 @@ function map_init_basic (map, options) {
         </form>
         {% if object.user.userprofile_set.all.0.phone %}
         <hr />
-            <div>
-
+        <div>
             <b>N° de téléphone de l'acheteur : {{ object.user.userprofile_set.all.0.phone }}</b>
         </div>
         {% endif %}
 
         {% else %}
-
-        Vous n'avez pas de bien correspondant à cette recherche.
-
+        <div class="alert alert-info">
+            Vous n'avez pas de bien correspondant à cette recherche.
+        </div>
         {% endif %}
-
-
-
 
         {% else %}
 
         Pour contacter les chercheurs, il vous faut avoir un compte et avoir un bien en vente correpondant à leur recherche.
         <a class="btn btn-default" href="{% url 'ads_ad_add' %}">Ajouter une annonce de bien à vendre</a>
         {% endif %}
-
+{% endif %}
 
 
     </div>

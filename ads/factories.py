@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 import string
-from random import randint
+import numpy as np
+from random import randint, random
 
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -59,22 +60,50 @@ class FuzzyMultiPolygon(FuzzyText):
         return 'MULTIPOLYGON (((%(left)s %(top)s, %(left)s %(bottom)s, %(right)s %(bottom)s, %(right)s %(top)s, %(left)s %(top)s)))' % pos
 
 
-class FuzzyPrice(BaseFuzzyAttribute):
-    """Random integer within a given range."""
-
-    def __init__(self, low, high=None, step=1, **kwargs):
-        if high is None:
-            high = low
-            low = 0
-
-        self.low = low
-        self.high = high
-        self.step = step
-
-        super(FuzzyPrice, self).__init__(**kwargs)
-
+class FuzzyRooms(BaseFuzzyAttribute):
     def fuzz(self):
-        return random.randrange(self.low, self.high + 1, self.step) * 1000
+        arr = np.array([0.23, 0.56, 0.79, 0.92])
+        val = random.random()
+        return (np.abs(arr-val)).argmin()+1
+
+
+def surface_from_surface_carrez(ad):
+    if bool(random.getrandbits(1)):
+        return ad.surface_carrez
+    else:
+        return int(ad.surface_carrez+random.uniform(0.01, 0.3)*ad.surface_carrez)
+
+
+def surface_carrez_from_rooms(ad):
+    arr = [[8, 32], [25, 52], [42, 80], [55, 100], [70, 125]]
+    return random.randint(*arr[ad.rooms-1])
+
+
+def ground_surface_from_type(ad):
+    if ad.habitation_type == house:
+        random.randint(0, 3000)
+
+
+def bathroom_number(ad):
+    if ad.rooms == 1:
+        return random.randint(0, 1)
+    else:
+        return 1
+
+def shower_number(ad):
+    if ad.rooms == 1:
+        if ad.bathroom != 1:
+            return random.randint(0, 1)
+        else:
+            return 0
+    else:
+        return random.randint(0, 1)
+
+def parking_choice(ad):
+    if random.random()>0.2:
+        return None
+    else:
+        random.choice(['1', '2'])
 
 
 class AccountFactory(factory.django.DjangoModelFactory):
@@ -116,49 +145,52 @@ class HabitationTypeFactory(factory.django.DjangoModelFactory):
 
 
 class AdFactory(BaseFactory):
+    '''
+    AdFactory
+    Some data provided by http://www.cartesfrance.fr/Paris-75000/logement-Paris.html
+    '''
     FACTORY_FOR = Ad
 
     location = FuzzyPoint()
-    #address = FuzzyChoice(choices=["13 place d'Aligre, Paris", "22 rue esquirol, Paris"])
     address = FuzzyAddress()
     price = factory.LazyAttribute(lambda o: int(o.surface*randint(5362, 12857)/1000)*1000)
-    #habitation_type = FuzzyChoice(choices=[house, apartment])
-    habitation_type = factory.LazyAttribute(lambda i: HabitationType.objects.order_by('?')[0])
-    surface = FuzzyInteger(8, 180)
-    surface_carrez = FuzzyInteger(8, 450)
-    rooms = FuzzyInteger(1, 9)
-    bedrooms = FuzzyInteger(1, 7)
+    habitation_type = factory.LazyAttribute(lambda i: house if random.random() < 0.009 else apartment)
+    surface = factory.LazyAttribute(surface_from_surface_carrez)
+    surface_carrez = factory.LazyAttribute(surface_carrez_from_rooms)
+    rooms = FuzzyRooms()
+    bedrooms = factory.LazyAttribute(lambda o: 1 if o.rooms <= 2 else random.randint(1, o.rooms))
     energy_consumption = FuzzyChoice(choices=FUZZY_ENERGY_CONSUMPTION_CHOICES)
-    ad_valorem_tax = FuzzyInteger(100, 3000)
-    housing_tax = FuzzyInteger(100, 3000)
-    maintenance_charges = FuzzyInteger(100, 3000)
+    ad_valorem_tax = FuzzyInteger(100, 3000, 20)
+    housing_tax = FuzzyInteger(100, 3000, 30)
+    maintenance_charges = FuzzyInteger(50, 400, 10)
     emission_of_greenhouse_gases = FuzzyChoice(choices=FUZZY_EMISSION_OF_GREENHOUSE_GASES_CHOICES)
-    ground_surface = FuzzyInteger(0, 3000)
-    floor = FuzzyInteger(0, 30)
-    ground_floor = FuzzyChoice(choices=[True, False])
-    top_floor = FuzzyChoice(choices=[True, False])
-    not_overlooked = FuzzyChoice(choices=[True, False])
+    ground_surface = factory.LazyAttribute(ground_surface_from_type)
+    floor = FuzzyInteger(0, 15)
+    ground_floor = factory.LazyAttribute(lambda o: True if o.floor == 0 else False)
+    top_floor = factory.LazyAttribute(lambda o: True if random.random() < 0.018 else False)
+    not_overlooked = factory.LazyAttribute(lambda o: True if random.random() < 0.08 else False)
     elevator = FuzzyChoice(choices=[True, False])
     intercom = FuzzyChoice(choices=[True, False])
     digicode = FuzzyChoice(choices=[True, False])
-    doorman = FuzzyChoice(choices=[True, False])
+    doorman = factory.LazyAttribute(lambda o: True if random.random() < 0.3 else False)
     heating = FuzzyChoice(choices=FUZZY_HEATING_CHOICES)
     kitchen = FuzzyChoice(choices=[True, False])
-    duplex = FuzzyChoice(choices=[True, False])
-    swimming_pool = FuzzyChoice(choices=[True, False])
-    alarm = FuzzyChoice(choices=[True, False])
-    air_conditioning = FuzzyChoice(choices=[True, False])
+    duplex = factory.LazyAttribute(lambda o: True if random.random() < 0.05 else False)
+    swimming_pool = factory.LazyAttribute(lambda o: True if random.random() < 0.01 else False)
+    alarm = factory.LazyAttribute(lambda o: True if random.random() < 0.05 else False)
+    air_conditioning = factory.LazyAttribute(lambda o: True if random.random() < 0.02 else False)
     fireplace = FuzzyChoice(choices=FUZZY_FIREPLACE_CHOICES)
-    terrace = FuzzyInteger(8, 50)
-    balcony = FuzzyInteger(2, 20)
-    separate_dining_room = FuzzyChoice(choices=[True, False])
-    separate_toilet = FuzzyInteger(0, 4)
-    bathroom = FuzzyInteger(0, 2)
-    shower = FuzzyInteger(0, 2)
-    separate_entrance = FuzzyChoice(choices=[True, False])
-    cellar = FuzzyChoice(choices=[True, False])
-    parking = FuzzyChoice(choices=FUZZY_PARKING_CHOICES)
-    orientation =  FuzzyChoice(choices=['sud', 'sud-est', 'sud-ouest', 'nord', 'nord-ouest', 'nord-est'])
+    terrace = factory.LazyAttribute(lambda o: random.randint(8, 50) if random.random()< 0.01 else None)
+    balcony = factory.LazyAttribute(lambda o: random.randint(2, 20) if random.random()< 0.08 else None)
+    separate_dining_room = factory.LazyAttribute(lambda o: True if o.rooms-o.bedrooms >= 1 else False)
+    separate_toilet = factory.LazyAttribute(lambda o: 1 if random.random() < 0.15 else 0)
+    bathroom = factory.LazyAttribute(bathroom_number) #FuzzyInteger(0, 2)
+    shower = factory.LazyAttribute(shower_number)
+    separate_entrance = factory.LazyAttribute(lambda o: True if random.random() < 0.1 else False)
+    cellar = factory.LazyAttribute(lambda o: True if random.random() < 0.2 else False)
+    parking = factory.LazyAttribute(parking_choice) # FuzzyChoice(choices=FUZZY_PARKING_CHOICES)
+    orientation =  FuzzyChoice(choices=['', 'sud', 'sud-est', 'sud-ouest', 'nord', 'nord-ouest', 'nord-est'])
+
 
 class AdPictureFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = AdPicture
@@ -172,15 +204,35 @@ class SearchFactory(BaseFactory):
     FACTORY_FOR = Search
 
     location = FuzzyMultiPolygon()
-    #price_min = FuzzyInteger(1, 5000000)
-    price_max = FuzzyInteger(10000, 50000000)
-    #habitation_types = FuzzyChoice(choices=[house, apartment])
-    surface_min = FuzzyInteger(8, 300)
-    #surface_max = FuzzyInteger(8, 1300)
+    price_max = FuzzyInteger(10000, 50000000, 1000)
+    surface_min = FuzzyInteger(5, 300, 5)
     rooms_min = FuzzyChoice(choices=[None, 1, 2, 3, 4, 5])
-    #rooms_max = FuzzyInteger(1, 20)
-    #bedrooms_min = FuzzyInteger(1, 10)
-    #bedrooms_max = FuzzyInteger(3, 10)
+
+    bedrooms_min = FuzzyChoice(choices=[None, 1, 2, 3, 4, 5])
+    ground_surface_min = FuzzyChoice(choices=[None, ])
+    ground_floor = FuzzyChoice(choices=[None, True, False])
+    top_floor = FuzzyChoice(choices=[None, True, False])
+    not_overlooked = FuzzyChoice(choices=[None, True, False])
+    elevator = FuzzyChoice(choices=[None, True, False])
+    intercom = FuzzyChoice(choices=[None, True, False])
+    digicode = FuzzyChoice(choices=[None, True, False])
+    doorman = FuzzyChoice(choices=[None, True, False])
+    kitchen = FuzzyChoice(choices=[None, True, False])
+    duplex = FuzzyChoice(choices=[None, True, False])
+    swimming_pool = FuzzyChoice(choices=[None, True, False])
+    alarm = FuzzyChoice(choices=[None, True, False])
+    air_conditioning = FuzzyChoice(choices=[None, True, False])
+    fireplace = FuzzyChoice(choices=[None, True, False])
+    terrace = FuzzyChoice(choices=[None, True, False])
+    balcony = FuzzyChoice(choices=[None, True, False])
+    separate_dining_room = FuzzyChoice(choices=[None, True, False])
+    separate_toilet = FuzzyChoice(choices=[None, True, False])
+    bathroom = FuzzyChoice(choices=[None, True, False])
+    shower = FuzzyChoice(choices=[None, True, False])
+    separate_entrance = FuzzyChoice(choices=[None, True, False])
+    cellar = FuzzyChoice(choices=[None, True, False])
+    parking = FuzzyChoice(choices=[None, True, False])
+
 
     @factory.post_generation
     def habitation_types(self, create, extracted, **kwargs):
@@ -191,8 +243,3 @@ class SearchFactory(BaseFactory):
         if extracted:
             for habitation_type in extracted:
                 self.habitation_types.add(habitation_type)
-        #else:
-        #    t = FuzzyChoice(choices=[house, apartment]).fuzz()
-        #    print t, self.habitation_types
-        #    self.habitation_types.add(t)
-        #    print self.habitation_types

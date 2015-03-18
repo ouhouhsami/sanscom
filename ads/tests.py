@@ -603,3 +603,89 @@ class NotificationTestCase(HackyTransactionTestCase):
         ad.save()
         self.assertEqual(AdSearchRelation.objects.all().count(), 1)
 
+
+#
+import random
+
+def random_habitation_types():
+    r = random.randint(0, 2)
+    house, create = HabitationType.objects.get_or_create(label="Maison")
+    apartment, create = HabitationType.objects.get_or_create(label="Appartement")
+    if r == 0:
+        return [apartment]
+    elif r == 1:
+        return [house]
+    elif r == 2:
+        return [apartment, house]
+
+def random_habitation_type():
+    r = random.randint(0, 1)
+    house, create = HabitationType.objects.get_or_create(label="Maison")
+    apartment, create = HabitationType.objects.get_or_create(label="Appartement")
+    if r == 1:
+        return apartment
+    else:
+        return house
+
+
+def search_for_ad_factory(ad):
+    search = SearchFactory(
+        location=geos.MultiPolygon(ad.location.buffer(2)),
+        surface_min = ad.surface,
+        rooms_min = ad.rooms,
+        price_max = ad.price,
+        habitation_types=[ad.habitation_type, ],
+        bedrooms_min = ad.bedrooms,
+        ground_surface_min = ad.ground_surface,
+        ground_floor = None,
+        top_floor = None,
+        not_overlooked = None,
+        elevator = None,
+        intercom = None,
+        digicode = None,
+        doorman = None,
+        kitchen = None,
+        duplex = None,
+        swimming_pool = None,
+        alarm = None,
+        air_conditioning = None,
+        fireplace = None,
+        terrace = None,
+        balcony = None,
+        separate_dining_room = None,
+        separate_toilet = None,
+        bathroom = None,
+        shower = None,
+        separate_entrance = None,
+        cellar = None,
+        parking = None
+    )
+    return search
+
+
+class MiscellaneousTestCase(HackyTransactionTestCase):
+
+    serialized_rollback = True
+
+    def test_first(self):
+        # Create Search
+        search = SearchFactory(habitation_types=random_habitation_types())
+        # Create Ad
+        ad = AdFactory(habitation_type=random_habitation_type())
+        # Test if ad is in search (lucky you)
+        # We would then modify search so that it doesn't fit anymore
+        if AdSearchRelation.objects.all().count() == 1:
+            if ad.habitation_type in search.habitation_types.all():
+                search.remove(ad.habitation_type)
+
+    def test_second(self):
+        # Create ad
+        ad = AdFactory(habitation_type=random_habitation_type())
+        # Check AdSearchRelation is empty
+        self.assertEqual(AdSearchRelation.objects.all().count(), 0)
+        # Create search
+        search = search_for_ad_factory(ad)
+        print search, ad, search.location.contains(ad.location)
+        self.assertEqual(AdSearchRelation.objects.all().count(), 1)
+
+

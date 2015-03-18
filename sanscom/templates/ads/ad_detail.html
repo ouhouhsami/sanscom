@@ -17,6 +17,13 @@ function map_init_basic (map, options) {
     var lng = center.lng;
     feature.addTo(map);
     map.setView([lat, lng], 13);
+    // Disable map interaction
+    map.touchZoom.disable();
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
+    map.boxZoom.disable();
+    map.keyboard.disable();
+    map.dragging.disable();
 }
 
 </script>
@@ -45,7 +52,7 @@ function map_init_basic (map, options) {
             {% if object.ground_surface %}<li class="list-group-item">Terrain : {{ object.ground_surface }} m²</li>{% endif %}
             {% if object.ad_valorem_tax %}<li class="list-group-item">Taxe foncière : {{ object.ad_valorem_tax }} €/an</li>{% endif %}
             {% if object.housing_tax %}<li class="list-group-item">Taxe d'habitation : {{ object.housing_tax }} €/an</li>{% endif %}
-            {% if object.maintenance_charges %}<li class="list-group-item">Charges : {{ object.maintenance_charges }} €/an</li>{% endif %}
+            {% if object.maintenance_charges %}<li class="list-group-item">Charges : {{ object.maintenance_charges }} €/mois</li>{% endif %}
         </ul>
 
         <ul class="list-group">
@@ -100,6 +107,12 @@ function map_init_basic (map, options) {
         {% endif %}
 
 
+    {% if owner %}
+    <div class="alert alert-info">
+        Vous avez mis en ligne cette annonce, <a href="{% url 'ads_ad_update' object.slug %}" class="alert-link">vous pouvez si besoin la modifier</a>.
+    </div>
+    {% else %}
+
     {% if user.is_authenticated %}
 
     {% if already_contacted %}
@@ -153,6 +166,9 @@ function map_init_basic (map, options) {
 
 
     {% endif %}
+
+    {% endif %}
+
 </div>
 
 

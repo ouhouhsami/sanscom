@@ -56,7 +56,7 @@ NoRectangleGeometryField = L.GeometryField.extend({
 
             {% if form.non_field_errors %}
             <div class="alert alert-danger">
-            {{ form.non_field_errors }}
+                {{ form.non_field_errors }}
             </div>
             {% endif %}
             <!--
@@ -79,94 +79,118 @@ NoRectangleGeometryField = L.GeometryField.extend({
             </div>
         -->
 
-            <div class="form-group">
-                <label>Zone de recherche</label>
-                {{ form.location }}
-                {% if form.location.errors %}
-                <p class="text-danger">
-                    {% for error in form.location.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
+        <div class="form-group">
+            <label>Zone de recherche</label>
+            {{ form.location }}
+            {% if form.location.errors %}
+            <p class="text-danger">
+                {% for error in form.location.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="form-group {% if form.habitation_types.errors %}has-error{% endif %}">
+            <label class="control-label" for="{{ form.habitation_types.auto_id }}">Types de bien</label>
+            {{ form.habitation_types }}
+            {% if form.habitation_types.errors %}
+            <p class="text-danger">
+                {% for error in form.habitation_types.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="form-group {% if form.price_max.errors %}has-error{% endif %}">
+            <label class="control-label" for="{{ form.price_max.auto_id }}">Prix maximum</label>
+            <div class="input-group">
+                <span class="input-group-addon">€</span>
+                {{ form.price_max }}
             </div>
+            {% if form.price_max.errors %}
+            <p class="text-danger">
+                {% for error in form.price_max.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
 
-            <div class="form-group {% if form.price_max.errors %}has-error{% endif %}">
-                <label class="control-label" for="{{ form.price_max.auto_id }}">Prix maximum</label>
-                <div class="input-group">
-                    <span class="input-group-addon">€</span>
-                    {{ form.price_max }}
-                </div>
-                {% if form.price_max.errors %}
-                <p class="text-danger">
-                    {% for error in form.price_max.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
+        <div class="form-group {% if form.surface_min.errors %}has-error{% endif %}">
+            <label class="control-label" for="{{ form.surface_min.auto_id }}">Surface minimum</label>
+            <div class="input-group">
+                <span class="input-group-addon">m<sup>2</sup></span>
+                {{ form.surface_min }}
+
             </div>
+            {% if form.surface_min.errors %}
+            <p class="text-danger">
+                {% for error in form.surface_min.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
 
-            <div class="form-group {% if form.surface_min.errors %}has-error{% endif %}">
-                <label class="control-label" for="{{ form.surface_min.auto_id }}">Surface minimum</label>
-                <div class="input-group">
-                    <span class="input-group-addon">m<sup>2</sup></span>
-                    {{ form.surface_min }}
-
-                </div>
-                {% if form.surface_min.errors %}
-                <p class="text-danger">
-                    {% for error in form.surface_min.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
+        <div class="form-group {% if form.rooms_min.errors %}has-error{% endif %}">
+            <label class="control-label">Nombre de pièces minimum</label>
+            <div class="input-group">
+                {{ form.rooms_min }}
+                <span class="input-group-addon">pièce</span>
             </div>
+            {% if form.rooms_min.errors %}
+            <p class="text-danger">
+                {% for error in form.rooms_min.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+        {% include "widgets/nullbooleanselect.html" with field=form.bedrooms_min only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.ground_surface_min only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.ground_floor only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.top_floor only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.not_overlooked only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.elevator only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.intercom only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.digicode only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.doorman only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.kitchen only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.duplex only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.swimming_pool only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.alarm only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.air_conditioning only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.fireplace only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.terrace only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.balcony only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.separate_dining_room only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.separate_toilet only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.bathroom only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.shower only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.separate_entrance only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.cellar only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.parking only %}
 
-            <div class="form-group {% if form.habitation_types.errors %}has-error{% endif %}">
-                <label class="control-label" for="{{ form.habitation_types.auto_id }}">Types de bien</label>
-                {{ form.habitation_types }}
-                {% if form.habitation_types.errors %}
-                <p class="text-danger">
-                    {% for error in form.habitation_types.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
+        <div class="form-group {% if form.description.errors %}has-error{% endif %}">
+            <label class="control-label" for="{{ form.description.auto_id }}">Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+            <p class="text-danger">
+                {% for error in form.description.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
 
-            <div class="form-group {% if form.rooms_min.errors %}has-error{% endif %}">
-                <label class="control-label">Nb. de pièces minimum</label>
-                <div class="input-group">
-                    {{ form.rooms_min }}
-                    <span class="input-group-addon">pièce</span>
-                </div>
-                {% if form.rooms_min.errors %}
-                <p class="text-danger">
-                    {% for error in form.rooms_min.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
+        {{ block.super }}
+        <hr />
 
-            <div class="form-group {% if form.description.errors %}has-error{% endif %}">
-                <label class="control-label" for="{{ form.description.auto_id }}">Description</label>
-                {{ form.description }}
-                {% if form.description.errors %}
-                <p class="text-danger">
-                    {% for error in form.description.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
+        <input type="submit" class="btn btn-primary btn-block" value="Enregistrer votre recherche"/>
 
-            {{ block.super }}
-            <hr />
-
-            <input type="submit" class="btn btn-primary btn-block" value="Enregistrer votre recherche"/>
-
-        </form>
-    </div>
+    </form>
+</div>
 </div>
 {% endblock %}

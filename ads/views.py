@@ -163,15 +163,19 @@ class CreateAdView(SetUserMixin, FillInitialForm, CreateWithInlinesView):
 class ReadAdView(DetailView):
     model = Ad
     contact_form = ContactForm
+    owner = False
 
     def get_context_data(self, **kwargs):
         context = super(ReadAdView, self).get_context_data(**kwargs)
         if self.request.user.is_authenticated():
-            ars = AdSearchRelation.objects.filter(ad=self.object, search__user=self.request.user, valid=True)
-            if ars.count() > 0:
-                if any(ars.values_list('ad_contacted', flat=True)):
-                    context['already_contacted'] = True
-                context['contact_form'] = self.contact_form()
+            if self.request.user == self.object.user:
+                context['owner'] = True
+            else:
+                ars = AdSearchRelation.objects.filter(ad=self.object, search__user=self.request.user, valid=True)
+                if ars.count() > 0:
+                    if any(ars.values_list('ad_contacted', flat=True)):
+                        context['already_contacted'] = True
+                    context['contact_form'] = self.contact_form()
         return context
 
 
@@ -259,14 +263,17 @@ class ReadSearchView(DetailView):
         # here we test if logged user can contact search owner
         context = super(ReadSearchView, self).get_context_data(**kwargs)
         if self.request.user.is_authenticated():
-            ars = AdSearchRelation.objects.filter(search=self.object, ad__user=self.request.user, valid=True)
-            if ars.count() > 0:
-                # if multiple offers from same vendor feet same search
-                # the vendor can only contact searcher one time
-                # this is what the line below does
-                if any(ars.values_list('search_contacted', flat=True)):
-                    context['already_contacted'] = True
-                context['contact_form'] = self.contact_form()
+            if self.request.user == self.object.user:
+                context['owner'] = True
+            else:
+                ars = AdSearchRelation.objects.filter(search=self.object, ad__user=self.request.user, valid=True)
+                if ars.count() > 0:
+                    # if multiple offers from same vendor feet same search
+                    # the vendor can only contact searcher one time
+                    # this is what the line below does
+                    if any(ars.values_list('search_contacted', flat=True)):
+                        context['already_contacted'] = True
+                    context['contact_form'] = self.contact_form()
         return context
 
 

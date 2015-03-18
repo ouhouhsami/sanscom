@@ -176,21 +176,72 @@ class AdPicture(models.Model):
     title = models.CharField("Titre", max_length=255, null=True, blank=True)
 
 
+NULL_CHOICES = (
+    (None, _(u'Indifférent')),
+    (True, _('Oui')),
+    (False, _('Non'))
+)
+
+
+class IndifferentBooleanField(models.NullBooleanField):
+    def __init__(self, *args, **kwargs):
+        kwargs['choices'] = NULL_CHOICES
+        super(IndifferentBooleanField, self).__init__(*args, **kwargs)
+
+
 class Search(BaseModel):
     """
     Search model
     """
     slug = AutoSlugField(_('slug'), populate_from='slug_format')
     location = models.MultiPolygonField(_(u"Localisation"))
-    #price_min = models.PositiveIntegerField(_(u"Prix min"), null=True, blank=True)
     price_max = models.PositiveIntegerField(_(u"Prix maximum"))
     habitation_types = models.ManyToManyField(HabitationType)
     surface_min = models.PositiveIntegerField(_(u"Surface minimale"))
-    #surface_max = models.PositiveIntegerField(_(u"Surface max"), null=True, blank=True)
-    rooms_min = models.PositiveIntegerField(_(u"Nb de pièces minimum"), null=True, blank=True)
-    #rooms_max = models.PositiveIntegerField(_(u"Nb de pièce max"), null=True, blank=True)
-    #bedrooms_min = models.PositiveIntegerField(_(u"Nb de chambres min"), null=True, blank=True)
-    #bedrooms_max = models.PositiveIntegerField(_(u"Nb de chambres min"), null=True, blank=True)
+    rooms_min = models.PositiveIntegerField(_(u"Nombre de pièces minimum"), null=True, blank=True)
+
+    bedrooms_min = models.PositiveIntegerField(_(u"Nombre de chambres minimum"), null=True, blank=True)
+    ground_surface_min = models.IntegerField(_(u'Surface du terrain minimale'), null=True, blank=True)
+    ground_floor = IndifferentBooleanField(_(u'Rez de chaussé'), blank=True, default=None)
+    top_floor = IndifferentBooleanField(_(u'Dernier étage'), blank=True)
+    not_overlooked = IndifferentBooleanField(_(u'Sans vis-à-vis'), blank=True)
+    elevator = IndifferentBooleanField(_(u"Ascenceur"), blank=True)
+    intercom = IndifferentBooleanField(_(u"Interphone"), blank=True)
+    digicode = IndifferentBooleanField(_(u"Digicode"), blank=True)
+    doorman = IndifferentBooleanField(_(u"Gardien"), blank=True)
+    kitchen = IndifferentBooleanField(_(u"Cuisine équipée"), blank=True)
+    duplex = IndifferentBooleanField(_(u"Duplex"), blank=True)
+    swimming_pool = IndifferentBooleanField(_(u"Piscine"), blank=True)
+    alarm = IndifferentBooleanField(_(u"Alarme"), blank=True)
+    air_conditioning = IndifferentBooleanField(_(u"Climatisation"), blank=True)
+    fireplace = IndifferentBooleanField(_(u"Cheminée"), blank=True)
+    terrace = IndifferentBooleanField(_(u"Terrasse"), blank=True)
+    balcony = IndifferentBooleanField(_(u"Balcon"), blank=True)
+    separate_dining_room = IndifferentBooleanField(_(u"Cuisine séparée"), blank=True)
+    separate_toilet = IndifferentBooleanField(_(u"Toilettes séparés"), blank=True)
+    bathroom = IndifferentBooleanField(_(u"Salle de bain"), blank=True)
+    shower = IndifferentBooleanField(_(u"Salle d'eau (douche)"), blank=True)
+    separate_entrance = IndifferentBooleanField(_(u"Entrée séparée"), blank=True)
+    cellar = IndifferentBooleanField(_(u"Cave"), blank=True)
+    parking = IndifferentBooleanField(_(u"Parking"), blank=True)
+
+    #floor_min = models.PositiveIntegerField(_(u'Etage minimal'), null=True, blank=True)
+    #floor_max = models.PositiveIntegerField(_(u'Etage maximal'), null=True, blank=True)
+    #energy_consumption_min = models.CharField(_(u"Consommation énergétique (kWhEP/m².an) minimale"),
+    #                                      max_length=1,
+    #                                      choices=ENERGY_CONSUMPTION_CHOICES,
+    #                                      null=True, blank=True)
+    #ad_valorem_tax_max = models.IntegerField(_(u'Taxe foncière maximum'), null=True,
+    #                                     blank=True,
+    #                                     help_text=_(u"Montant annuel maximum, sans espace, sans virgule"))
+    #housing_tax_max = models.IntegerField(_(u"Taxe d'habitation maximum"), null=True,
+    #                                  blank=True, help_text=_(u"Montant annuel maximum, sans espace, sans virgule"))
+    #maintenance_charges_max = models.IntegerField(_(u'Charges maximum'), null=True,
+    #                                          blank=True, help_text=_(u"Montant mensuel maximum, sans espace, sans virgule"))
+    #emission_of_greenhouse_gases_min = models.CharField(_(u"Émissions de gaz à effet de serre (kgeqCO2/m².an) minimales"),
+    #                                                max_length=1,
+    #                                                choices=EMISSION_OF_GREENHOUSE_GASES_CHOICES,
+    #                                                null=True, blank=True)
 
     objects = models.GeoManager()
 
@@ -238,6 +289,7 @@ class AdSearchRelation(TimeStampedModel):
 
 
 def update_adsearch_relation_from_ad(sender, instance, **kwargs):
+    print "save adsearch"
     ad = instance
     # @todo: seems like for required field in search, Q(price_max=None)
     # Q(surface_min=None), Q(habitation_types=None) and
@@ -248,7 +300,33 @@ def update_adsearch_relation_from_ad(sender, instance, **kwargs):
             .filter(Q(surface_min__lte=ad.surface) | Q(surface_min=None))\
             .filter(Q(habitation_types=ad.habitation_type) | Q(habitation_types=None))\
             .filter(Q(location__contains=ad.location) | Q(location=None))\
-            .filter(Q(rooms_min__lte=ad.rooms) | Q(rooms_min=None))
+            .filter(Q(rooms_min__lte=ad.rooms) | Q(rooms_min=None))\
+            .filter(Q(ground_floor=ad.ground_floor) | Q(ground_floor=None))\
+            .filter(Q(top_floor=ad.top_floor) | Q(top_floor=None))\
+            .filter(Q(not_overlooked=ad.not_overlooked) | Q(not_overlooked=None))\
+            .filter(Q(elevator=ad.elevator) | Q(elevator=None))\
+            .filter(Q(intercom=ad.intercom) | Q(intercom=None))\
+            .filter(Q(digicode=ad.digicode) | Q(digicode=None))\
+            .filter(Q(doorman=ad.doorman) | Q(doorman=None))\
+            .filter(Q(kitchen=ad.kitchen) | Q(kitchen=None))\
+            .filter(Q(duplex=ad.duplex) | Q(duplex=None))\
+            .filter(Q(swimming_pool=ad.swimming_pool) | Q(swimming_pool=None))\
+            .filter(Q(alarm=ad.alarm) | Q(alarm=None))\
+            .filter(Q(air_conditioning=ad.air_conditioning) | Q(air_conditioning=None))\
+            .filter(Q(fireplace=ad.fireplace) | Q(fireplace=None))\
+            .filter(Q(terrace=ad.terrace) | Q(terrace=None))\
+            .filter(Q(balcony=ad.balcony) | Q(balcony=None))\
+            .filter(Q(separate_dining_room=ad.separate_dining_room) | Q(separate_dining_room=None))\
+            .filter(Q(separate_toilet=ad.separate_toilet) | Q(separate_toilet=None))\
+            .filter(Q(bathroom=ad.bathroom) | Q(bathroom=None))\
+            .filter(Q(shower=ad.shower) | Q(shower=None))\
+            .filter(Q(separate_entrance=ad.separate_entrance) | Q(separate_entrance=None))\
+            .filter(Q(cellar=ad.cellar) | Q(cellar=None))\
+            .filter(Q(parking=ad.parking) | Q(parking=None))
+    if ad.bedrooms:
+        s = s.filter(Q(bedrooms_min__lte=ad.bedrooms) | Q(bedrooms_min__isnull=True))
+    if ad.ground_surface:
+        s = s.filter(Q(ground_surface_min__lte=ad.ground_surface) | Q(ground_surface_min__isnull=True))
             #.filter(Q(price__min__lte=ad.price) | Q(price__min=None))\
             #.filter(Q(surface_max__gte=ad.surface) | Q(surface_max=None))\
             #.filter(Q(rooms_max__gte=ad.rooms) | Q(rooms_max=None))\
@@ -273,7 +351,7 @@ def update_adsearch_relation_from_ad(sender, instance, **kwargs):
             a.save()
 
 def update_adsearch_relation_from_search(sender, instance, **kwargs):
-    #print 'update_adsearch_relation_from_search'
+    print 'update_adsearch_relation_from_search'
     search = instance
     q_ad = Ad.objects.all().filter(price__lte=search.price_max)\
                            .filter(surface__gte=search.surface_min)\
@@ -281,6 +359,56 @@ def update_adsearch_relation_from_search(sender, instance, **kwargs):
                            .filter(location__within=search.location)
     if search.rooms_min:
             q_ad = q_ad.filter(rooms__gte=search.rooms_min)
+    if search.bedrooms_min:
+            q_ad = q_ad.filter(bedrooms__gte=search.bedrooms_min)
+    if search.ground_surface_min:
+            q_ad = q_ad.filter(ground_surface__gte=search.ground_surface_min)
+    if search.ground_floor:
+            q_ad = q_ad.filter(ground_floor=search.ground_floor)
+    if search.top_floor:
+            q_ad = q_ad.filter(top_floor=search.top_floor)
+    if search.not_overlooked:
+            q_ad = q_ad.filter(not_overlooked=search.not_overlooked)
+    if search.elevator:
+            q_ad = q_ad.filter(elevator=search.elevator)
+    if search.intercom:
+            q_ad = q_ad.filter(intercom=search.intercom)
+    if search.digicode:
+            q_ad = q_ad.filter(digicode=search.digicode)
+    if search.doorman:
+            q_ad = q_ad.filter(doorman=search.doorman)
+    if search.kitchen:
+            q_ad = q_ad.filter(kitchen=search.kitchen)
+    if search.duplex:
+            q_ad = q_ad.filter(duplex=search.duplex)
+    if search.swimming_pool:
+            q_ad = q_ad.filter(swimming_pool=search.swimming_pool)
+    if search.alarm:
+            q_ad = q_ad.filter(alarm=search.alarm)
+    if search.air_conditioning:
+            q_ad = q_ad.filter(air_conditioning=search.air_conditioning)
+    if search.fireplace:
+            q_ad = q_ad.filter(fireplace=search.fireplace)
+    if search.terrace:
+            q_ad = q_ad.filter(terrace=search.terrace)
+    if search.balcony:
+            q_ad = q_ad.filter(balcony=search.balcony)
+    if search.separate_dining_room:
+            q_ad = q_ad.filter(separate_dining_room=search.separate_dining_room)
+    if search.separate_toilet:
+            q_ad = q_ad.filter(separate_toilet=search.separate_toilet)
+    if search.bathroom:
+            q_ad = q_ad.filter(bathroom=search.bathroom)
+    if search.shower:
+            q_ad = q_ad.filter(shower=search.shower)
+    if search.separate_entrance:
+            q_ad = q_ad.filter(separate_entrance=search.separate_entrance)
+    if search.cellar:
+            q_ad = q_ad.filter(cellar=search.cellar)
+    if search.parking:
+            q_ad = q_ad.filter(parking=search.parking)
+
+
     asr = AdSearchRelation.objects.filter(search=search).values_list('ad', flat=True)
     for ad in asr:
         if ad not in q_ad:
@@ -296,7 +424,7 @@ def update_adsearch_relation_from_search(sender, instance, **kwargs):
             try:
                 a.save()
             except:
-                #print 'save just in above for loop'
+                # print 'save just in above for loop'
                 pass
 
 post_save.connect(update_adsearch_relation_from_ad, sender=Ad)
