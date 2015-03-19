@@ -257,6 +257,11 @@ class Search(BaseModel):
         return u'%s - %s € max. - %s m² min.' % (', '.join(self.habitation_types.all().values_list('label', flat=True)), self.price_max, self.surface_min)
 
 
+class AdSearchRelationManager(models.Manager):
+    def get_queryset(self):
+        return super(AdSearchRelationManager, self).get_queryset().filter(valid=True)
+
+
 class AdSearchRelation(TimeStampedModel):
     """
     Ad Search model Relation
@@ -269,6 +274,9 @@ class AdSearchRelation(TimeStampedModel):
     search_contacted =  models.DateTimeField(null=True, blank=True)
     valid = models.BooleanField(default=False)
 
+    valid_objects = AdSearchRelationManager()
+    objects = models.Manager()
+
     def has_vendor_contacted_buyer_for_search(self, vendor, search):
         pass
 
@@ -278,6 +286,7 @@ class AdSearchRelation(TimeStampedModel):
     class Meta:
         unique_together = (('ad', 'search'), )
 
+    '''
     def save(self, *args, **kwargs):
         if not self.pk:
             # We notify owner and searchers
@@ -286,10 +295,13 @@ class AdSearchRelation(TimeStampedModel):
             super(AdSearchRelation, self).save(*args, **kwargs)
         except:
             pass
+    '''
+
+    def __unicode__(self):
+        return u"ad: %s | search: %s | valid: %s" % (self.ad, self.search, self.valid)
 
 
 def update_adsearch_relation_from_ad(sender, instance, **kwargs):
-    print "save adsearch"
     ad = instance
     # @todo: seems like for required field in search, Q(price_max=None)
     # Q(surface_min=None), Q(habitation_types=None) and
@@ -350,8 +362,8 @@ def update_adsearch_relation_from_ad(sender, instance, **kwargs):
             a.valid = False
             a.save()
 
+
 def update_adsearch_relation_from_search(sender, instance, **kwargs):
-    print 'update_adsearch_relation_from_search'
     search = instance
     q_ad = Ad.objects.all().filter(price__lte=search.price_max)\
                            .filter(surface__gte=search.surface_min)\
@@ -408,7 +420,6 @@ def update_adsearch_relation_from_search(sender, instance, **kwargs):
     if search.parking:
             q_ad = q_ad.filter(parking=search.parking)
 
-
     asr = AdSearchRelation.objects.filter(search=search).values_list('ad', flat=True)
     for ad in asr:
         if ad not in q_ad:
@@ -420,12 +431,10 @@ def update_adsearch_relation_from_search(sender, instance, **kwargs):
         a.save()
     for ad in q_ad:
         if ad not in asr:
-            a = AdSearchRelation(ad=ad, search=search, valid=True)
-            try:
-                a.save()
-            except:
-                # print 'save just in above for loop'
-                pass
+            a, create = AdSearchRelation.objects.get_or_create(ad=ad, search=search)
+            a.valid = True
+            a.save()
+
 
 post_save.connect(update_adsearch_relation_from_ad, sender=Ad)
 post_save.connect(update_adsearch_relation_from_search, sender=Search)

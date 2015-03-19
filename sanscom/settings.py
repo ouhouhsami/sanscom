@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'django.contrib.humanize',
     'django.contrib.flatpages',
+    'floppyforms',
     'compressor',
     'registration',
     'ads',

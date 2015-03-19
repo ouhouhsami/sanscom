@@ -2,16 +2,29 @@
 import requests
 
 from django import forms
+
 from django.contrib.gis import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext, ugettext_lazy as _
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 
 from .utils import geo_from_address, WrongAddressError
 from .models import Ad, Search, HabitationType, AdPicture
 from .widgets import ExtendedLeafletWidget
 
-#Utils
+from floppyforms.widgets import RadioSelect as FloppyRadioSelect
+
+class NullBooleanRadioSelect(FloppyRadioSelect):
+    template_name = "widgets/radio.html"
+    def __init__(self, *args, **kwargs):
+        choices = (
+            (None, _('Indifférent')),
+            (True, _('Oui')),
+            (False, _('Non'))
+        )
+        super(NullBooleanRadioSelect, self).__init__(choices=choices, *args, **kwargs)
+
+    _empty_value = None
 
 
 class AdPictureForm(forms.ModelForm):
@@ -66,7 +79,6 @@ class WithLogin(forms.ModelForm):
 
 class EditSearchForm(forms.ModelForm):
     habitation_types = forms.ModelMultipleChoiceField(queryset=HabitationType.objects.all(), widget=forms.CheckboxSelectMultiple(attrs={}))
-    #ground_floor = forms.NullBooleanField(initial=1)
 
     def clean_location(self):
         location = self.cleaned_data['location']
@@ -79,10 +91,32 @@ class EditSearchForm(forms.ModelForm):
         exclude = ('user', )
         widgets = {
             'location': ExtendedLeafletWidget(),
-            'price_max': forms.TextInput(attrs={'placeholder': 'Prix max.', }),
-            'surface_min': forms.TextInput(attrs={'placeholder': 'Surface min.', }),
+            'price_max': forms.TextInput(),
+            'surface_min': forms.TextInput(),
+            'ground_surface_min': forms.TextInput(),
             'description': forms.Textarea({'placeholder': 'Description de votre recherche', }),
-            #'ground_floor': forms.RadioSelect(default=2)
+            'ground_floor': NullBooleanRadioSelect,
+            'top_floor': NullBooleanRadioSelect,
+            'not_overlooked': NullBooleanRadioSelect,
+            'elevator': NullBooleanRadioSelect,
+            'intercom': NullBooleanRadioSelect,
+            'digicode': NullBooleanRadioSelect,
+            'doorman': NullBooleanRadioSelect,
+            'kitchen': NullBooleanRadioSelect,
+            'duplex': NullBooleanRadioSelect,
+            'swimming_pool': NullBooleanRadioSelect,
+            'alarm': NullBooleanRadioSelect,
+            'air_conditioning': NullBooleanRadioSelect,
+            'fireplace': NullBooleanRadioSelect,
+            'terrace': NullBooleanRadioSelect,
+            'balcony': NullBooleanRadioSelect,
+            'separate_dining_room': NullBooleanRadioSelect,
+            'separate_toilet': NullBooleanRadioSelect,
+            'bathroom': NullBooleanRadioSelect,
+            'shower': NullBooleanRadioSelect,
+            'separate_entrance': NullBooleanRadioSelect,
+            'cellar': NullBooleanRadioSelect,
+            'parking':NullBooleanRadioSelect,
         }
 
 

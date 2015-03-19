@@ -95,16 +95,13 @@ class ReadAdsViewTestCase(TestCase):
         self.assertEqual(response.context_data.has_key('contact_form'), False)
 
     def test_ad_read_logged_user_adsearch_for_ad(self):
-        # We create a search
-        habitation_types = HabitationType.objects.all()
-        ad_search = SearchFactory.create(habitation_types=habitation_types, rooms_min=2)
-        ad_search_centroid = ad_search.location[0].centroid
-        lng = ad_search_centroid.x
-        lat = ad_search_centroid.y
-        address = address_from_geo(lat, lng)
-        # We create an add that corresponds to the search
-        ad = AdFactory.create(address=address, price=ad_search.price_max-1, surface=ad_search.surface_min+1, rooms=ad_search.rooms_min)
-        ad.habitation_type = habitation_types[0]
+        house, create = HabitationType.objects.get_or_create(label="Maison")
+        apartment, create = HabitationType.objects.get_or_create(label="Appartement")
+        # Create an ad
+        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
+        pnt = GEOSGeometry(geo_from_address(u"22 rue esquirol Paris"))
+        # Create a search with ad.location inside search.location
+        ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
         request = RequestFactory().get('/fake-path')
         request.user = ad_search.user
         view = AdDetailView.as_view()
@@ -455,16 +452,14 @@ class ReadSearchViewTestCase(TestCase):
         self.assertEqual(response.context_data.has_key('contact_form'), False)
 
     def test_search_read_logged_user_ad_for_search(self):
-        # We create a search
-        habitation_types = HabitationType.objects.all()
-        ad_search = SearchFactory.create(habitation_types=habitation_types, rooms_min=1)
-        ad_search_centroid = ad_search.location[0].centroid
-        lng = ad_search_centroid.x
-        lat = ad_search_centroid.y
-        address = address_from_geo(lat, lng)
-        # We create an ad that corresponds to the search
-        ad = AdFactory.create(address=address, price=ad_search.price_max-1, surface=ad_search.surface_min+1, rooms=ad_search.rooms_min+1)
-        ad.habitation_type = habitation_types[0]
+        house, create = HabitationType.objects.get_or_create(label="Maison")
+        apartment, create = HabitationType.objects.get_or_create(label="Appartement")
+        # Create an ad
+        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
+        pnt = GEOSGeometry(geo_from_address(u"22 rue esquirol Paris"))
+        # Create a search with ad.location inside search.location
+        ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+
         request = RequestFactory().get('/fake-path')
         request.user = ad.user
         view = SearchDetailView.as_view()
@@ -556,55 +551,56 @@ class NotificationTestCase(HackyTransactionTestCase):
     def test_ad_then_search(self):
         house, create = HabitationType.objects.get_or_create(label="Maison")
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
-        # create an ad
+        # Create an ad
         ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
-        # create a search with ad.location inside search.location
-        search = SearchFactory(location=geos.MultiPolygon(ad.location.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], rooms_min=None)
-        # here we should have results ...
-        self.assertEqual(AdSearchRelation.objects.all().count(), 1)
+        # Create a search with ad.location inside search.location
+        search = search_for_ad_factory(ad)
+        # Here we should have results ...
+        self.assertEqual(AdSearchRelation.valid_objects.all().count(), 1)
 
     def test_search_then_ad(self):
         house, create = HabitationType.objects.get_or_create(label="Maison")
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
-        # create a search with search.location contaning ad.location
+        # Create a search with search.location contaning ad.location
         pnt = GEOSGeometry(geo_from_address("22 rue esquirol Paris"))
-        search = SearchFactory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], rooms_min=None)
-        # create an ad
+        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+        # Create an ad
         ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
         # here we should have results ...
-        self.assertEqual(AdSearchRelation.objects.all().count(), 1)
+        self.assertEqual(AdSearchRelation.valid_objects.all().count(), 1)
 
     def test_ad_then_search_then_update_ad(self):
         house, create = HabitationType.objects.get_or_create(label="Maison")
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
-        # create an ad
+        # Create an ad
         ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
         pnt = GEOSGeometry(geo_from_address(u"52 W 52nd St, New York, NY 10019, États-Unis"))
-        # create a search with ad.location inside search.location
-        search = SearchFactory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], rooms_min=None)
+        # Create a search with ad.location outside search.location
+        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
         # here we should have results ...
-        self.assertEqual(AdSearchRelation.objects.all().count(), 0)
+        self.assertEqual(AdSearchRelation.valid_objects.all().count(), 0)
 
         search.location = geos.MultiPolygon(ad.location.buffer(2))
         search.save()
-        self.assertEqual(AdSearchRelation.objects.all().count(), 1)
+        self.assertEqual(AdSearchRelation.valid_objects.all().count(), 1)
 
     def test_search_then_ad_the_search_update(self):
         house, create = HabitationType.objects.get_or_create(label="Maison")
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
-        # create a search with search.location contaning ad.location
+        # Create a search with search.location contaning ad.location
         pnt = GEOSGeometry(geo_from_address("22 rue esquirol Paris"))
-        search = SearchFactory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], rooms_min=None)
-        # create an ad
+        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+        # Create an ad
         ad = AdFactory(address=u"52 W 52nd St, New York, NY 10019, États-Unis", price=600000, surface=60, habitation_type=apartment)
         # here we should have results ...
-        self.assertEqual(AdSearchRelation.objects.all().count(), 0)
+        self.assertEqual(AdSearchRelation.valid_objects.all().count(), 0)
         ad.address = "22 rue esquirol Paris"
         ad.save()
-        self.assertEqual(AdSearchRelation.objects.all().count(), 1)
+        #print model_to_dict(search)
+        #print model_to_dict(ad)
+        self.assertEqual(AdSearchRelation.valid_objects.all().count(), 1)
 
 
-#
 import random
 
 def random_habitation_types():
@@ -627,6 +623,33 @@ def random_habitation_type():
     else:
         return house
 
+def low_criteria_search_factory(location, price_max, surface_min, habitation_types):
+    return SearchFactory(location=location, price_max=price_max, surface_min=surface_min, habitation_types=habitation_types,
+        rooms_min = None,
+        bedrooms_min = None,
+        ground_surface_min = None,
+        ground_floor = None,
+        top_floor = None,
+        not_overlooked = None,
+        elevator = None,
+        intercom = None,
+        digicode = None,
+        doorman = None,
+        kitchen = None,
+        duplex = None,
+        swimming_pool = None,
+        alarm = None,
+        air_conditioning = None,
+        fireplace = None,
+        terrace = None,
+        balcony = None,
+        separate_dining_room = None,
+        separate_toilet = None,
+        bathroom = None,
+        shower = None,
+        separate_entrance = None,
+        cellar = None,
+        parking = None)
 
 def search_for_ad_factory(ad):
     search = SearchFactory(
@@ -662,6 +685,14 @@ def search_for_ad_factory(ad):
     )
     return search
 
+def change_search_to_no_more_correspond_to_the_ad(search, ad):
+    search.rooms_min = ad.rooms + 1
+    search.save()
+
+def change_search_to_correspond_to_the_ad(search, ad):
+    search.rooms_min = ad.rooms
+    search.save()
+
 
 class MiscellaneousTestCase(HackyTransactionTestCase):
 
@@ -674,7 +705,7 @@ class MiscellaneousTestCase(HackyTransactionTestCase):
         ad = AdFactory(habitation_type=random_habitation_type())
         # Test if ad is in search (lucky you)
         # We would then modify search so that it doesn't fit anymore
-        if AdSearchRelation.objects.all().count() == 1:
+        if AdSearchRelation.valid_objects.all().count() == 1:
             if ad.habitation_type in search.habitation_types.all():
                 search.remove(ad.habitation_type)
 
@@ -682,10 +713,14 @@ class MiscellaneousTestCase(HackyTransactionTestCase):
         # Create ad
         ad = AdFactory(habitation_type=random_habitation_type())
         # Check AdSearchRelation is empty
-        self.assertEqual(AdSearchRelation.objects.all().count(), 0)
-        # Create search
+        self.assertEqual(AdSearchRelation.valid_objects.count(), 0)
+        # Create search which corresponds to an add
         search = search_for_ad_factory(ad)
-        print search, ad, search.location.contains(ad.location)
-        self.assertEqual(AdSearchRelation.objects.all().count(), 1)
+        # Test that it there is a ASR for ad <=> search
+        # self.assertEqual(AdSearchRelation.valid_objects.all().count(), 1)
+        change_search_to_no_more_correspond_to_the_ad(search, ad)
+        self.assertEqual(AdSearchRelation.valid_objects.count(), 0)
+        change_search_to_correspond_to_the_ad(search, ad)
+        self.assertEqual(AdSearchRelation.valid_objects.count(), 1)
 
 

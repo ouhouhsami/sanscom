@@ -106,8 +106,8 @@ NoRectangleGeometryField = L.GeometryField.extend({
         <div class="form-group {% if form.price_max.errors %}has-error{% endif %}">
             <label class="control-label" for="{{ form.price_max.auto_id }}">Prix maximum</label>
             <div class="input-group">
-                <span class="input-group-addon">€</span>
                 {{ form.price_max }}
+                <span class="input-group-addon">€</span>
             </div>
             {% if form.price_max.errors %}
             <p class="text-danger">
@@ -121,9 +121,8 @@ NoRectangleGeometryField = L.GeometryField.extend({
         <div class="form-group {% if form.surface_min.errors %}has-error{% endif %}">
             <label class="control-label" for="{{ form.surface_min.auto_id }}">Surface minimum</label>
             <div class="input-group">
-                <span class="input-group-addon">m<sup>2</sup></span>
                 {{ form.surface_min }}
-
+                <span class="input-group-addon">m<sup>2</sup></span>
             </div>
             {% if form.surface_min.errors %}
             <p class="text-danger">
@@ -148,8 +147,39 @@ NoRectangleGeometryField = L.GeometryField.extend({
             </p>
             {% endif %}
         </div>
-        {% include "widgets/nullbooleanselect.html" with field=form.bedrooms_min only %}
-        {% include "widgets/nullbooleanselect.html" with field=form.ground_surface_min only %}
+
+        <div class="form-group {% if form.bedrooms_min.errors %}has-error{% endif %}">
+            <label class="control-label">Nombre de chambres minimum</label>
+            <div class="input-group">
+                {{ form.bedrooms_min }}
+                <span class="input-group-addon">pièce</span>
+            </div>
+            {% if form.bedrooms_min.errors %}
+            <p class="text-danger">
+                {% for error in form.bedrooms_min.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="form-group {% if form.ground_surface_min.errors %}has-error{% endif %}">
+            <label class="control-label">Surface de terrain minimum (pour les maisons uniquement)</label>
+            <div class="input-group">
+                {{ form.ground_surface_min }}
+                <span class="input-group-addon">m<sup>2</sup></span>
+            </div>
+            {% if form.ground_surface_min.errors %}
+            <p class="text-danger">
+                {% for error in form.ground_surface_min.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+
+
+
         {% include "widgets/nullbooleanselect.html" with field=form.ground_floor only %}
         {% include "widgets/nullbooleanselect.html" with field=form.top_floor only %}
         {% include "widgets/nullbooleanselect.html" with field=form.not_overlooked only %}
