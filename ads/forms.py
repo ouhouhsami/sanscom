@@ -94,7 +94,7 @@ class EditSearchForm(forms.ModelForm):
             'price_max': forms.TextInput(),
             'surface_min': forms.TextInput(),
             'ground_surface_min': forms.TextInput(),
-            'description': forms.Textarea({'placeholder': 'Description de votre recherche', }),
+            'description': forms.Textarea({'placeholder': 'Autres informations utiles aux vendeurs qui souhaiteraient vous contacter.', }),
             'ground_floor': NullBooleanRadioSelect,
             'top_floor': NullBooleanRadioSelect,
             'not_overlooked': NullBooleanRadioSelect,
@@ -226,7 +226,7 @@ class SearchAdForm(forms.ModelForm):
             raise forms.ValidationError("Entrer une zone de recherche plus petite")
         return location
 
-    habitation_types = forms.ModelMultipleChoiceField(queryset=HabitationType.objects.all(), widget=forms.CheckboxSelectMultiple(attrs={}))
+    habitation_types = forms.ModelMultipleChoiceField(queryset=HabitationType.objects.all(), widget=forms.CheckboxSelectMultiple(attrs={}), label="Types d'habitations")
 
     class Meta:
         model = Search

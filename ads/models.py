@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 
+from django.contrib.sites.models import get_current_site
+from django.core.mail import EmailMessage
 from django.db import models
 from django.contrib.gis.db import models
 from django.contrib.gis import geos
@@ -8,6 +10,7 @@ from django_extensions.db.models import TimeStampedModel
 from django_extensions.db.fields import AutoSlugField
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.utils import timezone
 
 from django.utils.translation import ugettext as _
 
@@ -196,7 +199,7 @@ class Search(BaseModel):
     slug = AutoSlugField(_('slug'), populate_from='slug_format')
     location = models.MultiPolygonField(_(u"Localisation"))
     price_max = models.PositiveIntegerField(_(u"Prix maximum"))
-    habitation_types = models.ManyToManyField(HabitationType)
+    habitation_types = models.ManyToManyField(HabitationType, verbose_name=u"Types d'habitations")
     surface_min = models.PositiveIntegerField(_(u"Surface minimale"))
     rooms_min = models.PositiveIntegerField(_(u"Nombre de pièces minimum"), null=True, blank=True)
 
@@ -286,16 +289,38 @@ class AdSearchRelation(TimeStampedModel):
     class Meta:
         unique_together = (('ad', 'search'), )
 
-    '''
+
     def save(self, *args, **kwargs):
-        if not self.pk:
-            # We notify owner and searchers
-            pass
-        try:
-            super(AdSearchRelation, self).save(*args, **kwargs)
-        except:
-            pass
-    '''
+        if self.valid:
+            if self.ad_notified is None and self.search_notified is None:
+                # Go for a mail, because ASR is valid and ad and search owner haven't been notifided yet.
+                self.ad_notified = timezone.now()
+                self.search_notified = timezone.now()
+                # Mail to ad owner
+                ad_full_url = ''.join(['http://', get_current_site(None).domain, self.ad.get_absolute_url()])
+                search_full_url = ''.join(['http://', get_current_site(None).domain, self.search.get_absolute_url()])
+                message = u'''Bonjour,
+                \n\nUn nouvel acheteur potentiel pour votre bien, consultez sa recherche : %s .
+                \n\nA bientôt
+                \n\nL'équipe AcheterSansCom
+                ''' % search_full_url
+                sender = "contact@acheternsanscom.com"
+                recipients = [self.ad.user.email, ]
+                subject = "[AcheterSansCom] Un nouvel acheteur potentiel pour votre bien - %s" % self.ad
+                mail = EmailMessage(subject, message, sender, recipients, [sender])
+                mail.send()
+                # Mail to search owner
+                message = u'''Bonjour,
+                \n\nUn nouveau bien correspond à votre recherche : %s .
+                \n\nA bientôt
+                \n\nL'équipe AcheterSansCom
+                ''' % ad_full_url
+                sender = "contact@acheternsanscom.com"
+                recipients = [self.search.user.email, ]
+                subject = "[AcheterSansCom] Un nouveau bien correspondant à votre recherche - %s" % self.search
+                mail = EmailMessage(subject, message, sender, recipients, [sender])
+                mail.send()
+        super(AdSearchRelation, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u"ad: %s | search: %s | valid: %s" % (self.ad, self.search, self.valid)

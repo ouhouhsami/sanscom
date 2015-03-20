@@ -63,6 +63,7 @@ $('.show-marker').on('click', function(evt){
         window.open(this.href);
     });
     map.setView([lng, lat], 13);
+    window.location.hash = "#id_location_map"
 })
 
 enableAutoLocationZone = function(latlng, address){

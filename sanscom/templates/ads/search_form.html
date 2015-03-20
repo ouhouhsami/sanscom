@@ -89,6 +89,9 @@ NoRectangleGeometryField = L.GeometryField.extend({
                 {% endfor %}
             </p>
             {% endif %}
+            <div class="alert alert-info" role="alert" style="margin-top:3px; margin-bottom:3px;padding:5px">
+                    Dessiner une zone de recherche précise sur la carte ci-dessus en cliquant sur l'icône <span id="icon-draw"></span>.
+                </div>
         </div>
 
         <div class="form-group {% if form.habitation_types.errors %}has-error{% endif %}">
@@ -148,6 +151,10 @@ NoRectangleGeometryField = L.GeometryField.extend({
             {% endif %}
         </div>
 
+        <div class="alert alert-info" role="alert" style="margin-top:3px; margin-bottom:3px;padding:5px">
+                    Tous les critères ci-dessous sont facultatifs.
+                </div>
+
         <div class="form-group {% if form.bedrooms_min.errors %}has-error{% endif %}">
             <label class="control-label">Nombre de chambres minimum</label>
             <div class="input-group">
@@ -178,33 +185,42 @@ NoRectangleGeometryField = L.GeometryField.extend({
             {% endif %}
         </div>
 
-
+        <h4 class="page-header">Situation du logement dans l'immeuble</h4>
 
         {% include "widgets/nullbooleanselect.html" with field=form.ground_floor only %}
         {% include "widgets/nullbooleanselect.html" with field=form.top_floor only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.duplex only %}
         {% include "widgets/nullbooleanselect.html" with field=form.not_overlooked only %}
+
+        <h4 class="page-header">A propos de l'immeuble</h4>
+
         {% include "widgets/nullbooleanselect.html" with field=form.elevator only %}
         {% include "widgets/nullbooleanselect.html" with field=form.intercom only %}
         {% include "widgets/nullbooleanselect.html" with field=form.digicode only %}
         {% include "widgets/nullbooleanselect.html" with field=form.doorman only %}
+
+        <h4 class="page-header">Commodités</h4>
+
         {% include "widgets/nullbooleanselect.html" with field=form.kitchen only %}
-        {% include "widgets/nullbooleanselect.html" with field=form.duplex only %}
-        {% include "widgets/nullbooleanselect.html" with field=form.swimming_pool only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.cellar only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.parking only %}
         {% include "widgets/nullbooleanselect.html" with field=form.alarm only %}
-        {% include "widgets/nullbooleanselect.html" with field=form.air_conditioning only %}
-        {% include "widgets/nullbooleanselect.html" with field=form.fireplace only %}
-        {% include "widgets/nullbooleanselect.html" with field=form.terrace only %}
         {% include "widgets/nullbooleanselect.html" with field=form.balcony only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.terrace only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.fireplace only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.air_conditioning only %}
+        {% include "widgets/nullbooleanselect.html" with field=form.swimming_pool only %}
+
+        <h4 class="page-header">Pièces</h4>
+
         {% include "widgets/nullbooleanselect.html" with field=form.separate_dining_room only %}
         {% include "widgets/nullbooleanselect.html" with field=form.separate_toilet only %}
         {% include "widgets/nullbooleanselect.html" with field=form.bathroom only %}
         {% include "widgets/nullbooleanselect.html" with field=form.shower only %}
         {% include "widgets/nullbooleanselect.html" with field=form.separate_entrance only %}
-        {% include "widgets/nullbooleanselect.html" with field=form.cellar only %}
-        {% include "widgets/nullbooleanselect.html" with field=form.parking only %}
 
         <div class="form-group {% if form.description.errors %}has-error{% endif %}">
-            <label class="control-label" for="{{ form.description.auto_id }}">Description</label>
+            <label class="control-label" for="{{ form.description.auto_id }}">Informations complémentaires</label>
             {{ form.description }}
             {% if form.description.errors %}
             <p class="text-danger">

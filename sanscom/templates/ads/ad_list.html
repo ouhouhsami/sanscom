@@ -65,9 +65,15 @@ $(window).on("map:init", function (e) {
 
 {% block form %}
 
+{% if paginator.count == 0 %}
+<div class="alert alert-warning">
+Aucune offre ne correspond à votre recherche. <br><a href="#" onclick="console.log(document.getElementsByName('save_ad').item(0).click());"class="alert-link">Enregistrez votre recherche</a> afin d'être tenu informé lorsque de nouveaux biens correspondant à vos critères sont ajoutés.
+</div>
+{% endif %}
+
 {% if total %}
 <div class="alert alert-success">
-<a class="alert-link" href="#results">{{ total }} offre{{ num_messages|pluralize }} correspondant à votre recherche.</a>
+<a class="alert-link" href="#results">{{ total }} offre{{  total|pluralize }} correspondent à votre recherche.</a>
 </div>
 {% endif %}
 
@@ -156,7 +162,7 @@ $(window).on("map:init", function (e) {
         <div class="col-md-4">
 
             <div class="form-group {% if form.habitation_types.errors %}has-error{% endif %}">
-                <label class="control-label">Type d'habitation</label>
+                <label class="control-label">Types d'habitations</label>
                 {{ form.habitation_types }}
                 {% if form.habitation_types.errors %}
                 <p class="text-danger">
@@ -171,8 +177,8 @@ $(window).on("map:init", function (e) {
             <div class="form-group {% if form.price_max.errors %}has-error{% endif %}">
                 <label class="control-label">Prix maximum</label>
                 <div class="input-group">
-                    <span class="input-group-addon">€</span>
                     {{ form.price_max }}
+                    <span class="input-group-addon">€</span>
                 </div>
                 {% if form.price_max.errors %}
                 <p class="text-danger">
@@ -185,9 +191,8 @@ $(window).on("map:init", function (e) {
             <div class="form-group {% if form.surface_min.errors %}has-error{% endif %}">
                 <label class="control-label">Surface minimale</label>
                 <div class="input-group">
-                    <span class="input-group-addon">m<sup>2</sup></span>
                     {{ form.surface_min }}
-
+                    <span class="input-group-addon">m<sup>2</sup></span>
                 </div>
                 {% if form.surface_min.errors %}
                 <p class="text-danger">
@@ -232,7 +237,7 @@ $(window).on("map:init", function (e) {
 {% block list_title %}
 <h3 id="results">
     {% if valid %}
-    Résultats de votre recherche
+    {{ total }} offre{{  total|pluralize }} correspondent à votre recherche
     {% else %}
     Les dernières annonces de vente
     {% endif %}

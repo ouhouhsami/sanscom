@@ -127,9 +127,10 @@ function map_init_basic (map, options) {
         {% endif %}
 
         {% else %}
-
-        Pour contacter les chercheurs, il vous faut avoir un compte et avoir un bien en vente correpondant à leur recherche.
-        <a class="btn btn-default" href="{% url 'ads_ad_add' %}">Ajouter une annonce de bien à vendre</a>
+        <div class="alert alert-info">
+        Pour contacter cette personne, il vous faut avoir un compte et un bien en vente correpondant à sa recherche. <br>
+        <a class="alert-link" href="{% url 'ads_ad_add' %}">Ajouter une annonce de bien à vendre</a>
+    </div>
         {% endif %}
 {% endif %}
 

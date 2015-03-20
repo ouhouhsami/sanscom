@@ -79,6 +79,11 @@ def surface_carrez_from_rooms(ad):
     return random.randint(*arr[ad.rooms-1])
 
 
+def surface_from_rooms_min(search):
+    arr = [[5, 35, 5], [25, 55, 5], [45, 85, 5], [55, 100, 5], [70, 125, 5]]
+    return random.randrange(*arr[search.rooms_min-1])
+
+
 def ground_surface_from_type(ad):
     if ad.habitation_type == house:
         random.randint(0, 3000)
@@ -158,7 +163,7 @@ class AdFactory(BaseFactory):
     surface = factory.LazyAttribute(surface_from_surface_carrez)
     surface_carrez = factory.LazyAttribute(surface_carrez_from_rooms)
     rooms = FuzzyRooms()
-    bedrooms = factory.LazyAttribute(lambda o: 1 if o.rooms <= 2 else random.randint(1, o.rooms))
+    bedrooms = factory.LazyAttribute(lambda o: 1 if o.rooms <= 2 else random.randint(1, o.rooms-1))
     energy_consumption = FuzzyChoice(choices=FUZZY_ENERGY_CONSUMPTION_CHOICES)
     ad_valorem_tax = FuzzyInteger(100, 3000, 20)
     housing_tax = FuzzyInteger(100, 3000, 30)
@@ -204,11 +209,11 @@ class SearchFactory(BaseFactory):
     FACTORY_FOR = Search
 
     location = FuzzyMultiPolygon()
-    price_max = FuzzyInteger(10000, 50000000, 1000)
-    surface_min = FuzzyInteger(5, 300, 5)
-    rooms_min = FuzzyChoice(choices=[None, 1, 2, 3, 4, 5])
+    price_max = factory.LazyAttribute(lambda o: int(o.surface_min*random.randrange(5000, 10000, 1000)/1000)*1000)
+    surface_min = factory.LazyAttribute(surface_from_rooms_min)
+    rooms_min = FuzzyRooms()
 
-    bedrooms_min = FuzzyChoice(choices=[None, 1, 2, 3, 4, 5])
+    bedrooms_min = factory.LazyAttribute(lambda o: 1 if o.rooms_min <= 2 else random.randint(1, o.rooms_min-1))
     ground_surface_min = FuzzyChoice(choices=[None, ])
     ground_floor = FuzzyChoice(choices=[None, True, False])
     top_floor = FuzzyChoice(choices=[None, True, False])

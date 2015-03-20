@@ -16,6 +16,23 @@
 {% endblock %}
 
 {% block form %}
+
+{% if paginator.count == 0 %}
+<div class="alert alert-warning">
+Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log(document.getElementsByName('save_ad').item(0).click());"class="alert-link">Enregistrez votre annonce</a> afin d'être tenu informé lorsque de nouvelles personnes cherchent un bien correspondant au votre.
+</div>
+{% endif %}
+
+{% if valid %}
+
+{% if paginator.count %}
+<div class="alert alert-success">
+<a class="alert-link" href="#results">{{ paginator.count }} offre{{ paginator.count|pluralize }} correspondent à votre recherche.</a>
+</div>
+{% endif %}
+
+{% endif %}
+
 <form class="form-inline" role="form" method="get" action=".">
     {{ form.non_field_errors }}
     <div class="form-group {% if form.address.errors %}has-error{% endif %}">
@@ -82,9 +99,9 @@
 {% endblock %}
 
 {% block list_title %}
-<h3>
+<h3 id="results">
     {% if valid %}
-    Résultats de votre recherche
+    {{ paginator.count }} biens correspondent à votre recherche
     {% else %}
     Les dernières annonces de recherche
     {% endif %}
@@ -94,6 +111,7 @@
 {% block search_result_header %}
 <th>Type de bien</th>
 <th>Prix maximum</th>
+<th>Nb. de pièces minimal</th>
 <th>Surface mininale</th>
 <th>Date de mise à jour</th>
 {% endblock %}
@@ -108,6 +126,9 @@
     </td>
     <td>
      {{ object.price_max|intcomma }} €
+ </td>
+     <td>
+     {{ object.rooms_min }}
  </td>
  <td>
     {{ object.surface_min }} m<sup>2</sup>

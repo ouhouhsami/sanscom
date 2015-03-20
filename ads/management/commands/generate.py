@@ -11,10 +11,10 @@ class Command(BaseCommand):
         if len(args) > 0:
             number = int(args[0])
         #HabitationTypeFactory.create_batch(2)
-        AccountFactory.create_batch(number)
-        ads = AdFactory.create_batch(number)
-        for ad in ads:
-            AdPictureFactory.create(ad=ad)
-            AdPictureFactory.create(ad=ad)
+        # AccountFactory.create_batch(number)
+        # ads = AdFactory.create_batch(number)
+        # for ad in ads:
+        #     AdPictureFactory.create(ad=ad)
+        #     AdPictureFactory.create(ad=ad)
         SearchFactory.create_batch(number, habitation_types=[HabitationType.objects.all().order_by('?')[0]])
         self.stdout.write('Successfully generated items')

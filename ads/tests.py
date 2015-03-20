@@ -4,6 +4,7 @@ import tempfile
 
 from django.test import TransactionTestCase, TestCase, RequestFactory
 from django.contrib.gis import geos
+from django.contrib.sites.models import get_current_site
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.auth.models import AnonymousUser, User
 from django.forms.models import model_to_dict
@@ -102,6 +103,14 @@ class ReadAdsViewTestCase(TestCase):
         pnt = GEOSGeometry(geo_from_address(u"22 rue esquirol Paris"))
         # Create a search with ad.location inside search.location
         ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+
+        # Here, 2 mails should have been sent
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(mail.outbox[0].recipients()[0], ad.user.email)
+        self.assertEqual(mail.outbox[1].recipients()[0], ad_search.user.email)
+        self.assertTrue(ad_search.get_absolute_url() in str(mail.outbox[0].message()))
+        self.assertTrue(ad.get_absolute_url() in str(mail.outbox[1].message()))
+
         request = RequestFactory().get('/fake-path')
         request.user = ad_search.user
         view = AdDetailView.as_view()
@@ -113,7 +122,7 @@ class ReadAdsViewTestCase(TestCase):
         request.user = ad_search.user
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
-        self.assertEqual(mail.outbox[0].body, 'hi there')
+        self.assertEqual(mail.outbox[2].body, 'hi there')
         # Now, when reach web page, the user should know that he has already contacted the vendor
         request = RequestFactory().get('/fake-path')
         request.user = ad_search.user
@@ -460,6 +469,18 @@ class ReadSearchViewTestCase(TestCase):
         # Create a search with ad.location inside search.location
         ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
 
+        # Here, 2 mails should have been sent
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(mail.outbox[0].recipients()[0], ad.user.email)
+        self.assertEqual(mail.outbox[1].recipients()[0], ad_search.user.email)
+        ad_search_full_url = ''.join(['http://', get_current_site(None).domain, ad_search.get_absolute_url()])
+        print ad_search_full_url
+        ad_full_url = ''.join(['http://', get_current_site(None).domain, ad.get_absolute_url()])
+        print ad_full_url
+        self.assertTrue(ad_search_full_url in str(mail.outbox[0].message()))
+        self.assertTrue(ad_full_url in str(mail.outbox[1].message()))
+
+
         request = RequestFactory().get('/fake-path')
         request.user = ad.user
         view = SearchDetailView.as_view()
@@ -471,7 +492,7 @@ class ReadSearchViewTestCase(TestCase):
         request.user = ad.user
         view = SearchDetailView.as_view()
         response = view(request, slug=ad_search.slug)
-        self.assertEqual(mail.outbox[0].body, 'hi there')
+        self.assertEqual(mail.outbox[2].body, 'hi there')
         # Now, when reach web page, the user should know that he has already contacted the vendor
         request = RequestFactory().get('/fake-path')
         request.user = ad.user
