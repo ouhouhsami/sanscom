@@ -297,8 +297,8 @@ class AdSearchRelation(TimeStampedModel):
                 self.ad_notified = timezone.now()
                 self.search_notified = timezone.now()
                 # Mail to ad owner
-                ad_full_url = ''.join(['http://', get_current_site(None).domain, self.ad.get_absolute_url()])
-                search_full_url = ''.join(['http://', get_current_site(None).domain, self.search.get_absolute_url()])
+                ad_full_url = u''.join(['http://', get_current_site(None).domain, self.ad.get_absolute_url()])
+                search_full_url = u''.join(['http://', get_current_site(None).domain, self.search.get_absolute_url()])
                 message = u'''Bonjour,
                 \n\nUn nouvel acheteur potentiel pour votre bien, consultez sa recherche : %s .
                 \n\nA bientôt

@@ -108,8 +108,10 @@ class ReadAdsViewTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(mail.outbox[0].recipients()[0], ad.user.email)
         self.assertEqual(mail.outbox[1].recipients()[0], ad_search.user.email)
-        self.assertTrue(ad_search.get_absolute_url() in str(mail.outbox[0].message()))
-        self.assertTrue(ad.get_absolute_url() in str(mail.outbox[1].message()))
+        ad_search_full_url = u''.join(['http://', get_current_site(None).domain, ad_search.get_absolute_url()])
+        ad_full_url = u''.join(['http://', get_current_site(None).domain, ad.get_absolute_url()])
+        self.assertTrue(ad_search_full_url.encode('utf8') in mail.outbox[0].message().as_string())
+        self.assertTrue(ad_full_url.encode('utf8') in mail.outbox[1].message().as_string())
 
         request = RequestFactory().get('/fake-path')
         request.user = ad_search.user
@@ -473,12 +475,10 @@ class ReadSearchViewTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(mail.outbox[0].recipients()[0], ad.user.email)
         self.assertEqual(mail.outbox[1].recipients()[0], ad_search.user.email)
-        ad_search_full_url = ''.join(['http://', get_current_site(None).domain, ad_search.get_absolute_url()])
-        print ad_search_full_url
-        ad_full_url = ''.join(['http://', get_current_site(None).domain, ad.get_absolute_url()])
-        print ad_full_url
-        self.assertTrue(ad_search_full_url in str(mail.outbox[0].message()))
-        self.assertTrue(ad_full_url in str(mail.outbox[1].message()))
+        ad_search_full_url = u''.join(['http://', get_current_site(None).domain, ad_search.get_absolute_url()])
+        ad_full_url = u''.join(['http://', get_current_site(None).domain, ad.get_absolute_url()])
+        self.assertTrue(ad_search_full_url.encode('utf8') in mail.outbox[0].message().as_string())
+        self.assertTrue(ad_full_url.encode('utf8') in mail.outbox[1].message().as_string())
 
 
         request = RequestFactory().get('/fake-path')
