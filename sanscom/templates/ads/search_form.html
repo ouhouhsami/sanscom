@@ -36,8 +36,10 @@ NoRectangleGeometryField = L.GeometryField.extend({
 {% block content %}
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-        <h2>Acheteurs : Trouvez un bien à acheter</h2>
-
+        <h2>
+            {% if sale %}Acheteurs : Trouvez un bien à acheter{% endif %}
+            {% if rent %}Locataires : Trouvez un bien à louer{% endif %}
+        </h2>
         {% if form.errors %}
         <div class="alert alert-danger">
             {% for field in form %}
@@ -110,7 +112,7 @@ NoRectangleGeometryField = L.GeometryField.extend({
             <label class="control-label" for="{{ form.price_max.auto_id }}">Prix maximum</label>
             <div class="input-group">
                 {{ form.price_max }}
-                <span class="input-group-addon">€</span>
+                <span class="input-group-addon">€{% if rent %}/mois{% endif %}</span>
             </div>
             {% if form.price_max.errors %}
             <p class="text-danger">

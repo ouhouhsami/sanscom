@@ -4,6 +4,7 @@ import datetime
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
 
 from django.core.mail import EmailMessage
+from django.core.urlresolvers import resolve
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.views.generic import (CreateView, DetailView, UpdateView,
@@ -29,7 +30,7 @@ class LoginRequiredMixin(object):
                                                         **kwargs)
 
 
-class SetUserMixin(object):
+class SetUserAndTransactionMixin(object):
     """
     Both form_valid and forms_valid are required, to deal with
     CreateWithInlinesView and UpdateWithInlinesView implementation.
@@ -54,13 +55,15 @@ class SetUserMixin(object):
         if self.request.user.is_anonymous():
             self.get_or_create_and_login_user(form)
         form.instance.user = self.request.user
-        return super(SetUserMixin, self).forms_valid(form, inlines)
+        form.instance.transaction = self.transaction
+        return super(SetUserAndTransactionMixin, self).forms_valid(form, inlines)
 
     def form_valid(self, form):
         if self.request.user.is_anonymous():
             self.get_or_create_and_login_user(form)
         form.instance.user = self.request.user
-        return super(SetUserMixin, self).form_valid(form)
+        form.instance.transaction = self.transaction
+        return super(SetUserAndTransactionMixin, self).form_valid(form)
 
 
 class AssureOwnerMixin(object):
@@ -147,9 +150,10 @@ class AdPictureInline(InlineFormSet):
 
 
 # Ad
-class CreateAdView(SetUserMixin, FillInitialForm, CreateWithInlinesView):
+class CreateAdView(SetUserAndTransactionMixin, FillInitialForm, CreateWithInlinesView):
     model = Ad
     form_class = EditAdForm
+    transaction = None
     inlines = [AdPictureInline, ]
 
     def get_form_class(self):
@@ -158,6 +162,10 @@ class CreateAdView(SetUserMixin, FillInitialForm, CreateWithInlinesView):
         else:
             self.form_class = EditAdForm
         return self.form_class
+
+    def dispatch(self, request, *args, **kwargs):
+        self.transaction = request.resolver_match.namespace
+        return super(CreateAdView, self).dispatch(request, *args, **kwargs)
 
 
 class ReadAdView(DetailView):
@@ -182,16 +190,19 @@ class ReadAdView(DetailView):
 class AdDetailView(MessageDetailView):
     model = Ad
     detail_view = ReadAdView
+    transaction = None
 
 
 class UpdateAdView(LoginRequiredMixin, AssureOwnerMixin, UpdateWithInlinesView):
     model = Ad
     form_class = EditAdForm
+    transaction = None
     inlines = [AdPictureInline, ]
 
 
 class DeleteAdView(LoginRequiredMixin, AssureOwnerMixin, DeleteView):
     model = Ad
+    transaction = None
 
     def get_success_url(self):
         slug = self.request.user.username
@@ -202,19 +213,24 @@ class AdListView(ListView):
     model = Ad
     paginate_by = 10
 
+    transaction = None
+
     _valid = False
     _total = False
     _urlencode_get = ''
+
 
     def get(self, request, *args, **kwargs):
         get = super(AdListView, self).get(request, *args, **kwargs)
         if 'save_ad' in self.request.GET and self._valid:
             q = self.request.GET.urlencode()
-            return HttpResponseRedirect(reverse('ads_search_add') + '?%s' % q)
+            return HttpResponseRedirect(reverse('%s:ads_search_add' % self.transaction) + '?%s' % q)
         return get
 
     def get_queryset(self):
         q = super(AdListView, self).get_queryset().order_by('-modified')
+        # Filter by transaction (sale or rent)
+        q = q.filter(transaction=self.transaction)
         # here we remove the page from request.GET
         data = self.request.GET.copy()
         if 'page' in data:
@@ -226,6 +242,7 @@ class AdListView(ListView):
             surface_min = self.form.cleaned_data['surface_min']
             habitation_types = self.form.cleaned_data['habitation_types']
             location = self.form.cleaned_data['location']
+            transaction = self.transaction
             self._urlencode_get = data.urlencode()
             q = q.filter(price__lte=price_max).filter(surface__gte=surface_min).filter(habitation_type__in=habitation_types)
             if rooms_min:
@@ -243,9 +260,15 @@ class AdListView(ListView):
             context['urlencode_get'] = '&%s' % self._urlencode_get
         return context
 
+    def dispatch(self, request, *args, **kwargs):
+        self.transaction = request.resolver_match.namespace
+        return super(AdListView, self).dispatch(request, *args, **kwargs)
+
+
 # Search
-class CreateSearchView(SetUserMixin, FillInitialForm, CreateView):
+class CreateSearchView(SetUserAndTransactionMixin, FillInitialForm, CreateView):
     model = Search
+    transaction = None
 
     def get_form_class(self):
         if self.request.user.is_anonymous():
@@ -253,6 +276,10 @@ class CreateSearchView(SetUserMixin, FillInitialForm, CreateView):
         else:
             self.form_class = EditSearchForm
         return self.form_class
+
+    def dispatch(self, request, *args, **kwargs):
+        self.transaction = request.resolver_match.namespace
+        return super(CreateSearchView, self).dispatch(request, *args, **kwargs)
 
 
 class ReadSearchView(DetailView):
@@ -280,6 +307,7 @@ class ReadSearchView(DetailView):
 class SearchListView(ListView):
     model = Search
     paginate_by = 10
+    transaction = None
 
     _valid = False
     _urlencode_get = ''
@@ -288,11 +316,12 @@ class SearchListView(ListView):
         get = super(SearchListView, self).get(request, *args, **kwargs)
         if 'save_ad' in self.request.GET and self._valid:
             q = self.request.GET.urlencode()
-            return HttpResponseRedirect(reverse('ads_ad_add') + '?%s' % q)
+            return HttpResponseRedirect(reverse('%s:ads_ad_add' % self.transaction) + '?%s' % q)
         return get
 
     def get_queryset(self):
         q = super(SearchListView, self).get_queryset().order_by('-modified')
+        q = q.filter(transaction=self.transaction)
         data = self.request.GET.copy()
         if 'page' in data:
             del data['page']
@@ -315,19 +344,26 @@ class SearchListView(ListView):
             context['urlencode_get'] = '&%s' % self._urlencode_get
         return context
 
+    def dispatch(self, request, *args, **kwargs):
+        self.transaction = request.resolver_match.namespace
+        return super(SearchListView, self).dispatch(request, *args, **kwargs)
+
 
 class SearchDetailView(MessageDetailView):
     model = Search
     detail_view = ReadSearchView
+    transaction = None
 
 
 class UpdateSearchView(LoginRequiredMixin, AssureOwnerMixin, UpdateView):
     model = Search
     form_class = EditSearchForm
+    transaction = None
 
 
 class DeleteSearchView(LoginRequiredMixin, AssureOwnerMixin, DeleteView):
     model = Search
+    transaction = None
 
     def get_success_url(self):
         slug = self.request.user.username

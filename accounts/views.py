@@ -14,7 +14,10 @@ class UserAccount(DetailView):
         context = super(UserAccount, self).get_context_data(**kwargs)
         user_profile = self.get_object()
         context['ads'] = Ad.objects.filter(user=user_profile.user)
-        context['searches'] = Search.objects.filter(user=user_profile.user)
+        context['rentals'] = Ad.objects.filter(user=user_profile.user, transaction="rent")
+        context['sales'] = Ad.objects.filter(user=user_profile.user, transaction="sale")
+        context['rent_searches'] = Search.objects.filter(user=user_profile.user, transaction="rent")
+        context['sale_searches'] = Search.objects.filter(user=user_profile.user, transaction="sale")
         return context
 
 

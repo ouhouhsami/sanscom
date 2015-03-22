@@ -12,7 +12,7 @@ class CustomRegistrationView(RegistrationView):
     def get_success_url(self, request, user):
         # create the profile
         UserProfile(user=user).save()
-        return reverse_lazy('ads_ad_list')
+        return reverse_lazy('sale:ads_ad_list')
 
 # account url
 urlpatterns = patterns('',
@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     # login/logout
     url(r'^logout/$',
         'django.contrib.auth.views.logout',
-        {'next_page':reverse_lazy('ads_ad_list')},
+        {'next_page':reverse_lazy('sale:ads_ad_list')},
         name='logout'),
     url(r'^login/$',
         'django.contrib.auth.views.login',

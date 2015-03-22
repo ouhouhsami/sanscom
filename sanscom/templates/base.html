@@ -32,11 +32,20 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="{% url 'ads_ad_list' %}">
+        <a class="navbar-brand" href="{% url 'sale:ads_ad_list' %}">
           <img src="{{ STATIC_URL }}img/home.png" style="display: inline" />Acheter<span class="sanscom_font">SansCom</span>
         </a>
       </div>
+
       <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class="{% if namespace == 'sale' %}active{% endif %}">
+          <a href="{% url 'sale:ads_ad_list' %}">Vente</a>
+        </li>
+        <li class="{% if namespace == 'rent' %}active{% endif %}">
+          <a href="{% url 'rent:ads_ad_list' %}">Location</a>
+        </li>
+      </ul>
         <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
           <li>
@@ -53,10 +62,24 @@
             <a href="{% url 'login' %}">Se connecter</a>
           </li>
           {% endif %}
-          <li class="visible-xs-block"><a href="{% url  'ads_ad_list'%}">Acheteurs : Trouvez un bien</a>
+          {% if namespace %}
+          {% with namespace|add:':ads_ad_list' as ads_ad_list_url %}
+          <li class="visible-xs-block">
+            <a href="{% url ads_ad_list_url %}">
+            {% if sale %}Acheteurs : Trouvez un bien{% endif %}
+            {% if rent %}Locataires : Trouvez une location{% endif %}
+            </a>
           </li>
-          <li class="visible-xs-block"><a href="{% url  'ads_search_list'%}">Vendeurs : Trouvez des acheteurs</a>
+          {% endwith %}
+          {% with namespace|add:':ads_search_list' as ads_search_list_url %}
+          <li class="visible-xs-block">
+            <a href="{% url ads_search_list_url %}">
+            {% if sale %}Vendeurs : Trouvez des acheteurs{% endif %}
+            {% if rent %}Bailleurs : Louer votre bien{% endif %}
+            </a>
+            {% endwith %}
           </li>
+          {% endif %}
         </ul>
       </div>
     </div>

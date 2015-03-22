@@ -17,9 +17,16 @@ from django.utils.translation import ugettext as _
 from .utils import geo_from_address
 
 
+TRANSACTION_CHOICES = (
+    ('sale', _('Vente')),
+    ('rent', _('Location'))
+)
+
+
 class BaseModel(TimeStampedModel):
     description = models.TextField(_('description'), blank=True, null=True)
     user = models.ForeignKey(User)
+    transaction = models.CharField(choices=TRANSACTION_CHOICES, max_length=4)
 
     class Meta:
         abstract = True
@@ -77,7 +84,6 @@ FIREPLACE_CHOICES = (
     ('1', _(u'Foyer ouvert')),
     ('2', _(u'Insert')),
 )
-
 
 class HabitationType(models.Model):
     label = models.CharField(max_length=25)
@@ -150,7 +156,7 @@ class Ad(BaseModel):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('ads_ad_detail', [str(self.slug)])
+        return ('%s:ads_ad_detail' % self.transaction, [str(self.slug)])
 
     def save(self, *args, **kwargs):
         self.location = geo_from_address(self.address)
@@ -167,7 +173,10 @@ class Ad(BaseModel):
     search_query = property(_get_search_query)
 
     def __unicode__(self):
-        return u'%s - %s € - %s m²' % (self.habitation_type.label, self.price, self.surface)
+        unity = u'€'
+        if self.transaction == 'rent':
+            unity = u'€/mois'
+        return u'%s - %s %s - %s m²' % (self.habitation_type.label, self.price, unity, self.surface)
 
 
 class AdPicture(models.Model):
@@ -250,14 +259,17 @@ class Search(BaseModel):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('ads_search_detail', [str(self.slug)])
+        return ('%s:ads_search_detail' % self.transaction, [str(self.slug)])
 
     def _get_slug_format(self):
         return u'%se-max-%sm²-min' % (self.price_max, self.surface_min)
     slug_format = property(_get_slug_format)
 
     def __unicode__(self):
-        return u'%s - %s € max. - %s m² min.' % (', '.join(self.habitation_types.all().values_list('label', flat=True)), self.price_max, self.surface_min)
+        unity = u'€'
+        if self.transaction == 'rent':
+            unity = u'€/mois'
+        return u'%s - %s %s max. - %s m² min.' % (', '.join(self.habitation_types.all().values_list('label', flat=True)), self.price_max, unity, self.surface_min)
 
 
 class AdSearchRelationManager(models.Manager):

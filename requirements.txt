@@ -11,6 +11,7 @@ django-leaflet==0.15.2
 django-registration-redux==1.1
 factory-boy==2.4.1
 geopy==1.9.1
+mock==1.0.1
 numpy==1.9.2
 psycopg2==2.6
 requests==2.5.3

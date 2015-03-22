@@ -32,7 +32,7 @@ function map_init_basic (map, options) {
 
 {% block content %}
 
-<h2 class="page-header">Vente {{ object.habitation_type }} {{ object.rooms }} pièces ({{ object.bedrooms }} ch.) {{ object.surface }}m² {{ object.price|intcomma }} €</h2>
+<h2 class="page-header">{% if sale %}Vente{% endif %}{% if rent %}Location{% endif %} {{ object.habitation_type }} {{ object.rooms }} pièces ({{ object.bedrooms }} ch.) {{ object.surface }}m² {{ object.price|intcomma }} €{% if rent %}/mois{% endif %}</h2>
 <p class="small">
     Mise en ligne par <a href="{% url 'user_account' object.user.username %}">{{ object.user }}</a> le {{ object.created|date:"SHORT_DATETIME_FORMAT" }}{#, modifié le {{ object.modified }}#}
 </p>
@@ -44,7 +44,7 @@ function map_init_basic (map, options) {
     <div class="col-md-6">
 
         <ul class="list-group">
-            <li class="list-group-item">Prix de vente : {{ object.price|intcomma }} €</li>
+            <li class="list-group-item">{{ object.price|intcomma }} €{% if rent %}/mois{% endif %}</li>
             <li class="list-group-item">Surface : {{ object.surface }}m² {% if object.surface_carrez %}(loi carrez : {{ object.surface_carrez }}m²){% endif %}</li>
             <li class="list-group-item">{{ object.rooms }} pièces</li>
             <li class="list-group-item">{{ object.bedrooms }} chambres</li>
@@ -56,8 +56,12 @@ function map_init_basic (map, options) {
         </ul>
 
         <ul class="list-group">
+            {% if object.emission_of_greenhouse_gases %}
             <li class="list-group-item">Émissions de gaz à effet de serre : {{ object.get_emission_of_greenhouse_gases_display }} kgeqCO2/m².an</li>
+            {% endif %}
+            {% if object.energy_consumption %}
             <li class="list-group-item">Consommation énergétique : {{ object.get_energy_consumption_display }} kWhEP/m².an</li>
+            {% endif %}
             {% if object.heating %}<li class="list-group-item">Chauffage : {{ object.get_heating_display }} </li>{% endif %}
             {% if object.fireplace %}<li class="list-group-item">Cheminée : {{ object.get_fireplace_display }}</li>{% endif %}
         </ul>
@@ -109,7 +113,7 @@ function map_init_basic (map, options) {
 
     {% if owner %}
     <div class="alert alert-info">
-        Vous avez mis en ligne cette annonce, <a href="{% url 'ads_ad_update' object.slug %}" class="alert-link">vous pouvez si besoin la modifier</a>.
+        Vous avez mis en ligne cette annonce, {% if sale %}<a href="{% url 'sale:ads_ad_update' object.slug %}" class="alert-link">{% endif %}{% if rent %}<a href="{% url 'rent:ads_ad_update' object.slug %}" class="alert-link">{% endif %}vous pouvez si besoin la modifier</a>.
     </div>
     {% else %}
 
@@ -150,18 +154,25 @@ function map_init_basic (map, options) {
 
     <div class="alert alert-info">
         Vous n'avez pas de recherche correspondant à ce bien,
-        <a class="alert-link" href="{% url 'ads_search_add' %}">déposez une recherche.</a>
+        {% if sale %}<a class="alert-link" href="{% url 'sale:ads_search_add' %}">{% endif %}{% if rent %}<a class="alert-link" href="{% url 'rent:ads_search_add' %}">{% endif %}déposez une recherche.</a>
     </div>
 
         {% endif %}
-
-
 
     {% else %}
 
     <div class="alert alert-info">
     Pour contacter les vendeurs, il vous faut avoir un compte et avoir une recherche correpondant à ce bien.
-    <a class="btn btn-default" href="{% url 'ads_search_add' %}">Ajouter une annonce de recherche</a>
+    {% if sale %}
+    <a class="btn btn-default" href="{% url 'sale:ads_search_add' %}">
+        Ajouter une annonce de recherche
+    </a>
+    {% endif %}
+    {% if rent %}
+    <a class="btn btn-default" href="{% url 'rent:ads_search_add' %}">
+        Ajouter une annonce de recherche de location
+    </a>
+    {% endif %}
     </div>
 
 

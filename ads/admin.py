@@ -8,7 +8,8 @@ class AdSearchRelationAdmin(admin.ModelAdmin):
 
 
 class AdAdmin(LeafletGeoAdmin):
-    list_display = ['slug', 'price', 'surface' ]
+    list_display = ['slug', 'price', 'surface', 'transaction' ]
+    list_filter = ('transaction', )
 
 
 class SearchAdmin(LeafletGeoAdmin):

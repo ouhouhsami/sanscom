@@ -7,9 +7,10 @@ import settings
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'sanscom.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-    url(r'^$', RedirectView.as_view(pattern_name='ads_ad_list')),
-    url(r'^ads/', include('ads.urls')),
+    url(r'^$', RedirectView.as_view(pattern_name='sale:ads_ad_list')),
+    #url(r'^', include('ads.urls')),
+    url(r'^vente/', include('ads.urls', namespace='sale', app_name='ads')),
+    url(r'^location/', include('ads.urls', namespace='rent', app_name='ads')),
     url(r'^admin/', include(admin.site.urls)),
     #(r'^accounts/', include('registration.backends.default.urls')),
     (r'^accounts/', include('accounts.urls')),

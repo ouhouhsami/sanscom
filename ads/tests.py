@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 from PIL import Image
 import tempfile
+from mock import Mock
 
 from django.test import TransactionTestCase, TestCase, RequestFactory
 from django.contrib.gis import geos
@@ -73,6 +74,13 @@ def none_to_empty_string(dict):
     return {key: (value if value is not None else "") for key, value in dict.items()}
 
 
+def add_namespace_to_request(request, item):
+    request.resolver_match = Mock()
+    if isinstance(item, basestring):
+        request.resolver_match.namespace = item
+    else:
+        request.resolver_match.namespace = item.transaction
+
 # CRUD Ads
 class ReadAdsViewTestCase(TestCase):
 
@@ -80,6 +88,7 @@ class ReadAdsViewTestCase(TestCase):
         ad = AdFactory.create()
         request = RequestFactory().get('/fake-path')
         request.user = AnonymousUser()
+        add_namespace_to_request(request, ad)
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(response.status_code, 200)
@@ -90,6 +99,7 @@ class ReadAdsViewTestCase(TestCase):
         request = RequestFactory().get('/fake-path')
         request.user = User.objects.create_user(
             username='jacob', email='jacob@cool.net', password='top_secret')
+        add_namespace_to_request(request, ad)
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(response.status_code, 200)
@@ -102,7 +112,7 @@ class ReadAdsViewTestCase(TestCase):
         ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
         pnt = GEOSGeometry(geo_from_address(u"22 rue esquirol Paris"))
         # Create a search with ad.location inside search.location
-        ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+        ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction=ad.transaction)
 
         # Here, 2 mails should have been sent
         self.assertEqual(len(mail.outbox), 2)
@@ -115,6 +125,7 @@ class ReadAdsViewTestCase(TestCase):
 
         request = RequestFactory().get('/fake-path')
         request.user = ad_search.user
+        add_namespace_to_request(request, ad_search)
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(response.status_code, 200)
@@ -122,12 +133,14 @@ class ReadAdsViewTestCase(TestCase):
         # We should then be able to contact the vendor
         request = RequestFactory().post('/fake-path', {'message': 'hi there'})
         request.user = ad_search.user
+        add_namespace_to_request(request, ad_search)
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(mail.outbox[2].body, 'hi there')
         # Now, when reach web page, the user should know that he has already contacted the vendor
         request = RequestFactory().get('/fake-path')
         request.user = ad_search.user
+        add_namespace_to_request(request, ad_search)
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(response.context_data.has_key('already_contacted'), True)
@@ -140,6 +153,7 @@ class CreateAdsViewTestCase(TestCase):
         ad = AdFactory.create()
         request = RequestFactory().get('/fake-path')
         request.user = ad.user
+        add_namespace_to_request(request, ad)
         view = CreateAdView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
@@ -158,6 +172,7 @@ class CreateAdsViewTestCase(TestCase):
         ad_dict.update(formset_data)
         request = RequestFactory().post('/fake-path', ad_dict, format="multipart")
         request.user = ad.user
+        add_namespace_to_request(request, ad)
         view = CreateAdView.as_view()
         response = view(request)
         # This is a redirection when form is valid
@@ -174,6 +189,7 @@ class CreateAdsViewTestCase(TestCase):
         ad_dict['adpicture_set-0-image'] = open(tmp_file.name, "r")
         request = RequestFactory().post('/fake-path', ad_dict, format="multipart")
         request.user = ad.user
+        add_namespace_to_request(request, ad)
         view = UpdateAdView.as_view()
         response = view(request, slug=ad.slug)
 
@@ -182,6 +198,7 @@ class CreateAdsViewTestCase(TestCase):
         ad = AdFactory.create()
         request = RequestFactory().get('/fake-path')
         request.user = AnonymousUser()
+        add_namespace_to_request(request, ad)
         view = CreateAdView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
@@ -208,6 +225,7 @@ class CreateAdsViewTestCase(TestCase):
         request = RequestFactory().post('/fake-path', ad_dict, format="multipart")
         request.user = AnonymousUser()
         add_session_to_request(request) # Trick to add session even with an anonyomous user and RequestFactory
+        add_namespace_to_request(request, ad)
         view = CreateAdView.as_view()
         response = view(request)
         # Redirection
@@ -228,6 +246,7 @@ class CreateAdsViewTestCase(TestCase):
             username=username, email='jacob@cool.net', password=password)
         request = RequestFactory().get('/fake-path')
         request.user = AnonymousUser()
+        add_namespace_to_request(request, ad)
         view = CreateAdView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
@@ -252,6 +271,7 @@ class CreateAdsViewTestCase(TestCase):
         request = RequestFactory().post('/fake-path', ad_dict, format="multipart")
         request.user = AnonymousUser()
         add_session_to_request(request) # Trick to add session even with an anonyomous user and RequestFactory
+        add_namespace_to_request(request, ad)
         view = CreateAdView.as_view()
         response = view(request)
         # Redirection
@@ -269,6 +289,7 @@ class UpdateAdsViewTestCase(TestCase):
         ad = AdFactory.create()
         request = RequestFactory().get('/fake-path')
         request.user = ad.user
+        add_namespace_to_request(request, ad)
         view = UpdateAdView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(response.status_code, 200)
@@ -289,6 +310,7 @@ class UpdateAdsViewTestCase(TestCase):
         ad_dict['price'] = new_price
         request = RequestFactory().post('/fake-path', ad_dict, format="multipart")
         request.user = ad.user
+        add_namespace_to_request(request, ad)
         view = UpdateAdView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(len(Ad.objects.all()), 1)
@@ -302,12 +324,14 @@ class DeleteAdsViewTestCase(TestCase):
         ad = AdFactory.create()
         request = RequestFactory().get('/fake-path')
         request.user = ad.user
+        add_namespace_to_request(request, ad)
         view = DeleteAdView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(response.status_code, 200)
         # Delete ad
         request = RequestFactory().post('/fake-path')
         request.user = ad.user
+        add_namespace_to_request(request, ad)
         view = DeleteAdView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(len(Ad.objects.all()), 0)
@@ -318,9 +342,11 @@ class DeleteAdsViewTestCase(TestCase):
             username='jacob', email='jacob@cool.net', password='top_secret')
         request = RequestFactory().get('/fake-path')
         request.user = not_owner
+        add_namespace_to_request(request, ad)
         self.assertRaises(Http404, DeleteAdView.as_view(), request, slug=ad.slug)
         request = RequestFactory().post('/fake-path')
         request.user = not_owner
+        add_namespace_to_request(request, ad)
         self.assertRaises(Http404, DeleteAdView.as_view(), request, slug=ad.slug)
 
 
@@ -329,6 +355,7 @@ class AdListViewTestCase(TestCase):
     def test_reach_list_view(self):
         # empty db, just reach home page
         request = RequestFactory().get('/fake-path')
+        add_namespace_to_request(request, 'sale')
         view = AdListView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
@@ -342,6 +369,7 @@ class AdListViewTestCase(TestCase):
         search_dict['location'] = search_dict['location'].geojson
         search_dict['save_ad'] = True
         request = RequestFactory().get('/fake-path', search_dict)
+        add_namespace_to_request(request, search)
         view = AdListView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 302)
@@ -363,6 +391,7 @@ class CreateSearchViewTestCase(TestCase):
         #print search.__dict__
         request = RequestFactory().get('/fake-path')
         request.user = search.user
+        add_namespace_to_request(request, search)
         view = CreateSearchView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
@@ -372,6 +401,7 @@ class CreateSearchViewTestCase(TestCase):
         search_dict['location'] = search_dict['location'].geojson
         request = RequestFactory().post('/fake-path', search_dict)
         request.user = search.user
+        add_namespace_to_request(request, search)
         view = CreateSearchView.as_view()
         response = view(request)
         # This is a redirection when form is valid
@@ -383,6 +413,7 @@ class CreateSearchViewTestCase(TestCase):
         search = SearchFactory.create(habitation_types = HabitationType.objects.all())
         request = RequestFactory().get('/fake-path')
         request.user = AnonymousUser()
+        add_namespace_to_request(request, search)
         view = CreateSearchView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
@@ -400,6 +431,7 @@ class CreateSearchViewTestCase(TestCase):
         search_dict.update(user_credentials)
         request = RequestFactory().post('/fake-path', search_dict, format="multipart")
         request.user = AnonymousUser()
+        add_namespace_to_request(request, search)
         add_session_to_request(request) # Trick to add session even with an anonyomous user and RequestFactory
         view = CreateSearchView.as_view()
         response = view(request)
@@ -418,6 +450,7 @@ class CreateSearchViewTestCase(TestCase):
             username=username, email='jacob@cool.net', password=password)
         request = RequestFactory().get('/fake-path')
         request.user = AnonymousUser()
+        add_namespace_to_request(request, search)
         view = CreateSearchView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
@@ -432,6 +465,7 @@ class CreateSearchViewTestCase(TestCase):
         request = RequestFactory().post('/fake-path', search_dict, format="multipart")
         request.user = AnonymousUser()
         add_session_to_request(request) # Trick to add session even with an anonyomous user and RequestFactory
+        add_namespace_to_request(request, search)
         view = CreateSearchView.as_view()
         response = view(request)
         # Redirection
@@ -447,6 +481,7 @@ class ReadSearchViewTestCase(TestCase):
         search = SearchFactory.create()
         request = RequestFactory().get('/fake-path')
         request.user = AnonymousUser()
+        add_namespace_to_request(request, search)
         view = SearchDetailView.as_view()
         response = view(request, slug=search.slug)
         self.assertEqual(response.status_code, 200)
@@ -457,6 +492,7 @@ class ReadSearchViewTestCase(TestCase):
         request = RequestFactory().get('/fake-path')
         request.user = User.objects.create_user(
             username='jacob', email='jacob@cool.net', password='top_secret')
+        add_namespace_to_request(request, search)
         view = SearchDetailView.as_view()
         response = view(request, slug=search.slug)
         self.assertEqual(response.status_code, 200)
@@ -469,7 +505,7 @@ class ReadSearchViewTestCase(TestCase):
         ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
         pnt = GEOSGeometry(geo_from_address(u"22 rue esquirol Paris"))
         # Create a search with ad.location inside search.location
-        ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+        ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction=ad.transaction)
 
         # Here, 2 mails should have been sent
         self.assertEqual(len(mail.outbox), 2)
@@ -483,6 +519,7 @@ class ReadSearchViewTestCase(TestCase):
 
         request = RequestFactory().get('/fake-path')
         request.user = ad.user
+        add_namespace_to_request(request, ad)
         view = SearchDetailView.as_view()
         response = view(request, slug=ad_search.slug)
         self.assertEqual(response.status_code, 200)
@@ -490,12 +527,14 @@ class ReadSearchViewTestCase(TestCase):
         # We should then be able to contact the vendor
         request = RequestFactory().post('/fake-path', {'message': 'hi there'})
         request.user = ad.user
+        add_namespace_to_request(request, ad)
         view = SearchDetailView.as_view()
         response = view(request, slug=ad_search.slug)
         self.assertEqual(mail.outbox[2].body, 'hi there')
         # Now, when reach web page, the user should know that he has already contacted the vendor
         request = RequestFactory().get('/fake-path')
         request.user = ad.user
+        add_namespace_to_request(request, ad)
         view = SearchDetailView.as_view()
         response = view(request, slug=ad_search.slug)
         self.assertEqual(response.context_data.has_key('already_contacted'), True)
@@ -508,12 +547,14 @@ class DeleteSearchViewTestCase(TestCase):
         self.assertEqual(len(Search.objects.all()), 1)
         request = RequestFactory().get('/fake-path')
         request.user = search.user
+        add_namespace_to_request(request, search)
         view = DeleteSearchView.as_view()
         response = view(request, slug=search.slug)
         self.assertEqual(response.status_code, 200)
         # Delete ad
         request = RequestFactory().post('/fake-path')
         request.user = search.user
+        add_namespace_to_request(request, search)
         view = DeleteSearchView.as_view()
         response = view(request, slug=search.slug)
         self.assertEqual(len(Search.objects.all()), 0)
@@ -525,11 +566,13 @@ class DeleteSearchViewTestCase(TestCase):
         self.assertEqual(len(Search.objects.all()), 1)
         request = RequestFactory().get('/fake-path')
         request.user = not_owner
+        add_namespace_to_request(request, search)
         view = DeleteSearchView.as_view()
         self.assertRaises(Http404, view, request, slug=search.slug)
         # Delete search
         request = RequestFactory().post('/fake-path')
         request.user = not_owner
+        add_namespace_to_request(request, search)
         view = DeleteSearchView.as_view()
         self.assertRaises(Http404, view, request, slug=search.slug)
         self.assertEqual(len(Search.objects.all()), 1)
@@ -540,6 +583,7 @@ class SearchListViewTestCase(TestCase):
     def test_reach_list_view(self):
         # empty db, just reach home page
         request = RequestFactory().get('/fake-path')
+        add_namespace_to_request(request, 'sale')
         view = SearchListView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 200)
@@ -553,6 +597,7 @@ class SearchListViewTestCase(TestCase):
         ad_dict['address'] = ad_dict['address']
         ad_dict['save_ad'] = True
         request = RequestFactory().get('/fake-path', ad_dict)
+        add_namespace_to_request(request, ad)
         view = SearchListView.as_view()
         response = view(request)
         self.assertEqual(response.status_code, 302)
@@ -584,9 +629,9 @@ class NotificationTestCase(HackyTransactionTestCase):
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
         # Create a search with search.location contaning ad.location
         pnt = GEOSGeometry(geo_from_address("22 rue esquirol Paris"))
-        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction='sale')
         # Create an ad
-        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
+        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment, transaction=search.transaction)
         # here we should have results ...
         self.assertEqual(AdSearchRelation.valid_objects.all().count(), 1)
 
@@ -597,7 +642,7 @@ class NotificationTestCase(HackyTransactionTestCase):
         ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
         pnt = GEOSGeometry(geo_from_address(u"52 W 52nd St, New York, NY 10019, États-Unis"))
         # Create a search with ad.location outside search.location
-        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction=ad.transaction)
         # here we should have results ...
         self.assertEqual(AdSearchRelation.valid_objects.all().count(), 0)
 
@@ -610,9 +655,9 @@ class NotificationTestCase(HackyTransactionTestCase):
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
         # Create a search with search.location contaning ad.location
         pnt = GEOSGeometry(geo_from_address("22 rue esquirol Paris"))
-        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ])
+        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction='sale')
         # Create an ad
-        ad = AdFactory(address=u"52 W 52nd St, New York, NY 10019, États-Unis", price=600000, surface=60, habitation_type=apartment)
+        ad = AdFactory(address=u"52 W 52nd St, New York, NY 10019, États-Unis", price=600000, surface=60, habitation_type=apartment, transaction=search.transaction)
         # here we should have results ...
         self.assertEqual(AdSearchRelation.valid_objects.all().count(), 0)
         ad.address = "22 rue esquirol Paris"
@@ -644,8 +689,8 @@ def random_habitation_type():
     else:
         return house
 
-def low_criteria_search_factory(location, price_max, surface_min, habitation_types):
-    return SearchFactory(location=location, price_max=price_max, surface_min=surface_min, habitation_types=habitation_types,
+def low_criteria_search_factory(location, price_max, surface_min, habitation_types, transaction):
+    return SearchFactory(location=location, price_max=price_max, surface_min=surface_min, habitation_types=habitation_types, transaction=transaction,
         rooms_min = None,
         bedrooms_min = None,
         ground_surface_min = None,
@@ -674,6 +719,7 @@ def low_criteria_search_factory(location, price_max, surface_min, habitation_typ
 
 def search_for_ad_factory(ad):
     search = SearchFactory(
+        transaction = ad.transaction,
         location=geos.MultiPolygon(ad.location.buffer(2)),
         surface_min = ad.surface,
         rooms_min = ad.rooms,

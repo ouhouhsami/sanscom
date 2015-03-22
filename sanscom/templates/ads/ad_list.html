@@ -39,11 +39,11 @@ NoRectangleGeometryField = L.GeometryField.extend({
 var field;
 
 $(window).on("map:init", function (e) {
-   var detail = e.originalEvent ?
-   e.originalEvent.detail : e.detail;
-   detail.map.on('map:loadfield', function (e) {
-       field = e.field;
-   });
+ var detail = e.originalEvent ?
+ e.originalEvent.detail : e.detail;
+ detail.map.on('map:loadfield', function (e) {
+     field = e.field;
+ });
 });
 
 </script>
@@ -58,8 +58,22 @@ $(window).on("map:init", function (e) {
 
 {% block content-title %}
 <ul class="nav nav-tabs nav-justified">
-  <li role="presentation" class="active"><a href="{% url  'ads_ad_list'%}">Acheteurs : Trouvez un bien</a></li>
-  <li role="presentation" class="hidden-xs"><a href="{% url  'ads_search_list'%}">Vendeurs : Trouvez des acheteurs</a></li>
+    {% with namespace|add:':ads_ad_list' as ads_ad_list_url %}
+    <li role="presentation" class="active">
+        <a href="{% url ads_ad_list_url%}">
+            {% if sale %}Acheteurs : Trouvez un bien{% endif %}
+            {% if rent %}Locataires : Trouvez une location{% endif %}
+        </a>
+    </li>
+    {% endwith %}
+    {% with namespace|add:':ads_search_list' as ads_search_list_url %}
+    <li role="presentation" class="hidden-xs">
+        <a href="{% url  ads_search_list_url%}">
+            {% if sale %}Vendeurs : Trouvez des acheteurs{% endif %}
+            {% if rent %}Bailleurs : Louer votre bien{% endif %}
+        </a>
+    </li>
+    {% endwith %}
 </ul>
 {% endblock %}
 
@@ -67,13 +81,13 @@ $(window).on("map:init", function (e) {
 
 {% if paginator.count == 0 %}
 <div class="alert alert-warning">
-Aucune offre ne correspond à votre recherche. <br><a href="#" onclick="console.log(document.getElementsByName('save_ad').item(0).click());"class="alert-link">Enregistrez votre recherche</a> afin d'être tenu informé lorsque de nouveaux biens correspondant à vos critères sont ajoutés.
+    Aucune offre ne correspond à votre recherche. <br><a href="#" onclick="console.log(document.getElementsByName('save_ad').item(0).click());"class="alert-link">Enregistrez votre recherche</a> afin d'être tenu informé lorsque de nouveaux biens correspondant à vos critères sont ajoutés.
 </div>
 {% endif %}
 
 {% if total %}
 <div class="alert alert-success">
-<a class="alert-link" href="#results">{{ total }} offre{{  total|pluralize }} correspondent à votre recherche.</a>
+    <a class="alert-link" href="#results">{{ total }} offre{{  total|pluralize }} correspondent à votre recherche.</a>
 </div>
 {% endif %}
 
@@ -178,7 +192,7 @@ Aucune offre ne correspond à votre recherche. <br><a href="#" onclick="console.
                 <label class="control-label">Prix maximum</label>
                 <div class="input-group">
                     {{ form.price_max }}
-                    <span class="input-group-addon">€</span>
+                    <span class="input-group-addon">€{% if rent %}/mois{% endif %}</span>
                 </div>
                 {% if form.price_max.errors %}
                 <p class="text-danger">
@@ -239,7 +253,7 @@ Aucune offre ne correspond à votre recherche. <br><a href="#" onclick="console.
     {% if valid %}
     {{ total }} offre{{  total|pluralize }} correspondent à votre recherche
     {% else %}
-    Les dernières annonces de vente
+    Les dernières annonces de {% if sale %}vente{% endif %}{% if rent %}location{% endif %}
     {% endif %}
 </h3>
 {% endblock %}
@@ -264,7 +278,7 @@ Aucune offre ne correspond à votre recherche. <br><a href="#" onclick="console.
         <a href="{{ object.get_absolute_url }}">{{ object.habitation_type }}</a>
     </td>
     <td>
-        {{ object.price|intcomma }} €
+        {{ object.price|intcomma }} €{% if rent %}/mois{% endif %}
     </td>
     <td>
         {{ object.rooms }}

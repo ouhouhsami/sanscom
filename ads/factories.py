@@ -141,6 +141,7 @@ class BaseFactory(factory.django.DjangoModelFactory):
     #description = FuzzyAttribute(paragraph)
     description = FuzzyAttribute(lambda: '\n'.join(paragraphs(2)))
     user = factory.SubFactory(UserFactory)
+    transaction = FuzzyChoice(choices=['sale', 'rent'])
 
 
 class HabitationTypeFactory(factory.django.DjangoModelFactory):

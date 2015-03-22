@@ -88,7 +88,7 @@ class EditSearchForm(forms.ModelForm):
 
     class Meta:
         model = Search
-        exclude = ('user', )
+        exclude = ('user', 'transaction')
         widgets = {
             'location': ExtendedLeafletWidget(),
             'price_max': forms.TextInput(),
@@ -171,7 +171,7 @@ class EditAdForm(forms.ModelForm):
 
     class Meta:
         model = Ad
-        exclude = ('user', 'location', )
+        exclude = ('user', 'location', 'transaction')
         widgets = {
             'address': forms.TextInput(attrs={'placeholder': u'Adresse complète',}),
             'price': forms.TextInput(attrs={'placeholder': 'Prix'}),
@@ -219,6 +219,11 @@ class EditAdFormWithLogin(WithLogin, EditAdForm):
 
 
 class SearchAdForm(forms.ModelForm):
+
+    #def __init__(self, *args, **kwargs):
+    #    self.current_app = kwargs.pop("current_app")
+    #    print ">>>>", self.current_app
+    #    super(SearchAdForm, self).__init__(*args, **kwargs)
 
     def clean_location(self):
         location = self.cleaned_data['location']

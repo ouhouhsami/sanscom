@@ -39,7 +39,7 @@ function map_init_basic (map, options) {
 
         <ul class="list-group">
             <li class="list-group-item">
-                Prix maximum : {{ object.price_max|intcomma }} € max.
+                Prix maximum : {{ object.price_max|intcomma }} €{% if rent %}/mois{% endif %} max.
             </li>
             <li class="list-group-item">Type d'habitation : {{ object.habitation_types.all|join:', ' }} </li>
             <li class="list-group-item">Surface minimale : {{ object.surface_min }} m² </li>
