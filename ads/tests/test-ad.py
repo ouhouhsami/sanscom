@@ -19,6 +19,7 @@ from ads.views import AdDetailView, CreateAdView, UpdateAdView, DeleteAdView, Ad
 
 from .utils import add_namespace_to_request, low_criteria_search_factory, none_to_empty_string, add_session_to_request
 
+
 class ReadAdsViewTestCase(TestCase):
 
     def test_ad_read_anonymous_user(self):

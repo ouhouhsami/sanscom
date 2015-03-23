@@ -10,6 +10,7 @@ from ads.forms import EditAdForm, EditAdFormWithLogin, ContactForm, SearchAdForm
 
 from .utils import SetUserAndTransactionMixin, FillInitialForm, MessageDetailView, LoginRequiredMixin, AssureOwnerMixin
 
+
 class AdPictureInline(InlineFormSet):
     """ Ad Picture InlineFormSet """
     model = AdPicture
