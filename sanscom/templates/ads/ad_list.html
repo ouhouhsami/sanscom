@@ -1,5 +1,5 @@
 {% extends 'ads/list.html' %}
-{% load humanize leaflet_tags l10n static %}
+{% load humanize leaflet_tags geojson_tags l10n static %}
 
 {% block head %}
 {{ block.super }}
@@ -27,6 +27,13 @@ NoRectangleGeometryField = L.GeometryField.extend({
         };
     }
 });
+
+var current_location = undefined;
+{% if form.instance.location %}
+    var _feature = L.geoJson({{ form.instance.location|geojsonfeature|safe }});
+    current_location = _feature.getBounds();
+{% endif %}
+
 </script>
 
 {{ form.media }}

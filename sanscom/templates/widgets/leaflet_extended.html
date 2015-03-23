@@ -2,10 +2,12 @@
 
 {% block callback %}
 
-
-
-
-map.setView([48.86, 2.33], 12);
+if(current_location){
+    map.fitBounds(current_location);
+}
+else {
+    map.setView([48.86, 2.33], 12);
+}
 
 $('#localize').on('click', function(evt){
     $(this).button('loading');

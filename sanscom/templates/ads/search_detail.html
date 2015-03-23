@@ -80,7 +80,7 @@ function map_init_basic (map, options) {
 
     {% if owner %}
     <div class="alert alert-info">
-        Vous avez mis en ligne cette recherche, <a href="{% url 'ads_search_update' object.slug %}" class="alert-link">vous pouvez si besoin la modifier</a>.
+        Vous avez mis en ligne cette recherche, {% if sale %}<a href="{% url 'sale:ads_search_update' object.slug %}" class="alert-link">{% endif %}{% if rent %}<a href="{% url 'rent:ads_search_update' object.slug %}" class="alert-link">{% endif %}vous pouvez si besoin la modifier</a>.
     </div>
     {% else %}
 
