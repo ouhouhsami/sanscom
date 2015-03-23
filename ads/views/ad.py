@@ -111,9 +111,11 @@ class AdListView(ListView):
             surface_min = self.form.cleaned_data['surface_min']
             habitation_types = self.form.cleaned_data['habitation_types']
             location = self.form.cleaned_data['location']
-            transaction = self.transaction
             self._urlencode_get = data.urlencode()
-            q = q.filter(price__lte=price_max).filter(surface__gte=surface_min).filter(habitation_type__in=habitation_types)
+            q = q.filter(price__lte=price_max)\
+                 .filter(surface__gte=surface_min)\
+                 .filter(habitation_type__in=habitation_types)\
+                 .filter(location__within=location)
             if rooms_min:
                 q = q.filter(rooms__gte=rooms_min)
             self._total = q.count()

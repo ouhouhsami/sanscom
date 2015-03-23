@@ -6,6 +6,7 @@ from django.views.generic import (CreateView, DetailView, UpdateView,
 
 from ads.models import Search, AdSearchRelation
 from ads.forms import EditSearchForm, EditSearchFormWithLogin, ContactForm, SearchSearchForm
+from ads.utils import geo_from_address
 
 from .utils import SetUserAndTransactionMixin, FillInitialForm, MessageDetailView, LoginRequiredMixin, AssureOwnerMixin
 
@@ -75,8 +76,12 @@ class SearchListView(ListView):
             surface = self.form.cleaned_data['surface']
             habitation_type = self.form.cleaned_data['habitation_type']
             address = self.form.cleaned_data['address']
+            location = geo_from_address(address)
             self._urlencode_get = data.urlencode()
-            q = q.filter(price_max__gte=price).filter(surface_min__lte=surface).filter(habitation_types=habitation_type)
+            q = q.filter(price_max__gte=price)\
+                 .filter(surface_min__lte=surface)\
+                 .filter(habitation_types=habitation_type)\
+                 .filter(location__contains=location)
             self._valid = True
         return q
 
