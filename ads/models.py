@@ -312,24 +312,24 @@ class AdSearchRelation(TimeStampedModel):
                 ad_full_url = u''.join(['http://', get_current_site(None).domain, self.ad.get_absolute_url()])
                 search_full_url = u''.join(['http://', get_current_site(None).domain, self.search.get_absolute_url()])
                 message = u'''Bonjour,
-                \n\nUn nouvel acheteur potentiel pour votre bien, consultez sa recherche : %s .
-                \n\nA bientôt
+                \n\nUne personne est interessée par votre bien, consultez sa recherche : %s .
+                \n\nÀ bientôt
                 \n\nL'équipe AcheterSansCom
-                ''' % search_full_url
+                ''' % (search_full_url)
                 sender = "contact@acheternsanscom.com"
                 recipients = [self.ad.user.email, ]
-                subject = "[AcheterSansCom] Un nouvel acheteur potentiel pour votre bien - %s" % self.ad
+                subject = "[AcheterSansCom] Une personne interessée par votre bien - %s" % self.ad
                 mail = EmailMessage(subject, message, sender, recipients, [sender])
                 mail.send()
                 # Mail to search owner
                 message = u'''Bonjour,
-                \n\nUn nouveau bien correspond à votre recherche : %s .
-                \n\nA bientôt
+                \n\nUn bien correspond à votre recherche : %s .
+                \n\nÀ bientôt
                 \n\nL'équipe AcheterSansCom
-                ''' % ad_full_url
+                ''' % (ad_full_url)
                 sender = "contact@acheternsanscom.com"
                 recipients = [self.search.user.email, ]
-                subject = "[AcheterSansCom] Un nouveau bien correspondant à votre recherche - %s" % self.search
+                subject = "[AcheterSansCom] Un bien correspond à votre recherche - %s" % self.search
                 mail = EmailMessage(subject, message, sender, recipients, [sender])
                 mail.send()
         super(AdSearchRelation, self).save(*args, **kwargs)
