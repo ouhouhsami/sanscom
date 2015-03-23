@@ -1,5 +1,5 @@
 .coverage
-static
+/static
 htmlcov
 media
 *.pyc

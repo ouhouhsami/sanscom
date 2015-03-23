@@ -1,0 +1,153 @@
+@import "../bootstrap/less/bootstrap.less";
+
+@link-color: #20B2AB;
+@secondColor: #FFB82E;
+@brand-primary: #20B2AB;
+@navbar-height: 41px;
+
+@font-face {
+  font-family: Cafeta;
+  src: url('/static/font/cafeta.ttf');
+}
+
+@font-face {
+  font-family: TypoSlabserif;
+  src: url('/static/font/TypoSlabserif-Light.ttf');
+}
+
+.navbar .navbar-brand {
+    color: white;
+    font-family: Cafeta,sans-serif;
+    font-size: 2.55em;
+    padding-bottom: 0;
+    padding-top: 0.5px;
+}
+
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
+    color: #FFF;
+    background-color: @brand-primary;
+}
+
+
+.container h2, .container h3, .container h4 {
+    font-family: TypoSlabserif,sans-serif;
+    font-weight: bold;
+}
+
+/*
+h2 {
+  font-family: TypoSlabserif,sans-serif;
+}
+*/
+
+#search_header {
+  background-color: @secondColor;
+}
+
+.navbar.navbar-fixed-top {
+  border-bottom:5px solid @secondColor;
+}
+.navbar.navbar-fixed-bottom {
+  border-top:5px solid @secondColor;
+}
+.sanscom_font {
+  color:@secondColor;
+}
+
+.icon-map-custommarker {
+  background-image: url("../img/icon-apartment.png");
+  background-position: 0;
+}
+
+// set form-control field style without using it
+
+select,
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+input[type="button"] {
+  &:extend(.form-control all);
+}
+
+textarea {
+  height: auto;
+}
+
+.input-group {
+  select {
+    .border-right-radius(0);
+  }
+  input {
+    &:first-child {
+      .border-right-radius(0);
+    }
+  }
+}
+
+
+
+body {
+  padding-top: 70px;
+}
+
+form li {
+  list-style: none;
+}
+
+form li label {
+  font-weight: normal;
+}
+
+form ul {
+  padding: 0;
+  margin: 0;
+}
+
+.table tr {
+  cursor: pointer;
+}
+
+
+
+#icon-draw{
+    background-color: #FFF;
+    background-image: url("/static/leaflet/draw/images/spritesheet-2x.png");
+    background-position: -31px -2px;
+    background-repeat: no-repeat;
+    background-size: 270px 30px;
+    border-bottom-color: #000;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-style: none;
+    border-bottom-width: 0px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    box-sizing: border-box;
+    color: #000;
+    cursor: pointer;
+    display: inline-block;
+    height: 26px;
+    line-height: 26px;
+    pointer-events: auto;
+    text-align: center;
+    text-decoration: none;
+    text-decoration-color: #000;
+    text-decoration-line: none;
+    text-decoration-style: solid;
+    width: 26px;
+    vertical-align: middle;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+}
