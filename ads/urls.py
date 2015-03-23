@@ -9,7 +9,8 @@ urlpatterns = patterns('',
     url(r'^ad/edit/(?P<slug>[-_\w]+)/$', UpdateAdView.as_view(), name="ads_ad_update"),
     url(r'^ad/delete/(?P<slug>[-_\w]+)/$', DeleteAdView.as_view(), name="ads_ad_delete"),
     url(r'^ad/list/$', AdListView.as_view(), name="ads_ad_list"),
-    # Searc
+
+    # Search
     url(r'^search/add/$', CreateSearchView.as_view(), name="ads_search_add"),
     url(r'^search/detail/(?P<slug>[-_\w]+)/$', SearchDetailView.as_view(), name="ads_search_detail"),
     url(r'^search/edit/(?P<slug>[-_\w]+)/$', UpdateSearchView.as_view(), name="ads_search_update"),
