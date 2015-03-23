@@ -14,7 +14,8 @@ from ads.models import HabitationType, Search
 from ads.utils import geo_from_address
 from ads.views import SearchDetailView, DeleteSearchView, CreateSearchView, SearchListView
 
-from .utils import add_namespace_to_request, none_to_empty_string, add_session_to_request, low_criteria_search_factory
+from ads.tests.utils import add_namespace_to_request, none_to_empty_string, add_session_to_request, low_criteria_search_factory
+
 
 class CreateSearchViewTestCase(TestCase):
 

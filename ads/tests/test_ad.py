@@ -17,7 +17,7 @@ from ads.models import HabitationType, Ad
 from ads.utils import geo_from_address
 from ads.views import AdDetailView, CreateAdView, UpdateAdView, DeleteAdView, AdListView
 
-from .utils import add_namespace_to_request, low_criteria_search_factory, none_to_empty_string, add_session_to_request
+from ads.tests.utils import add_namespace_to_request, low_criteria_search_factory, none_to_empty_string, add_session_to_request
 
 
 class ReadAdsViewTestCase(TestCase):

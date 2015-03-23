@@ -6,7 +6,7 @@ from ads.factories import AdFactory, SearchFactory
 from ads.models import AdSearchRelation, HabitationType
 from ads.utils import geo_from_address
 
-from .utils import HackyTransactionTestCase, search_for_ad_factory, low_criteria_search_factory, random_habitation_types, random_habitation_type, change_search_to_correspond_to_the_ad, change_search_to_no_more_correspond_to_the_ad
+from ads.tests.utils import HackyTransactionTestCase, search_for_ad_factory, low_criteria_search_factory, random_habitation_types, random_habitation_type, change_search_to_correspond_to_the_ad, change_search_to_no_more_correspond_to_the_ad
 
 
 class NotificationTestCase(HackyTransactionTestCase):

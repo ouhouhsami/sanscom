@@ -198,6 +198,10 @@ class AdFactory(BaseFactory):
     orientation =  FuzzyChoice(choices=['', 'sud', 'sud-est', 'sud-ouest', 'nord', 'nord-ouest', 'nord-est'])
 
 
+class FakeAddressAdFactory(AdFactory):
+    address = '13 rue de Veirneuil, paris'
+
+
 class AdPictureFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = AdPicture
 

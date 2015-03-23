@@ -12,11 +12,11 @@ from django.forms.models import model_to_dict
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import Http404, QueryDict
 
-from .factories import AdFactory, SearchFactory, HabitationType
-from .models import AdSearchRelation, HabitationType, Ad, Search
-from .utils import geo_from_address, address_from_geo
-from .views import AdDetailView, CreateAdView, UpdateAdView, DeleteAdView, SearchDetailView, DeleteSearchView, CreateSearchView, UpdateSearchView, AdListView, SearchListView
-from .forms import EditAdForm, SearchAdForm, SearchSearchForm
+from ads.factories import AdFactory, SearchFactory, HabitationType
+from ads.models import AdSearchRelation, HabitationType, Ad, Search
+from ads.utils import geo_from_address, address_from_geo
+from ads.views import AdDetailView, CreateAdView, UpdateAdView, DeleteAdView, SearchDetailView, DeleteSearchView, CreateSearchView, UpdateSearchView, AdListView, SearchListView
+from ads.forms import EditAdForm, SearchAdForm, SearchSearchForm
 
 # Hacky part
 #SEE https://code.djangoproject.com/ticket/23727
