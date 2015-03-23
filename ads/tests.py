@@ -669,6 +669,7 @@ class NotificationTestCase(HackyTransactionTestCase):
 
 import random
 
+
 def random_habitation_types():
     r = random.randint(0, 2)
     house, create = HabitationType.objects.get_or_create(label="Maison")
@@ -680,6 +681,7 @@ def random_habitation_types():
     elif r == 2:
         return [apartment, house]
 
+
 def random_habitation_type():
     r = random.randint(0, 1)
     house, create = HabitationType.objects.get_or_create(label="Maison")
@@ -688,6 +690,7 @@ def random_habitation_type():
         return apartment
     else:
         return house
+
 
 def low_criteria_search_factory(location, price_max, surface_min, habitation_types, transaction):
     return SearchFactory(location=location, price_max=price_max, surface_min=surface_min, habitation_types=habitation_types, transaction=transaction,
@@ -716,6 +719,7 @@ def low_criteria_search_factory(location, price_max, surface_min, habitation_typ
         separate_entrance = None,
         cellar = None,
         parking = None)
+
 
 def search_for_ad_factory(ad):
     search = SearchFactory(
@@ -751,6 +755,7 @@ def search_for_ad_factory(ad):
         parking = None
     )
     return search
+
 
 def change_search_to_no_more_correspond_to_the_ad(search, ad):
     search.rooms_min = ad.rooms + 1
@@ -789,5 +794,4 @@ class MiscellaneousTestCase(HackyTransactionTestCase):
         self.assertEqual(AdSearchRelation.valid_objects.count(), 0)
         change_search_to_correspond_to_the_ad(search, ad)
         self.assertEqual(AdSearchRelation.valid_objects.count(), 1)
-
 
