@@ -96,7 +96,7 @@ function map_init_basic (map, options) {
 
         {% if contact_form %}
 
-        <form method="POST" action=".">
+        <form method="POST" action="." id="contact">
             {% csrf_token %}
 
             <div class="form-group {% if contact_form.message.errors %}has-error{% endif %}">

@@ -108,7 +108,7 @@ $(function(){
                         {% if asr.ad_contacted %}
                         Vous avez été contacté par l'acheteur
                         {% endif %}
-                        <a href="{% url 'sale:ads_search_detail' asr.search.slug %}">
+                        <a href="{% url 'sale:ads_search_detail' asr.search.slug %}#contact">
                             Contactez l'acheteur
                         </a>
                     </td>
@@ -161,7 +161,7 @@ $(function(){
                         {% if asr.ad_contacted %}
                         Vous avez été contacté par ce locataire
                         {% endif %}
-                        <a href="{% url 'rent:ads_search_detail' asr.search.slug %}">
+                        <a href="{% url 'rent:ads_search_detail' asr.search.slug %}#contact">
                             Contactez ce locataire
                         </a>
 
@@ -215,7 +215,7 @@ $(function(){
                         {% if asr.search_contacted %}
                         Vous avez été contacté par le vendeur
                         {% endif %}
-                        <a href="{% url 'sale:ads_ad_detail' asr.ad.slug %}">
+                        <a href="{% url 'sale:ads_ad_detail' asr.ad.slug %}#contact">
                             Contactez le vendeur
                         </a>
                     </td>
@@ -265,7 +265,7 @@ $(function(){
                         {% if asr.search_contacted %}
                         Vous avez été contacté par le vendeur
                         {% else %}
-                        <a href="{% url 'rent:ads_ad_detail' asr.ad.slug %}">
+                        <a href="{% url 'rent:ads_ad_detail' asr.ad.slug %}#contact">
                             Contactez le vendeur
                         </a>
                         {% endif %}

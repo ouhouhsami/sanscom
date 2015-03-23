@@ -127,7 +127,7 @@ function map_init_basic (map, options) {
     {% endif %}
 
         {% if contact_form %}
-            <form method="POST" action=".">
+            <form method="POST" action="." id="contact">
                 {% csrf_token %}
                 <div class="form-group {% if contact_form.message.errors %}has-error{% endif %}">
                     <label class="control-label" for="{{ contact_form.message.auto_id }}">Votre message au vendeur</label>
