@@ -1,21 +1,39 @@
 {% extends "base.html" %}
 {% load contacted %}
 
+{% block head %}
+{{ block.super }}
+<script type="text/javascript">
+$(function(){
+  var hash = window.location.hash;
+  hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+
+  $('.nav-tabs a').click(function (e) {
+    $(this).tab('show');
+  });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 
 {% if user == object.user %}
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">Votre compte : {{ object }}</h3>
+    <h3 class="panel-title">
+        Votre compte : {{ object }}
+    </h3>
 </div>
 <div class="panel-body">
     Téléphone : {{object.phone }}
-    <br />
-    <a class="btn btn-default" href="{% url 'user_account_update' object.user.username %}">Modifier vos informations personnelles</a>
-
-    <a class="btn btn-default" href="{% url 'password_change' %}">Changer de mot de passe</a>
-
+    <br>
+    <a class="btn btn-default" href="{% url 'user_account_update' object.user.username %}">
+        Modifier vos informations personnelles
+    </a>
+    <a class="btn btn-default" href="{% url 'password_change' %}">
+        Changer de mot de passe
+    </a>
 </div>
 </div>
 
@@ -27,259 +45,292 @@
 
 {% if user == object.user %}
 
-<h3>Vos annonces de bien à vendre</h3>
+<div role="tabpanel">
 
-{% if sales %}
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+        <a href="#sale" aria-controls="home" role="tab" data-toggle="tab">
+            A vendre
+        </a>
+    </li>
+    <li role="presentation">
+        <a href="#rent" aria-controls="rent" role="tab" data-toggle="tab">
+            A louer
+        </a>
+    </li>
+    <li role="presentation">
+        <a href="#sale_search" aria-controls="sale_search" role="tab" data-toggle="tab">
+            Recherche achat
+        </a>
+    </li>
+    <li role="presentation">
+        <a href="#rent_search" aria-controls="rent_search" role="tab" data-toggle="tab">
+            Recherche location
+        </a>
+    </li>
+</ul>
 
-{% for ad in sales %}
-<div class="panel panel-default">
-    <div class="panel-heading"><a href="{% url 'sale:ads_ad_detail' ad.slug %}">{{ ad }}</a>
-    </div>
-    <div class="panel-body">
-        <a class="btn btn-default" href="{% url 'sale:ads_ad_update' ad.slug %}">Modifier</a>
-        <a class="btn btn-default" href="{% url 'sale:ads_ad_delete' ad.slug %}">Supprimer</a>
-    </div>
-    <table class="table">
-        {% for asr in ad.adsearchrelation_set.all %}
-        {% if asr.valid %}
-        <tr><td><a href="{% url 'sale:ads_search_detail' asr.search.slug %}">{{ asr.search }}</a>
-        </td>
-            <td>
+<!-- Tab panes -->
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="sale">
+        <br>
+        {% if sales %}
 
-                {% if asr.search_contacted %}
-                Vous avez déjà contacté l'acheteur
-                {% else %}
-                    {% if ad.user|contacted:asr.search %}
-                    Vous avez été contacté par l'acheteur
-                    {% else %}
-                    <a href="{% url 'sale:ads_search_detail' asr.search.slug %}">Contactez l'acheteur
-                    </a>
-                    {% endif %}
+        {% for ad in sales %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a href="{% url 'sale:ads_ad_detail' ad.slug %}">
+                    {{ ad }}
+                </a>
+            </div>
+            <div class="panel-body">
+                <a class="btn btn-default" href="{% url 'sale:ads_ad_update' ad.slug %}">
+                    Modifier
+                </a>
+                <a class="btn btn-default" href="{% url 'sale:ads_ad_delete' ad.slug %}">
+                    Supprimer
+                </a>
+            </div>
+            <table class="table">
+                {% for asr in ad.adsearchrelation_set.all %}
+                {% if asr.valid %}
+                <tr>
+                    <td>
+                        <a href="{% url 'sale:ads_search_detail' asr.search.slug %}">
+                            {{ asr.search }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if asr.search_contacted %}
+                        Vous avez déjà contacté l'acheteur
+                        {% endif %}
+                        {% if asr.ad_contacted %}
+                        Vous avez été contacté par l'acheteur
+                        {% endif %}
+                        <a href="{% url 'sale:ads_search_detail' asr.search.slug %}">
+                            Contactez l'acheteur
+                        </a>
+                    </td>
+                </tr>
                 {% endif %}
-
-                {% comment %}
-                {% if ad.user|contacted:asr.search %}
-                {% if asr.ad_contacted %}
-                L'acheteur <a href="{% url 'user_account' asr.search.user.username %}">{{ asr.search.user.username }}</a> vous a contacté
-                {% else %}
-                L'acheteur <a href="{% url 'user_account' asr.search.user.username %}">{{ asr.search.user.username }}</a> ne vous a pas contacté
-                {% endif %}
-                {% endcomment %}
-            </td>
-    </tr>
-        {% endif %}
+                {% endfor %}
+            </table>
+        </div>
         {% endfor %}
-    </table>
-</div>
-{% endfor %}
-{% endif %}
-<div>
-<a class="btn btn-default btn-primary" href="{% url 'sale:ads_ad_add' %}">Ajouter une annonce de bien à vendre
-</a>
-
-<h3>Vos annonce de bien à louer</h3>
-
-{% if rentals %}
-
-{% for ad in rentals %}
-<div class="panel panel-default">
-    <div class="panel-heading"><a href="{% url 'rent:ads_ad_detail' ad.slug %}">{{ ad }}</a>
-    </div>
-    <div class="panel-body">
-        <a class="btn btn-default" href="{% url 'rent:ads_ad_update' ad.slug %}">Modifier</a>
-        <a class="btn btn-default" href="{% url 'rent:ads_ad_delete' ad.slug %}">Supprimer</a>
-    </div>
-    <table class="table">
-        {% for asr in ad.adsearchrelation_set.all %}
-        {% if asr.valid %}
-        <tr><td><a href="{% url 'rent:ads_search_detail' asr.search.slug %}">{{ asr.search }}</a>
-        </td>
-            <td>
-
-                {% if asr.search_contacted %}
-                Vous avez déjà contacté l'acheteur
-                {% else %}
-                    {% if ad.user|contacted:asr.search %}
-                    Vous avez été contacté par l'acheteur
-                    {% else %}
-                    <a href="{% url 'rent:ads_search_detail' asr.search.slug %}">Contactez l'acheteur
-                    </a>
-                    {% endif %}
-                {% endif %}
-
-                {% comment %}
-                {% if ad.user|contacted:asr.search %}
-                {% if asr.ad_contacted %}
-                L'acheteur <a href="{% url 'user_account' asr.search.user.username %}">{{ asr.search.user.username }}</a> vous a contacté
-                {% else %}
-                L'acheteur <a href="{% url 'user_account' asr.search.user.username %}">{{ asr.search.user.username }}</a> ne vous a pas contacté
-                {% endif %}
-                {% endcomment %}
-            </td>
-    </tr>
         {% endif %}
+        <div>
+            <a class="btn btn-default btn-primary" href="{% url 'sale:ads_ad_add' %}">
+                Ajouter une annonce de bien à vendre
+            </a>
+        </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="rent">
+        <br>
+        {% if rentals %}
+
+        {% for ad in rentals %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a href="{% url 'rent:ads_ad_detail' ad.slug %}">
+                    {{ ad }}
+                </a>
+            </div>
+            <div class="panel-body">
+                <a class="btn btn-default" href="{% url 'rent:ads_ad_update' ad.slug %}">
+                    Modifier
+                </a>
+                <a class="btn btn-default" href="{% url 'rent:ads_ad_delete' ad.slug %}">
+                    Supprimer
+                </a>
+            </div>
+            <table class="table">
+                {% for asr in ad.adsearchrelation_set.all %}
+                {% if asr.valid %}
+                <tr>
+                    <td>
+                        <a href="{% url 'rent:ads_search_detail' asr.search.slug %}">
+                            {{ asr.search }}
+                        </a>
+                    </td>
+                    <td>
+
+                        {% if asr.search_contacted %}
+                        Vous avez déjà contacté ce locataire
+                        {% endif %}
+                        {% if asr.ad_contacted %}
+                        Vous avez été contacté par ce locataire
+                        {% endif %}
+                        <a href="{% url 'rent:ads_search_detail' asr.search.slug %}">
+                            Contactez ce locataire
+                        </a>
+
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        </div>
         {% endfor %}
-    </table>
-</div>
-{% endfor %}
-{% endif %}
-
-<a class="btn btn-default btn-primary" href="{% url 'rent:ads_ad_add' %}">Ajouter une annonce de bien à louer
-</a>
-</div>
-
-
-<h3>Vos annonces de recherche de bien à acheter</h3>
-{% if sale_searches %}
-
-{% for search in sale_searches %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <a href="{% url 'sale:ads_search_detail' search.slug %}">{{ search }}</a>
-    </div>
-    <div class="panel-body">
-        <a class="btn btn-default" href="{% url 'sale:ads_search_update' search.slug %}">Modifier</a>
-        <a class="btn btn-default" href="{% url 'sale:ads_search_delete' search.slug %}">Supprimer</a>
-    </div>
-    <table class="table">
-        {% for asr in search.adsearchrelation_set.all %}
-        {% if asr.valid %}
-        <tr>
-            <td>
-                <a href="{% url 'sale:ads_ad_detail' asr.ad.slug %}">{{ asr.ad }}</a>
-            </td>
-            <td>
-
-
-                {% if search.user|contacted:asr.ad %}
-                Vous avez déjà contacté le vendeur
-                {% else %}
-                    {% if asr.search_contacted %}
-                    Vous avez été contacté par le vendeur
-                    {% else %}
-                    <a href="{% url 'sale:ads_ad_detail' asr.ad.slug %}">
-                        Contactez le vendeur
-                    </a>
-                    {% endif %}
-                {% endif %}
-
-                {% comment %}
-                {% if search.user|contacted:asr.ad %}
-                {#{% if asr.ad_contacted %}#}
-                Vous avez déjà contacté le vendeur <a href="{% url 'user_account' asr.ad.user.username %}">{{ asr.ad.user.username }}</a> pour ce bien.
-                {% else %}
-                Vous n'avez pas encore contacté le vendeur <a href="{% url 'user_account' asr.ad.user.username %}">{{ asr.ad.user.username }}</a> pour ce bien.
-                {% endif %}
-                {% endcomment %}
-            </td>
-        </tr>
         {% endif %}
+        <div>
+            <a class="btn btn-default btn-primary" href="{% url 'rent:ads_ad_add' %}">
+                Ajouter une annonce de bien à louer
+            </a>
+        </div>
+
+    </div>
+    <div role="tabpanel" class="tab-pane" id="sale_search">
+        <br>
+        {% if sale_searches %}
+
+        {% for search in sale_searches %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a href="{% url 'sale:ads_search_detail' search.slug %}">
+                    {{ search }}
+                </a>
+            </div>
+            <div class="panel-body">
+                <a class="btn btn-default" href="{% url 'sale:ads_search_update' search.slug %}">
+                    Modifier
+                </a>
+                <a class="btn btn-default" href="{% url 'sale:ads_search_delete' search.slug %}">
+                    Supprimer
+                </a>
+            </div>
+            <table class="table">
+                {% for asr in search.adsearchrelation_set.all %}
+                {% if asr.valid %}
+                <tr>
+                    <td>
+                        <a href="{% url 'sale:ads_ad_detail' asr.ad.slug %}">
+                            {{ asr.ad }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if asr.ad_contacted %}
+                        Vous avez déjà contacté le vendeur
+                        {% endif %}
+                        {% if asr.search_contacted %}
+                        Vous avez été contacté par le vendeur
+                        {% endif %}
+                        <a href="{% url 'sale:ads_ad_detail' asr.ad.slug %}">
+                            Contactez le vendeur
+                        </a>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        </div>
         {% endfor %}
-    </table>
-</div>
-{% endfor %}
-{% endif %}
-<div>
-<a class="btn btn-default btn-primary" href="{% url 'sale:ads_search_add' %}">Ajouter une annonce de recherche d'achat
-</a>
-
-<h3>Vos annonces de recherche de bien à louer</h3>
-
-{% if rentals_searches %}
-
-{% for search in rentals_searches %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <a href="{% url 'rent:ads_search_detail' search.slug %}">{{ search }}</a>
-    </div>
-    <div class="panel-body">
-        <a class="btn btn-default" href="{% url 'rent:ads_search_update' search.slug %}">Modifier</a>
-        <a class="btn btn-default" href="{% url 'rent:ads_search_delete' search.slug %}">Supprimer</a>
-    </div>
-    <table class="table">
-        {% for asr in search.adsearchrelation_set.all %}
-        {% if asr.valid %}
-        <tr>
-            <td>
-                <a href="{% url 'rent:ads_ad_detail' asr.ad.slug %}">{{ asr.ad }}</a>
-            </td>
-            <td>
-
-
-                {% if search.user|contacted:asr.ad %}
-                Vous avez déjà contacté le vendeur
-                {% else %}
-                    {% if asr.search_contacted %}
-                    Vous avez été contacté par le vendeur
-                    {% else %}
-                    <a href="{% url 'rent:ads_ad_detail' asr.ad.slug %}">
-                        Contactez le vendeur
-                    </a>
-                    {% endif %}
-                {% endif %}
-
-                {% comment %}
-                {% if search.user|contacted:asr.ad %}
-                {#{% if asr.ad_contacted %}#}
-                Vous avez déjà contacté le vendeur <a href="{% url 'user_account' asr.ad.user.username %}">{{ asr.ad.user.username }}</a> pour ce bien.
-                {% else %}
-                Vous n'avez pas encore contacté le vendeur <a href="{% url 'user_account' asr.ad.user.username %}">{{ asr.ad.user.username }}</a> pour ce bien.
-                {% endif %}
-                {% endcomment %}
-            </td>
-        </tr>
         {% endif %}
-        {% endfor %}
-    </table>
-</div>
-{% endfor %}
-{% endif %}
+        <div>
+            <a class="btn btn-default btn-primary" href="{% url 'sale:ads_search_add' %}">
+                Ajouter une annonce de recherche d'achat
+            </a>
+        </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="rent_search">
+        <br>
+        {% if rentals_searches %}
 
-<a class="btn btn-default btn-primary" href="{% url 'rent:ads_search_add' %}">Ajouter une annonce de recherche de location
-</a>
+        {% for search in rentals_searches %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a href="{% url 'rent:ads_search_detail' search.slug %}">
+                    {{ search }}
+                </a>
+            </div>
+            <div class="panel-body">
+                <a class="btn btn-default" href="{% url 'rent:ads_search_update' search.slug %}">
+                    Modifier
+                </a>
+                <a class="btn btn-default" href="{% url 'rent:ads_search_delete' search.slug %}">
+                    Supprimer
+                </a>
+            </div>
+            <table class="table">
+                {% for asr in search.adsearchrelation_set.all %}
+                {% if asr.valid %}
+                <tr>
+                    <td>
+                        <a href="{% url 'rent:ads_ad_detail' asr.ad.slug %}">{{ asr.ad }}</a>
+                    </td>
+                    <td>
+                        {% if asr.ad_contacted %}
+                        Vous avez déjà contacté le vendeur
+                        {% else %}
+                        {% if asr.search_contacted %}
+                        Vous avez été contacté par le vendeur
+                        {% else %}
+                        <a href="{% url 'rent:ads_ad_detail' asr.ad.slug %}">
+                            Contactez le vendeur
+                        </a>
+                        {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div>
+            <a class="btn btn-default btn-primary" href="{% url 'rent:ads_search_add' %}">
+                Ajouter une annonce de recherche de location
+            </a>
+        </div>
+    </div>
+
+</div>
+</div>
+
 </div>
 
 {% else %}
 
 {% if sales %}
 
-<h3>Ses bien en vente</h3>
+<h3>A vendre</h3>
 <ul>
-{% for ad in sales %}
+    {% for ad in sales %}
     <li><a href="{% url 'sale:ads_ad_detail' ad.slug %}">{{ ad }}</a></li>
-{% endfor %}
+    {% endfor %}
 </ul>
 
 {% endif %}
 
 {% if sale_searches %}
 
-<h3>Ses recherches de biens à acheter</h3>
+<h3>Recherches achat</h3>
 <ul>
-{% for search in sale_searches %}
+    {% for search in sale_searches %}
     <li><a href="{% url 'sale:ads_search_detail' search.slug %}">{{ search }}</a></li>
-{% endfor %}
+    {% endfor %}
 </ul>
 {% endif %}
 
 {% if rentals %}
 
-<h3>Ses bien en location</h3>
+<h3>A louer</h3>
 <ul>
-{% for ad in rentals %}
+    {% for ad in rentals %}
     <li><a href="{% url 'rent:ads_ad_detail' ad.slug %}">{{ ad }}</a></li>
-{% endfor %}
+    {% endfor %}
 </ul>
 
 {% endif %}
 
-{% if sale_searches %}
+{% if rent_searches %}
 
-<h3>Ses recherches de biens à louer</h3>
+<h3>Recherches location</h3>
 <ul>
-{% for search in rent_searches %}
+    {% for search in rent_searches %}
     <li><a href="{% url 'rent:ads_search_detail' search.slug %}">{{ search }}</a></li>
-{% endfor %}
+    {% endfor %}
 </ul>
 {% endif %}
 
