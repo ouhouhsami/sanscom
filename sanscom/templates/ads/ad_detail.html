@@ -96,16 +96,22 @@ function map_init_basic (map, options) {
             {% if object.shower %}<li class="list-group-item">{{ object.shower }} salle d'eau (avec douche) </li>{% endif %}
         </ul>
 
+        {% if object.description %}
+        <div>
+        <h3>Informations complémentaires</h3>
+        {{ object.description|linebreaks }}
+        </div>
+        {% endif %}
+
     </div>
 
     <div class="col-md-6">
-        {% if object.description %}
-        {{ object.description|linebreaks }}
-        {% endif %}
-
         {% if object.adpicture_set.all %}
         {% for picture in object.adpicture_set.all %}
-        <img src="{{ picture.image.url }}" width="100%" /> {{ picture.title }}
+        <img src="{{ picture.image.url }}" class="center-block img-responsive img-thumbnail" />
+        <div class="text-center">
+        <b>{{ picture.title }}</b>
+        </div>
         </br />
         {% endfor %}
         {% endif %}
