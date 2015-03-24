@@ -82,7 +82,7 @@ class EditSearchForm(forms.ModelForm):
 
     def clean_location(self):
         location = self.cleaned_data['location']
-        if location.area > 300:
+        if location.area > 0.306579934754:
             raise forms.ValidationError("Entrer une zone de recherche plus petite")
         return location
 
@@ -227,7 +227,7 @@ class SearchAdForm(forms.ModelForm):
 
     def clean_location(self):
         location = self.cleaned_data['location']
-        if location.area > 300:
+        if location.area > 0.306579934754:
             raise forms.ValidationError("Entrer une zone de recherche plus petite")
         return location
 
