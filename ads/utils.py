@@ -6,7 +6,6 @@ class WrongAddressError(Exception):
 
 
 def geo_from_address(address):
-    #url = "http://services.gisgraphy.com//geocoding/geocode?address='%s'&country=FR&format=json" % address
     url = "https://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=true&key=AIzaSyDybLZ5Wudjcjumgn8sZH9T3ko9FtOwduw" % address
     r = requests.get(url)
     try:
