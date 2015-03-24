@@ -32,7 +32,7 @@ function map_init_basic (map, options) {
 
 {% block content %}
 
-<h2 class="page-header">{% if sale %}Vente{% endif %}{% if rent %}Location{% endif %} {{ object.habitation_type }} {{ object.rooms }} pièces ({{ object.bedrooms }} ch.) {{ object.surface }}m² {{ object.price|intcomma }} €{% if rent %}/mois{% endif %}</h2>
+<h2 class="page-header">{% if sale %}Vente{% endif %}{% if rent %}Location{% endif %} {{ object.habitation_type }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} ({{ object.bedrooms }} ch.) {{ object.surface }}m² {{ object.price|intcomma }} €{% if rent %}/mois{% endif %}</h2>
 <p class="small">
     Mise en ligne par <a href="{% url 'user_account' object.user.username %}">{{ object.user }}</a> le {{ object.created|date:"SHORT_DATETIME_FORMAT" }}{#, modifié le {{ object.modified }}#}
 </p>
@@ -46,8 +46,8 @@ function map_init_basic (map, options) {
         <ul class="list-group">
             <li class="list-group-item">{{ object.price|intcomma }} €{% if rent %}/mois{% endif %}</li>
             <li class="list-group-item">Surface : {{ object.surface }}m² {% if object.surface_carrez %}(loi carrez : {{ object.surface_carrez }}m²){% endif %}</li>
-            <li class="list-group-item">{{ object.rooms }} pièces</li>
-            <li class="list-group-item">{{ object.bedrooms }} chambres</li>
+            <li class="list-group-item">{{ object.rooms }} pièce{{ object.rooms|pluralize }}</li>
+            <li class="list-group-item">{{ object.bedrooms }} chambre{{ object.bedrooms|pluralize }}</li>
 
             {% if object.ground_surface %}<li class="list-group-item">Terrain : {{ object.ground_surface }} m²</li>{% endif %}
             {% if object.ad_valorem_tax %}<li class="list-group-item">Taxe foncière : {{ object.ad_valorem_tax }} €/an</li>{% endif %}
@@ -91,9 +91,9 @@ function map_init_basic (map, options) {
             {% if object.air_conditioning %}<li class="list-group-item">Air climatisé</li>{% endif %}
             {% if object.terrace %}<li class="list-group-item">Terrasse : {{ object.terrace }} m²</li>{% endif %}
             {% if object.balcony %}<li class="list-group-item">Balcon : {{ object.balcony }} m²</li>{% endif %}
-            {% if object.separate_toilet %}<li class="list-group-item">{{ object.separate_toilet }} toilettes </li>{% endif %}
-            {% if object.bathroom %}<li class="list-group-item">{{ object.bathroom }} salle de bain </li>{% endif %}
-            {% if object.shower %}<li class="list-group-item">{{ object.shower }} salle d'eau (avec douche) </li>{% endif %}
+            {% if object.separate_toilet %}<li class="list-group-item">{{ object.separate_toilet }} toilette{{ object.separate_toilet|pluralize }} </li>{% endif %}
+            {% if object.bathroom %}<li class="list-group-item">{{ object.bathroom }} salle{{ object.bathroom|pluralize }} de bain </li>{% endif %}
+            {% if object.shower %}<li class="list-group-item">{{ object.shower }} salle{{ object.shower|pluralize }} d'eau (avec douche) </li>{% endif %}
         </ul>
 
         {% if object.description %}

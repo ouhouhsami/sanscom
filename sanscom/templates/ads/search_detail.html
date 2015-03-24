@@ -27,7 +27,7 @@ function map_init_basic (map, options) {
 
 {% block content %}
 
-<h2 class="page-header">Recherche {{ object.habitation_types.all|join:', ' }} {{ object.surface_min }}m² min. {{ object.price_max|intcomma }} € max.</h2>
+<h2 class="page-header">Recherche {{ object.habitation_types.all|join:', ' }} {% if object.rooms_min %}{{ object.rooms_min }} pièce{{ object.rooms_min|pluralize }} min.{% endif %} {{ object.surface_min }}m² min. {{ object.price_max|intcomma }} € max.</h2>
 <p  class="small">
     Mise en ligne par <a href="{% url 'user_account' object.user.username %}">{{ object.user }}</a> le {{ object.created|date:"SHORT_DATE_FORMAT" }} à {{ object.created|time:'H:i' }}{#, modifié le {{ object.modified|date:"SHORT_DATE_FORMAT" }} à {{ object.modified|time:"H:i" }}#}
 </p>
@@ -129,7 +129,7 @@ function map_init_basic (map, options) {
         {% else %}
         <div class="alert alert-info">
         Pour contacter cette personne, il vous faut avoir un compte et un bien en vente correpondant à sa recherche. <br>
-        <a class="alert-link" href="{% url 'ads_ad_add' %}">Ajouter une annonce de bien à vendre</a>
+        {% if sale %}<a class="alert-link" href="{% url 'sale:ads_ad_add' %}">{% endif %}{% if rent %}<a class="alert-link" href="{% url 'rent:ads_ad_add' %}">{% endif %} Ajouter une annonce de bien à vendre</a>
     </div>
         {% endif %}
 {% endif %}
