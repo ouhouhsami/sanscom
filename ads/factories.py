@@ -206,7 +206,7 @@ class AdPictureFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = AdPicture
 
     title = FuzzyChoice(choices=["Cuisine", "Chambre", "Salon", "Salle à manger"])
-    image = factory.django.ImageField(color='blue')
+    image = factory.django.ImageField(color='blue', width=900, height=100)
     ad = factory.SubFactory(AdFactory)
 
 

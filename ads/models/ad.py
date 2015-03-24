@@ -1,4 +1,6 @@
 #-*- coding: utf-8 -*-
+from PIL import Image
+
 from django.db import models
 from django.contrib.gis.db import models
 from django.contrib.gis import geos
@@ -120,6 +122,12 @@ class AdPicture(models.Model):
     image = models.ImageField("Photo", upload_to="pictures/%Y/%m/%d")
     title = models.CharField("Titre", max_length=255, null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        super(AdPicture, self).save(*args, **kwargs)
+        if self.image:
+            image = Image.open(self.image.path)
+            image.thumbnail((680, 510), Image.NEAREST)
+            image.save(self.image.path)
 
     class Meta:
         db_table = 'ads_adpicture'

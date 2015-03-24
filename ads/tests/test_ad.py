@@ -233,7 +233,7 @@ class UpdateAdsViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         ad_dict = none_to_empty_string(model_to_dict(ad, exclude=('id', 'location')))
-        image = Image.new('RGB', (100, 100))
+        image = Image.new('RGB', (800, 100))
         tmp_file = tempfile.NamedTemporaryFile(suffix='.jpg')
         image.save(tmp_file)
         formset_data = {
