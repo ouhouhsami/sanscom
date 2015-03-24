@@ -13,7 +13,7 @@ from ads.models import ENERGY_CONSUMPTION_CHOICES, EMISSION_OF_GREENHOUSE_GASES_
 
 from accounts.models import UserProfile
 
-from .utils import address_from_geo
+from .utils import address_from_geo, WrongAddressError
 from .models import BaseModel, Ad, Search, AdPicture
 
 
@@ -45,9 +45,17 @@ class FuzzyPoint(FuzzyText):
 
 class FuzzyAddress(FuzzyText):
     def fuzz(self):
-        lng = random.uniform(LEFT, RIGHT)
-        lat = random.uniform(TOP, BOTTOM)
-        return address_from_geo(lat, lng)
+        address = ''
+        while True:
+            try:
+                lng = random.uniform(LEFT, RIGHT)
+                lat = random.uniform(TOP, BOTTOM)
+                address = address_from_geo(lat, lng)
+                print address
+            except WrongAddressError:
+                continue
+            break
+        return address
 
 
 class FuzzyMultiPolygon(FuzzyText):

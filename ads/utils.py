@@ -4,6 +4,7 @@ import requests
 class WrongAddressError(Exception):
     pass
 
+
 def geo_from_address(address):
     #url = "http://services.gisgraphy.com//geocoding/geocode?address='%s'&country=FR&format=json" % address
     url = "https://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=true&key=AIzaSyDybLZ5Wudjcjumgn8sZH9T3ko9FtOwduw" % address
@@ -14,7 +15,7 @@ def geo_from_address(address):
         lng = json['results'][0]['geometry']['location']['lng']
         pt = "POINT(%s %s)" % (lng, lat)
         return pt
-    except:
+    except IndexError:
         raise WrongAddressError
 
 
@@ -25,5 +26,5 @@ def address_from_geo(lat, lng):
         json = r.json()
         address = json['results'][0]['formatted_address']
         return address
-    except:
+    except IndexError:
         raise WrongAddressError
