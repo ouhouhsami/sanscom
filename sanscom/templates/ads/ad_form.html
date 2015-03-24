@@ -133,6 +133,8 @@
                 </p>
                 {% endif %}
             </div>
+            {% if sale %}
+            {# Housing taxe only for sale, and not for rent #}
 
             <div class="form-group {% if form.ad_valorem_tax.errors %}has-error{% endif %}">
                 <label>{{ form.ad_valorem_tax.label }}</label>
@@ -148,6 +150,7 @@
                 </p>
                 {% endif %}
             </div>
+            {% endif %}
 
             <div class="form-group {% if form.housing_tax.errors %}has-error{% endif %}">
                 <label>{{ form.housing_tax.label }}</label>
@@ -163,6 +166,8 @@
                 </p>
                 {% endif %}
             </div>
+
+
 
             <div class="form-group {% if form.maintenance_charges.errors %}has-error{% endif %}">
                 <label>{{ form.maintenance_charges.label }}</label>
