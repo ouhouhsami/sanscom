@@ -14,7 +14,6 @@ from django.http import Http404, QueryDict
 
 from ads.factories import AdFactory, SearchFactory, HabitationType
 from ads.models import AdSearchRelation, HabitationType, Ad, Search
-from ads.utils import geo_from_address, address_from_geo
 from ads.views import AdDetailView, CreateAdView, UpdateAdView, DeleteAdView, SearchDetailView, DeleteSearchView, CreateSearchView, UpdateSearchView, AdListView, SearchListView
 from ads.forms import EditAdForm, SearchAdForm, SearchSearchForm
 
@@ -136,39 +135,43 @@ def low_criteria_search_factory(location, price_max, surface_min, habitation_typ
 
 
 def search_for_ad_factory(ad):
-    search = SearchFactory(
-        transaction = ad.transaction,
-        location=geos.MultiPolygon(ad.location.buffer(2)),
-        surface_min = ad.surface,
-        rooms_min = ad.rooms,
-        price_max = ad.price,
-        habitation_types=[ad.habitation_type, ],
-        bedrooms_min = ad.bedrooms,
-        ground_surface_min = ad.ground_surface,
-        ground_floor = None,
-        top_floor = None,
-        not_overlooked = None,
-        elevator = None,
-        intercom = None,
-        digicode = None,
-        doorman = None,
-        kitchen = None,
-        duplex = None,
-        swimming_pool = None,
-        alarm = None,
-        air_conditioning = None,
-        fireplace = None,
-        terrace = None,
-        balcony = None,
-        separate_dining_room = None,
-        separate_toilet = None,
-        bathroom = None,
-        shower = None,
-        separate_entrance = None,
-        cellar = None,
-        parking = None
-    )
+    search_dict = search_dict_for_ad(ad)
+    search = SearchFactory(**search_dict)
     return search
+
+def search_dict_for_ad(ad):
+    return {
+        "transaction":ad.transaction,
+        "location ":geos.MultiPolygon(ad.location.buffer(2)),
+        "surface_min":ad.surface,
+        "rooms_min":ad.rooms,
+        "price_max":ad.price,
+        "habitation_types":[ad.habitation_type, ],
+        "bedrooms_min":ad.bedrooms,
+        "ground_surface_min":ad.ground_surface,
+        "ground_floor":None,
+        "top_floor":None,
+        "not_overlooked":None,
+        "elevator":None,
+        "intercom":None,
+        "digicode":None,
+        "doorman":None,
+        "kitchen":None,
+        "duplex":None,
+        "swimming_pool":None,
+        "alarm":None,
+        "air_conditioning":None,
+        "fireplace":None,
+        "terrace":None,
+        "balcony":None,
+        "separate_dining_room":None,
+        "separate_toilet":None,
+        "bathroom":None,
+        "shower":None,
+        "separate_entrance":None,
+        "cellar":None,
+        "parking":None
+    }
 
 
 def change_search_to_no_more_correspond_to_the_ad(search, ad):

@@ -117,7 +117,7 @@ Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log
     {% if valid %}
     {{ paginator.count }} biens correspondent à votre recherche
     {% else %}
-    Les dernières annonces de recherche
+    Les dernières annonces de recherche <small>parmi {{ paginator.count }}</small>
     {% endif %}
 </h3>
 {% endblock %}

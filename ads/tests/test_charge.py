@@ -3,28 +3,31 @@ import datetime
 import os
 import subprocess
 
+from django.core import mail
 from django.test import TestCase
 
 from ads.factories import FakeAddressAdFactory
-
-from ads.tests.utils import search_for_ad_factory
+from ads.models import Ad, Search, AdSearchRelation
+from ads.tests.utils import search_dict_for_ad
 
 
 class ChargeTestCase(TestCase):
 
+    fixtures = ['initial-data-load-test.json', ]
+
     def test_create_a_lot_of_ads(self):
-        # Seloger has 22123 ads in Paris
-        # so we create the same number of ads
+        ads = Ad.objects.all()
+        searches = Search.objects.all()
+        print ads.count()
+        print searches.count()
         time_in = datetime.datetime.now()
-        ads = FakeAddressAdFactory.create_batch(100, transaction='sale')
+        # We will update each search to correspond at least to an ad
         for ad in ads:
-            search_for_ad_factory(ad)
+            search = searches.order_by('?')[0]
+            search.__dict__.update(search_dict_for_ad(ad))
+            search.save()
+            #print len(mail.outbox)
         time_out = datetime.datetime.now()
-        bkp_file = 'test_charge.sql'
-        file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), bkp_file)
-        #dumper_cmd = ['pg_dump', '-h', localhost, '-p', port, '-U', db_username, '--role', role, '-W', '-Fc', '-v', '-f', file_path, db_name]
-        dumper_cmd = ['pg_dump', '-a', '-f', file_path, 'test_sanscom']
-        subprocess.check_output(dumper_cmd)
         print time_out-time_in
-        self.assertEqual(True, True)
+        # about 1:21 =>
 

@@ -5,6 +5,7 @@ from random import randint, random
 
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.webdesign.lorem_ipsum import paragraphs
 
 import factory
@@ -75,6 +76,13 @@ class FuzzyRooms(BaseFuzzyAttribute):
         return (np.abs(arr-val)).argmin()+1
 
 
+def address(ad):
+    pt = GEOSGeometry(ad.location)
+    lat = pt.y
+    lng = pt.x
+    return address_from_geo(lat, lng)
+
+
 def surface_from_surface_carrez(ad):
     if bool(random.getrandbits(1)):
         return ad.surface_carrez
@@ -103,6 +111,7 @@ def bathroom_number(ad):
     else:
         return 1
 
+
 def shower_number(ad):
     if ad.rooms == 1:
         if ad.bathroom != 1:
@@ -112,11 +121,33 @@ def shower_number(ad):
     else:
         return random.randint(0, 1)
 
+
 def parking_choice(ad):
     if random.random()>0.2:
         return None
     else:
-        random.choice(['1', '2'])
+        return random.choice(['1', '2'])
+
+
+def ad_valorem_tax(ad):
+    if ad.transaction == 'rent':
+        return None
+    else:
+        return random.randrange(100, 3000, 20)
+
+
+def price(ad):
+    p = int(ad.surface*randint(5362, 12857)/1000)*1000
+    if ad.transaction == 'rent':
+        p = p/500
+    return p
+
+
+def price_max(search):
+    p = int(search.surface_min*randint(5362, 12857)/1000)*1000
+    if search.transaction == 'rent':
+        p = int(p/5000)*10
+    return p
 
 
 class AccountFactory(factory.django.DjangoModelFactory):
@@ -166,15 +197,16 @@ class AdFactory(BaseFactory):
     FACTORY_FOR = Ad
 
     location = FuzzyPoint()
-    address = FuzzyAddress()
-    price = factory.LazyAttribute(lambda o: int(o.surface*randint(5362, 12857)/1000)*1000)
+    #address = FuzzyAddress()
+    address = factory.LazyAttribute(address)
+    price = factory.LazyAttribute(price)
     habitation_type = factory.LazyAttribute(lambda i: house if random.random() < 0.009 else apartment)
     surface = factory.LazyAttribute(surface_from_surface_carrez)
     surface_carrez = factory.LazyAttribute(surface_carrez_from_rooms)
     rooms = FuzzyRooms()
     bedrooms = factory.LazyAttribute(lambda o: 1 if o.rooms <= 2 else random.randint(1, o.rooms-1))
     energy_consumption = FuzzyChoice(choices=FUZZY_ENERGY_CONSUMPTION_CHOICES)
-    ad_valorem_tax = FuzzyInteger(100, 3000, 20)
+    ad_valorem_tax = factory.LazyAttribute(ad_valorem_tax)#FuzzyInteger(100, 3000, 20)
     housing_tax = FuzzyInteger(100, 3000, 30)
     maintenance_charges = FuzzyInteger(50, 400, 10)
     emission_of_greenhouse_gases = FuzzyChoice(choices=FUZZY_EMISSION_OF_GREENHOUSE_GASES_CHOICES)
@@ -222,7 +254,7 @@ class SearchFactory(BaseFactory):
     FACTORY_FOR = Search
 
     location = FuzzyMultiPolygon()
-    price_max = factory.LazyAttribute(lambda o: int(o.surface_min*random.randrange(5000, 10000, 1000)/1000)*1000)
+    price_max = factory.LazyAttribute(price_max)
     surface_min = factory.LazyAttribute(surface_from_rooms_min)
     rooms_min = FuzzyRooms()
 
