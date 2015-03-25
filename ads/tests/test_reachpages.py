@@ -1,12 +1,10 @@
-import unittest
-
-from django.test import Client
+from django.test import Client, TestCase
 from django.core.urlresolvers import reverse
 
 from ads.factories import AdFactory
 
 
-class ReachStaticPages(unittest.TestCase):
+class ReachStaticPages(TestCase):
     def setUp(self):
         self.client = Client()
 
@@ -23,7 +21,7 @@ class ReachStaticPages(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class ReachSaleAndRentPages(unittest.TestCase):
+class ReachSaleAndRentPages(TestCase):
     def setUp(self):
         self.client = Client()
 

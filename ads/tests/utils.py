@@ -142,7 +142,7 @@ def search_for_ad_factory(ad):
 def search_dict_for_ad(ad):
     return {
         "transaction":ad.transaction,
-        "location ":geos.MultiPolygon(ad.location.buffer(2)),
+        "location":geos.MultiPolygon(ad.location.buffer(2)),
         "surface_min":ad.surface,
         "rooms_min":ad.rooms,
         "price_max":ad.price,

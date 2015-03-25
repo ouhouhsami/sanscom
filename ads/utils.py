@@ -1,8 +1,9 @@
 #-*- coding: utf-8 -*-
 import requests
+from django.conf import settings
 
 #KEY_API = 'AIzaSyDybLZ5Wudjcjumgn8sZH9T3ko9FtOwduw'
-KEY_API = 'AIzaSyAl8892a3Ec500DilhMLNWMy2O5r21aOVk'
+GOOGLE_KEY_API = settings.GOOGLE_KEY_API
 
 
 class WrongAddressError(Exception):
@@ -10,7 +11,7 @@ class WrongAddressError(Exception):
 
 
 def geo_from_address(address):
-    url = "https://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=true&key=%s" % (address, KEY_API)
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=true&key=%s" % (address, GOOGLE_KEY_API)
     #url = "http://nominatim.openstreetmap.org/search?q=%s&format=json" % address
     r = requests.get(url)
     try:
@@ -26,15 +27,15 @@ def geo_from_address(address):
 
 
 def address_from_geo(lat, lng):
-    url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=%s,%s&sensor=true&key=%s" % (lat, lng, KEY_API)
+    url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=%s,%s&sensor=true&key=%s" % (lat, lng, GOOGLE_KEY_API)
     #url = "http://nominatim.openstreetmap.org/reverse?format=json&lat=%s&lon=%s" % (lat, lng)
     r = requests.get(url)
     try:
         json = r.json()
         address = json['results'][0]['formatted_address']
         #address = json['display_name']
-        print address
+        #print address
         return address
     except IndexError:
-        print 'wrong'
+        #print 'wrong'
         raise WrongAddressError
