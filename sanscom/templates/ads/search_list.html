@@ -5,6 +5,14 @@
 {% block head %}
 {{ block.super }}
 {{ form.media }}
+<style type="text/css">
+#price-input-container{
+    width:130px;
+}
+#surface-input-container {
+    width: 120px;
+}
+</style>
 {% endblock %}
 
 {% block content-title %}
@@ -31,7 +39,7 @@
 
 {% block form %}
 
-{% if paginator.count == 0 %}
+{% if valid and paginator.count == 0 %}
 <div class="alert alert-warning">
 Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log(document.getElementsByName('save_ad').item(0).click());"class="alert-link">Enregistrez votre annonce</a> afin d'être tenu informé lorsque de nouvelles personnes cherchent un bien correspondant au votre.
 </div>
@@ -64,7 +72,7 @@ Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log
     </div>
     <div class="form-group {% if form.price.errors %}has-error{% endif %}">
         <label class="sr-only">Prix</label>
-        <div class="input-group">
+        <div class="input-group" id="price-input-container">
             {{ form.price }}
             <span class="input-group-addon">€</span>
         </div>
@@ -78,7 +86,7 @@ Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log
     </div>
     <div class="form-group {% if form.surface.errors %}has-error{% endif %}">
         <label class="sr-only">Surface</label>
-        <div class="input-group">
+        <div class="input-group" id="surface-input-container">
             {{ form.surface }}
             <span class="input-group-addon">m<sup>2</sup></span>
         </div>
@@ -104,8 +112,10 @@ Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log
     </div>
 
     {% if valid %}
-    <input type="submit" class="btn btn-default" name="save_ad" value="Enregistrer votre annonce">
+    <div class="btn-group" role="group">
+    <input type="submit" class="btn btn-primary" name="save_ad" value="Enregistrer votre annonce">
     <input type="submit" class="btn btn-default" value="Actualiser">
+    </div>
     {% else %}
     <input type="submit" class="btn btn-default btn-primary" value="Lancer la recherche">
     {% endif %}

@@ -14,6 +14,7 @@ from .widgets import ExtendedLeafletWidget
 
 from floppyforms.widgets import RadioSelect as FloppyRadioSelect
 
+
 class NullBooleanRadioSelect(FloppyRadioSelect):
     template_name = "widgets/radio.html"
     def __init__(self, *args, **kwargs):
@@ -26,6 +27,8 @@ class NullBooleanRadioSelect(FloppyRadioSelect):
 
     _empty_value = None
 
+class BooleanRadioSelect(FloppyRadioSelect):
+    template_name = "widgets/booleanradio.html"
 
 class AdPictureForm(forms.ModelForm):
     class Meta:
@@ -132,7 +135,8 @@ class EditSearchFormWithLogin(WithLogin, EditSearchForm):
 
 class SearchSearchForm(forms.ModelForm):
 
-    habitation_type = forms.ModelChoiceField(queryset=HabitationType.objects.all(), empty_label=None, widget=forms.RadioSelect(attrs={}))
+    #habitation_type = forms.ModelChoiceField(queryset=HabitationType.objects.all(), empty_label=None, widget=forms.RadioSelect(attrs={}))
+    habitation_type = forms.ModelChoiceField(queryset=HabitationType.objects.all(), empty_label=None, widget=BooleanRadioSelect)
 
     def clean_address(self):
         address = self.cleaned_data['address']
