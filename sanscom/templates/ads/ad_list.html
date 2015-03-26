@@ -30,9 +30,10 @@ NoRectangleGeometryField = L.GeometryField.extend({
 
 var current_location = undefined;
 {% if form.instance.location %}
-    var _feature = L.geoJson({{ form.instance.location|geojsonfeature|safe }});
-    current_location = _feature.getBounds();
+var _feature = L.geoJson({{ form.instance.location|geojsonfeature|safe }});
+current_location = _feature.getBounds();
 {% endif %}
+
 
 </script>
 
@@ -46,11 +47,11 @@ var current_location = undefined;
 var field;
 
 $(window).on("map:init", function (e) {
- var detail = e.originalEvent ?
- e.originalEvent.detail : e.detail;
- detail.map.on('map:loadfield', function (e) {
-     field = e.field;
- });
+   var detail = e.originalEvent ?
+   e.originalEvent.detail : e.detail;
+   detail.map.on('map:loadfield', function (e) {
+       field = e.field;
+   });
 });
 
 </script>
@@ -119,136 +120,127 @@ $(window).on("map:init", function (e) {
 
         <div class="col-md-8">
 
-            <div class="row">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <a class="btn btn-default" id="localize" type="button">Centrer la carte sur votre localisation</a>
+                </span>
+              <input type="text" class="form-control" id="address" placeholder="ou indiquer une adresse">
+              <span class="input-group-btn">
+                <a id="address_localize" class="btn btn-default" type="button">Centrer</a>
+              </span>
+          </div>
 
-                <div class="col-md-5">
-                    <a class="btn btn-default btn-block" id="localize" style="text-align: left;">
-                        Centrer la carte sur votre localisation
-                    </a>
-                </div>
-                <div class="col-md-7">
-                    <div class="input-group">
-                        <input class="form-control" id="address" placeholder="ou indiquer une adresse"/>
-                        <span class="input-group-btn">
-                            <a id="address_localize" class="btn btn-default">
-                                Centrer
-                            </a>
-                        </span>
-                    </div>
-                </div>
+        <div class="row" style="margin-top:3px;margin-bottom:3px">
+            <div class="col-md-12 hidden" id="auto-zone">
+                Chercher dans un rayon de
+                <div class="btn-group" role="group" data-toggle="buttons">
+                    <label class="btn btn-default btn-sm" data-radius="1">
+                        <input type="radio" name="options" id="option1" autocomplete="off">1 km
+                    </label>
+                    <label class="btn btn-default btn-sm" data-radius="2">
+                        <input type="radio" name="options" id="option2" autocomplete="off">2 km
+                    </label>
+                    <label class="btn btn-default btn-sm" data-radius="5">
+                        <input type="radio" name="options" id="option3" autocomplete="off">5 km
+                    </label>
+                    <label class="btn btn-default btn-sm" data-radius="10">
+                        <input type="radio" name="options" id="option1" autocomplete="off">10 km
+                    </label>
+                    <label class="btn btn-default btn-sm" data-radius="20">
+                        <input type="radio" name="options" id="option2" autocomplete="off">20 km
+                    </label>
+                    <label class="btn btn-default btn-sm" data-radius="50">
+                        <input type="radio" name="options" id="option3" autocomplete="off">50 km
+                    </label>
+                </div> <span id="user-address" class"hidden">autour de votre localisation</span>.
             </div>
-
-            <div class="row" style="margin-top:3px;margin-bottom:3px">
-                <div class="col-md-12 hidden" id="auto-zone">
-                    Chercher dans un rayon de
-                    <div class="btn-group" role="group" data-toggle="buttons">
-                        <label class="btn btn-default btn-sm" data-radius="1">
-                            <input type="radio" name="options" id="option1" autocomplete="off">1 km
-                        </label>
-                        <label class="btn btn-default btn-sm" data-radius="2">
-                            <input type="radio" name="options" id="option2" autocomplete="off">2 km
-                        </label>
-                        <label class="btn btn-default btn-sm" data-radius="5">
-                            <input type="radio" name="options" id="option3" autocomplete="off">5 km
-                        </label>
-                        <label class="btn btn-default btn-sm" data-radius="10">
-                            <input type="radio" name="options" id="option1" autocomplete="off">10 km
-                        </label>
-                        <label class="btn btn-default btn-sm" data-radius="20">
-                            <input type="radio" name="options" id="option2" autocomplete="off">20 km
-                        </label>
-                        <label class="btn btn-default btn-sm" data-radius="50">
-                            <input type="radio" name="options" id="option3" autocomplete="off">50 km
-                        </label>
-                    </div> <span id="user-address" class"hidden">autour de votre localisation</span>.
-                </div>
-            </div>
-
-            <div class="form-group {% if form.location.errors %}has-error{% endif %}">
-                <label class="sr-only">Zone</label>
-                {{ form.location }}
-                {% if form.location.errors %}
-                <p class="text-danger">
-                    {% for error in form.location.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-                <div class="alert alert-info" role="alert" style="margin-top:3px; margin-bottom:3px;padding:5px">
-                    Pour dessiner une zone de recherche précise, utiliser l'icône <span id="icon-draw"></span> sur la carte ci-dessus.
-                </div>
-            </div>
-
         </div>
-        <div class="col-md-4">
 
-            <div class="form-group {% if form.habitation_types.errors %}has-error{% endif %}">
-                <label class="control-label">Types d'habitations</label>
-                {{ form.habitation_types }}
-                {% if form.habitation_types.errors %}
-                <p class="text-danger">
-                    {% for error in form.habitation_types.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
+        <div class="form-group {% if form.location.errors %}has-error{% endif %}">
+            <label class="sr-only">Zone</label>
+            {{ form.location }}
+            {% if form.location.errors %}
+            <p class="text-danger">
+                {% for error in form.location.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+            <div class="alert alert-info" role="alert" style="margin-top:3px; margin-bottom:3px;padding:5px">
+                Pour dessiner une zone de recherche précise, utiliser l'icône <span id="icon-draw"></span> sur la carte ci-dessus.
             </div>
+        </div>
 
+    </div>
+    <div class="col-md-4">
 
-            <div class="form-group {% if form.price_max.errors %}has-error{% endif %}">
-                <label class="control-label">Prix maximum</label>
-                <div class="input-group">
-                    {{ form.price_max }}
-                    <span class="input-group-addon">€{% if rent %}/mois{% endif %}</span>
-                </div>
-                {% if form.price_max.errors %}
-                <p class="text-danger">
-                    {% for error in form.price_max.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-            <div class="form-group {% if form.surface_min.errors %}has-error{% endif %}">
-                <label class="control-label">Surface minimale</label>
-                <div class="input-group">
-                    {{ form.surface_min }}
-                    <span class="input-group-addon">m<sup>2</sup></span>
-                </div>
-                {% if form.surface_min.errors %}
-                <p class="text-danger">
-                    {% for error in form.surface_min.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-
-            <div class="form-group {% if form.rooms_min.errors %}has-error{% endif %}">
-                <label class="control-label">Nb. de pièces minimum</label>
-                <div class="input-group">
-                    {{ form.rooms_min }}
-                    <span class="input-group-addon">pièces</span>
-                </div>
-                {% if form.rooms_min.errors %}
-                <p class="text-danger">
-                    {% for error in form.rooms_min.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-
-            {% if valid %}
-            <input type="submit" class="btn btn-default btn-block btn-primary" name="save_ad" value="Enregistrer votre recherche">
-            <input type="submit" class="btn btn-default btn-block" value="Actualiser la recherche">
-            {% else %}
-            <input type="submit" class="btn btn-primary btn-block btn-lg" value="Lancer la recherche">
+        <div class="form-group {% if form.habitation_types.errors %}has-error{% endif %}">
+            <label class="control-label">Types d'habitations</label>
+            {{ form.habitation_types }}
+            {% if form.habitation_types.errors %}
+            <p class="text-danger">
+                {% for error in form.habitation_types.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
             {% endif %}
         </div>
 
 
+        <div class="form-group {% if form.price_max.errors %}has-error{% endif %}">
+            <label class="control-label">Prix maximum</label>
+            <div class="input-group">
+                {{ form.price_max }}
+                <span class="input-group-addon">€{% if rent %}/mois{% endif %}</span>
+            </div>
+            {% if form.price_max.errors %}
+            <p class="text-danger">
+                {% for error in form.price_max.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+        <div class="form-group {% if form.surface_min.errors %}has-error{% endif %}">
+            <label class="control-label">Surface minimale</label>
+            <div class="input-group">
+                {{ form.surface_min }}
+                <span class="input-group-addon">m<sup>2</sup></span>
+            </div>
+            {% if form.surface_min.errors %}
+            <p class="text-danger">
+                {% for error in form.surface_min.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="form-group {% if form.rooms_min.errors %}has-error{% endif %}">
+            <label class="control-label">Nb. de pièces minimum</label>
+            <div class="input-group">
+                {{ form.rooms_min }}
+                <span class="input-group-addon">pièces</span>
+            </div>
+            {% if form.rooms_min.errors %}
+            <p class="text-danger">
+                {% for error in form.rooms_min.errors %}
+                {{ error|escape }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+
+        {% if valid %}
+        <input type="submit" class="btn btn-default btn-block btn-primary" name="save_ad" value="Enregistrer votre recherche">
+        <input type="submit" class="btn btn-default btn-block" value="Actualiser la recherche">
+        {% else %}
+        <input type="submit" class="btn btn-primary btn-block btn-lg" value="Lancer la recherche">
+        {% endif %}
     </div>
+
+
+</div>
 
 
 </form>
