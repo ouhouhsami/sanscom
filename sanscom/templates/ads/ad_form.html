@@ -4,6 +4,48 @@
 {% block head %}
 {{ block.super }}
 {{ form.media }}
+<script>
+/* hide - show and empty fields regarding habitation type selected
+    case apartment, hide ground_surface
+    case house, remove
+        "Situation du logement dans l'immeuble"
+        "A propos de l'immeuble"
+*/
+
+function hideField(target){
+    target.hide()
+    target.find(':input').val('').removeAttr('checked').removeAttr('selected')
+}
+
+$(document).ready(function(){
+    var habitation_type;
+    function init_form(){
+        if(habitation_type === 'apartment'){
+            hideField($('#ground_surface_container'));
+            $('#apartment_situation').show();
+            $('#apartment_about').show();
+        }
+        if(habitation_type === 'house'){
+            $('#ground_surface_container').show()
+            hideField($('#apartment_situation'));
+            hideField($('#apartment_about'));
+        }
+    };
+    $('input[type=radio][name=habitation_type]').change(function(evt){
+        if(this.value === "1"){
+            habitation_type = "apartment";
+        }else{
+            habitation_type = "house";
+        }
+        init_form();
+    });
+    habitation_type = $('input[type=radio][name=habitation_type]:checked').val();
+    if(habitation_type){
+        init_form();
+    }
+})
+
+</script>
 {% endblock %}
 
 {% block content %}
@@ -63,6 +105,7 @@
                     {% endfor %}
                 </p>
                 {% endif %}
+                <p class="help-block">Adresse complète, par exemple : 5 rue de Verneuil Paris</p>
             </div>
 
             <div class="form-group {% if form.price.errors %}has-error{% endif %}">
@@ -167,8 +210,6 @@
                 {% endif %}
             </div>
 
-
-
             <div class="form-group {% if form.maintenance_charges.errors %}has-error{% endif %}">
                 <label>{{ form.maintenance_charges.label }}</label>
                 <div class="input-group">
@@ -209,9 +250,7 @@
                 {% endif %}
             </div>
 
-
-
-            <div class="form-group {% if form.ground_surface.errors %}has-error{% endif %}">
+            <div id="ground_surface_container" class="form-group {% if form.ground_surface.errors %}has-error{% endif %}">
                 <label>{{ form.ground_surface.label }}</label>
                 <div class="input-group">
                     <span class="input-group-addon">m<sup>2</sup></span>
@@ -226,8 +265,8 @@
                 {% endif %}
             </div>
 
-
-            <h4 class="page-header">Situation du logement dans l'immeuble</h4>
+            <div id="apartment_situation">
+            <h4 class="page-header" >Situation du logement dans l'immeuble</h4>
 
             <div class="form-group {% if form.floor.errors %}has-error{% endif %}">
                 <label>{{ form.floor.label }}</label>
@@ -296,7 +335,10 @@
                 {% endif %}
             </div>
 
-            <h4 class="page-header">A propos de l'immeuble</h4>
+            </div>
+
+            <div id="apartment_about">
+            <h4 class="page-header" >A propos de l'immeuble</h4>
 
             <div class="checkbox {% if form.elevator.errors %}has-error{% endif %}">
                 <label>{{ form.elevator }} {{ form.elevator.label }}</label>
@@ -338,7 +380,7 @@
                 </p>
                 {% endif %}
             </div>
-
+            </div>
             <h4 class="page-header">Commodités</h4>
 
             <div class="form-group {% if form.heating.errors %}has-error{% endif %}">
@@ -477,7 +519,10 @@
             </div>
             <div class="form-group {% if form.separate_toilet.errors %}has-error{% endif %}">
                 <label>{{ form.separate_toilet.label }}</label>
-                {{ form.separate_toilet }}
+                <div class="input-group">
+                    <span class="input-group-addon">Nombre</span>
+                    {{ form.separate_toilet }}
+                </div>
                 {% if form.separate_toilet.errors %}
                 <p class="text-danger">
                     {% for error in form.separate_toilet.errors %}
@@ -488,7 +533,10 @@
             </div>
             <div class="form-group {% if form.bathroom.errors %}has-error{% endif %}">
                 <label>{{ form.bathroom.label }}</label>
-                {{ form.bathroom }}
+                <div class="input-group">
+                    <span class="input-group-addon">Nombre</span>
+                    {{ form.bathroom }}
+                </div>
                 {% if form.bathroom.errors %}
                 <p class="text-danger">
                     {% for error in form.bathroom.errors %}
@@ -499,7 +547,10 @@
             </div>
             <div class="form-group {% if form.shower.errors %}has-error{% endif %}">
                 <label>{{ form.shower.label }}</label>
-                {{ form.shower }}
+                <div class="input-group">
+                    <span class="input-group-addon">Nombre</span>
+                    {{ form.shower }}
+                </div>
                 {% if form.shower.errors %}
                 <p class="text-danger">
                     {% for error in form.shower.errors %}
