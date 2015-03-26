@@ -17,6 +17,21 @@ $('#localize').on('click', function(evt){
             var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
             map.setView(latlng, 14);
             enableAutoLocationZone(latlng, "geolocated");
+        }, function(error){
+            // We use IP to center the map - http://freegeoip.net/json/
+            var req = new XMLHttpRequest();
+            req.open('GET', 'http://freegeoip.net/json/', true);
+            req.onload = function (e) {
+                var json = JSON.parse(e.target.responseText);
+                var latlng = new L.LatLng(json.latitude, json.longitude);
+                map.setView(latlng, 14);
+                enableAutoLocationZone(latlng, "geolocated");
+                $("#localize").button('reset');
+            };
+            req.onerror = function(e){
+                $("#localize").button('reset');
+            }
+            req.send(null);
         });
     }else{
         $("#localize").button('reset');
