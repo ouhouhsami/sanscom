@@ -33,10 +33,12 @@ class BooleanRadioSelect(FloppyRadioSelect):
 
 
 class AdPictureForm(forms.ModelForm):
+
     class Meta:
         model = AdPicture
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': 'Description de la photo', }),
+            'image': forms.FileInput
         }
         fields = '__all__'
 

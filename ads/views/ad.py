@@ -14,7 +14,7 @@ from .utils import SetUserAndTransactionMixin, FillInitialForm, MessageDetailVie
 class AdPictureInline(InlineFormSet):
     """ Ad Picture InlineFormSet """
     model = AdPicture
-    form = AdPictureForm
+    form_class = AdPictureForm
     extra = 4
     max_num = 4
 
