@@ -27,8 +27,10 @@ class NullBooleanRadioSelect(FloppyRadioSelect):
 
     _empty_value = None
 
+
 class BooleanRadioSelect(FloppyRadioSelect):
     template_name = "widgets/booleanradio.html"
+
 
 class AdPictureForm(forms.ModelForm):
     class Meta:

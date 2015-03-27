@@ -620,9 +620,11 @@
                             </p>
                             {% endif %}
                         </div>
+                        {% if form.image.value %}
                         <div class="checkbox">
                             <label>{{ form.DELETE }} {{ form.DELETE.label }}</label>
                         </div>
+                        {% endif %}
                     </div>
                 </li>
                 <hr />
