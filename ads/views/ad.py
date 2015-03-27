@@ -99,6 +99,7 @@ class AdListView(ListView):
     def get_queryset(self):
         q = super(AdListView, self).get_queryset().order_by('-modified')
         # Filter by transaction (sale or rent)
+        q = q.select_related('habitation_type')
         q = q.filter(transaction=self.transaction)
         # here we remove the page from request.GET
         data = self.request.GET.copy()

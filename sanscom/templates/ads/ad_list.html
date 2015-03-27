@@ -273,7 +273,9 @@ $(window).on("map:init", function (e) {
         <a class="show-marker btn btn-default btn-xs" data-lng="{{ object.location.y|unlocalize }}" data-lat="{{ object.location.x|unlocalize }}" data-href="{{ object.get_absolute_url }}">Localiser</a>
     </td>
     <td>
-        <a href="{{ object.get_absolute_url }}">{{ object.habitation_type }}</a>
+        <a href="{{ object.get_absolute_url }}">
+            {{ object.habitation_type }}
+        </a>
     </td>
     <td>
         {{ object.price|intcomma }} €{% if rent %}/mois{% endif %}

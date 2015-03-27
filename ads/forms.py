@@ -228,18 +228,11 @@ class EditAdFormWithLogin(WithLogin, EditAdForm):
 
 class SearchAdForm(forms.ModelForm):
 
-    #def __init__(self, *args, **kwargs):
-    #    self.current_app = kwargs.pop("current_app")
-    #    print ">>>>", self.current_app
-    #    super(SearchAdForm, self).__init__(*args, **kwargs)
-
     def clean_location(self):
         location = self.cleaned_data['location']
         if location.area > 0.306579934754:
             raise forms.ValidationError("Entrer une zone de recherche plus petite")
         return location
-
-    habitation_types = forms.ModelMultipleChoiceField(queryset=HabitationType.objects.all(), widget=forms.CheckboxSelectMultiple(attrs={}), label="Types d'habitations")
 
     class Meta:
         model = Search
@@ -248,6 +241,7 @@ class SearchAdForm(forms.ModelForm):
             'location': ExtendedLeafletWidget(),
             'price_max': forms.TextInput(),
             'surface_min': forms.TextInput(),
+            'habitation_types': forms.CheckboxSelectMultiple()
         }
 
 

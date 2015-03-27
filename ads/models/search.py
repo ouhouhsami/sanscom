@@ -23,6 +23,11 @@ class IndifferentBooleanField(models.NullBooleanField):
         super(IndifferentBooleanField, self).__init__(*args, **kwargs)
 
 
+class SearchManager(models.GeoManager):
+    def get_queryset(self):
+        return super(SearchManager, self).get_queryset().select_related('habitation_types')
+
+
 class Search(BaseModel):
     """
     Search model
@@ -77,7 +82,7 @@ class Search(BaseModel):
     #                                                choices=EMISSION_OF_GREENHOUSE_GASES_CHOICES,
     #                                                null=True, blank=True)
 
-    objects = models.GeoManager()
+    objects = SearchManager() #models.GeoManager()
 
     @models.permalink
     def get_absolute_url(self):
