@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
 {% load staticfiles thumbnails %}
 
-{% block head %}
+{% block css %}
 {{ block.super }}
-{{ form.media }}
+{{ form.media.css }}
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+{{ form.media.js }}
 {% endblock %}
 
 {% block content %}

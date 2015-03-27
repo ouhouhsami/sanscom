@@ -1,11 +1,17 @@
 {% extends 'ads/list.html' %}
 {% load humanize leaflet_tags geojson_tags l10n static %}
 
-{% block head %}
+{% block css %}
 {{ block.super }}
 
-{% leaflet_js plugins="forms" %}
 {% leaflet_css plugins="forms" %}
+{{ form.media.css }}
+
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+{% leaflet_js plugins="forms" %}
 
 <script>
 /*
@@ -37,7 +43,7 @@ current_location = _feature.getBounds();
 
 </script>
 
-{{ form.media }}
+{{ form.media.js }}
 
 <script>
 
@@ -56,12 +62,6 @@ $(window).on("map:init", function (e) {
 
 </script>
 
-<style type="text/css">
-#id_location_map {
-    width:100%;
-}
-
-</style>
 {% endblock %}
 
 {% block content-title %}

@@ -1,9 +1,14 @@
 {% extends 'ads/form.html' %}
 {% load staticfiles thumbnails %}
 
-{% block head %}
+{% block css %}
 {{ block.super }}
-{{ form.media }}
+{{ form.media.css }}
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+{{ form.media.js }}
 <script>
 /* hide - show and empty fields regarding habitation type selected
     case apartment, hide ground_surface

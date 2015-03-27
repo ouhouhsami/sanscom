@@ -2,11 +2,16 @@
 
 {% load leaflet_tags geojson_tags humanize bootstrap %}
 
-{% block head %}
+{% block css %}
+{{ block.super }}
+{% leaflet_css %}
+{% endblock %}
+
+{% block js %}
 
 {{ block.super }}
 {% leaflet_js %}
-{% leaflet_css %}
+
 <script type="text/javascript">
 
 function map_init_basic (map, options) {

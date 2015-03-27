@@ -1,7 +1,7 @@
 {% load compress %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,16 +10,27 @@
   <meta name="author" content="AcheterSansCom">
   <link rel="icon" href="{{STATIC_URL}}img/favicon.ico" />
   {% block head %}
-  <title>{% block title %}AcheterSansCom{% endblock %}</title>
-  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-  <!-- Latest compiled and minified CSS -->
+  <title>
+  {% block title %}
+  AcheterSansCom
+  {% endblock %}
+  </title>
+  {% endblock %}
+
   {% compress css %}
+  {% block css %}
   <link type="text/less" rel="stylesheet" href="{{ STATIC_URL }}less/style.less" />
+  {% endblock %}
   {% endcompress %}
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+  {% compress js %}
+  {% block js %}
+
+  <script src="{{STATIC_URL}}jquery-1.11.0.min.js" type="text/javascript"></script>
+  <script src="{{STATIC_URL}}bootstrap.min.js" type="text/javascript"></script>
 
   {% endblock %}
+  {% endcompress %}
 </head>
 
 <body>

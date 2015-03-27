@@ -2,11 +2,14 @@
 
 {% load leaflet_tags geojson_tags humanize bootstrap %}
 
+{% block css %}
+{{ block.super }}
+{% leaflet_css %}
+{% endblock %}
 
-{% block head %}
+{% block js %}
 {{ block.super }}
 {% leaflet_js %}
-{% leaflet_css %}
 <script type="text/javascript">
 function map_init_basic (map, options) {
     var json = {{ object.location|geojsonfeature|safe }};

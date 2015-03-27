@@ -1,10 +1,9 @@
 {% extends 'ads/list.html' %}
 {% load humanize %}
 
-
-{% block head %}
+{% block css %}
 {{ block.super }}
-{{ form.media }}
+{{ form.media.css }}
 <style type="text/css">
 #price-input-container{
     width:130px;
@@ -13,6 +12,11 @@
     width: 120px;
 }
 </style>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+{{ form.media.js }}
 {% endblock %}
 
 {% block content-title %}
@@ -74,7 +78,7 @@ Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log
         <label class="sr-only">Prix</label>
         <div class="input-group" id="price-input-container">
             {{ form.price }}
-            <span class="input-group-addon">€</span>
+            <span class="input-group-addon">€{% if rent %}/mois{% endif %}</span>
         </div>
         {% if form.price.errors %}
         <p class="text-danger">
