@@ -34,6 +34,8 @@ NoRectangleGeometryField = L.GeometryField.extend({
     }
 });
 
+L.Icon.Default.imagePath = '/static/leaflet/images/';
+
 var current_location = undefined;
 {% if form.instance.location %}
 var _feature = L.geoJson({{ form.instance.location|geojsonfeature|safe }});
