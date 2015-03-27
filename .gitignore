@@ -7,3 +7,4 @@ settings-prod.py
 settings.py
 SNIPPETS
 TODO
+fabfile.py
