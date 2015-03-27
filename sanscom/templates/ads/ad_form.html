@@ -10,40 +10,45 @@
     case house, remove
         "Situation du logement dans l'immeuble"
         "A propos de l'immeuble"
-*/
+        */
 
-function hideField(target){
-    target.hide()
-    target.find(':input').val('').removeAttr('checked').removeAttr('selected')
-}
+        function hideField(target){
+            target.hide()
+            target.find(':input').val('').removeAttr('checked').removeAttr('selected')
+        }
 
-$(document).ready(function(){
-    var habitation_type;
-    function init_form(){
-        if(habitation_type === 'apartment'){
-            hideField($('#ground_surface_container'));
-            $('#apartment_situation').show();
-            $('#apartment_about').show();
-        }
-        if(habitation_type === 'house'){
-            $('#ground_surface_container').show()
-            hideField($('#apartment_situation'));
-            hideField($('#apartment_about'));
-        }
-    };
-    $('input[type=radio][name=habitation_type]').change(function(evt){
-        if(this.value === "1"){
-            habitation_type = "apartment";
-        }else{
-            habitation_type = "house";
-        }
-        init_form();
-    });
-    habitation_type = $('input[type=radio][name=habitation_type]:checked').val();
-    if(habitation_type){
-        init_form();
-    }
-})
+        $(document).ready(function(){
+            var habitation_type;
+            function init_form(){
+                if(habitation_type === 'apartment'){
+                    hideField($('#ground_surface_container'));
+                    $('#apartment_situation').show();
+                    $('#apartment_about').show();
+                }
+                if(habitation_type === 'house'){
+                    $('#ground_surface_container').show()
+                    hideField($('#apartment_situation'));
+                    hideField($('#apartment_about'));
+                }
+            };
+            $('input[type=radio][name=habitation_type]').change(function(evt){
+                if(this.value === "1"){
+                    habitation_type = "apartment";
+                }else{
+                    habitation_type = "house";
+                }
+                init_form();
+            });
+            habitation_type_id = $('input[type=radio][name=habitation_type]:checked').val();
+            if(habitation_type_id === "1"){
+                habitation_type = "apartment";
+            }else{
+                habitation_type = "house";
+            }
+            if(habitation_type){
+                init_form();
+            }
+        })
 
 </script>
 {% endblock %}
@@ -266,120 +271,120 @@ $(document).ready(function(){
             </div>
 
             <div id="apartment_situation">
-            <h4 class="page-header" >Situation du logement dans l'immeuble</h4>
+                <h4 class="page-header" >Situation du logement dans l'immeuble</h4>
 
-            <div class="form-group {% if form.floor.errors %}has-error{% endif %}">
-                <label>{{ form.floor.label }}</label>
-                {{ form.floor }}
-                {% if form.floor.errors %}
-                <p class="text-danger">
-                    {% for error in form.floor.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
+                <div class="form-group {% if form.floor.errors %}has-error{% endif %}">
+                    <label>{{ form.floor.label }}</label>
+                    {{ form.floor }}
+                    {% if form.floor.errors %}
+                    <p class="text-danger">
+                        {% for error in form.floor.errors %}
+                        {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
 
-            <div class="checkbox {% if form.ground_floor.errors %}has-error{% endif %}">
-                <label>{{ form.ground_floor }} {{ form.ground_floor.label }}</label>
-                {% if form.ground_floor.errors %}
-                <p class="text-danger">
-                    {% for error in form.ground_floor.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-            <div class="checkbox {% if form.top_floor.errors %}has-error{% endif %}">
-                <label>{{ form.top_floor }} {{ form.top_floor.label }}</label>
-                {% if form.top_floor.errors %}
-                <p class="text-danger">
-                    {% for error in form.top_floor.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
+                <div class="checkbox {% if form.ground_floor.errors %}has-error{% endif %}">
+                    <label>{{ form.ground_floor }} {{ form.ground_floor.label }}</label>
+                    {% if form.ground_floor.errors %}
+                    <p class="text-danger">
+                        {% for error in form.ground_floor.errors %}
+                        {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="checkbox {% if form.top_floor.errors %}has-error{% endif %}">
+                    <label>{{ form.top_floor }} {{ form.top_floor.label }}</label>
+                    {% if form.top_floor.errors %}
+                    <p class="text-danger">
+                        {% for error in form.top_floor.errors %}
+                        {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
 
-            <div class="checkbox {% if form.duplex.errors %}has-error{% endif %}">
-                <label>{{ form.duplex }} {{ form.duplex.label }}</label>
-                {% if form.duplex.errors %}
-                <p class="text-danger">
-                    {% for error in form.duplex.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
+                <div class="checkbox {% if form.duplex.errors %}has-error{% endif %}">
+                    <label>{{ form.duplex }} {{ form.duplex.label }}</label>
+                    {% if form.duplex.errors %}
+                    <p class="text-danger">
+                        {% for error in form.duplex.errors %}
+                        {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
 
-            <div class="checkbox {% if form.not_overlooked.errors %}has-error{% endif %}">
-                <label>{{ form.not_overlooked }} {{ form.not_overlooked.label }}</label>
-                {% if form.not_overlooked.errors %}
-                <p class="text-danger">
-                    {% for error in form.not_overlooked.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
+                <div class="checkbox {% if form.not_overlooked.errors %}has-error{% endif %}">
+                    <label>{{ form.not_overlooked }} {{ form.not_overlooked.label }}</label>
+                    {% if form.not_overlooked.errors %}
+                    <p class="text-danger">
+                        {% for error in form.not_overlooked.errors %}
+                        {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
 
-            <div class="form-group {% if form.orientation.errors %}has-error{% endif %}">
-                <label>{{ form.orientation.label }}</label>
-                {{ form.orientation }}
-                {% if form.orientation.errors %}
-                <p class="text-danger">
-                    {% for error in form.orientation.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
+                <div class="form-group {% if form.orientation.errors %}has-error{% endif %}">
+                    <label>{{ form.orientation.label }}</label>
+                    {{ form.orientation }}
+                    {% if form.orientation.errors %}
+                    <p class="text-danger">
+                        {% for error in form.orientation.errors %}
+                        {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
 
             </div>
 
             <div id="apartment_about">
-            <h4 class="page-header" >A propos de l'immeuble</h4>
+                <h4 class="page-header" >A propos de l'immeuble</h4>
 
-            <div class="checkbox {% if form.elevator.errors %}has-error{% endif %}">
-                <label>{{ form.elevator }} {{ form.elevator.label }}</label>
-                {% if form.elevator.errors %}
-                <p class="text-danger">
-                    {% for error in form.elevator.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-            <div class="checkbox {% if form.intercom.errors %}has-error{% endif %}">
-                <label>{{ form.intercom }} {{ form.intercom.label }}</label>
-                {% if form.intercom.errors %}
-                <p class="text-danger">
-                    {% for error in form.intercom.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-            <div class="checkbox {% if form.digicode.errors %}has-error{% endif %}">
-                <label>{{ form.digicode }} {{ form.digicode.label }}</label>
-                {% if form.digicode.errors %}
-                <p class="text-danger">
-                    {% for error in form.digicode.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-            <div class="checkbox {% if form.doorman.errors %}has-error{% endif %}">
-                <label>{{ form.doorman }} {{ form.doorman.label }}</label>
-                {% if form.doorman.errors %}
-                <p class="text-danger">
-                    {% for error in form.doorman.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
+                <div class="checkbox {% if form.elevator.errors %}has-error{% endif %}">
+                    <label>{{ form.elevator }} {{ form.elevator.label }}</label>
+                    {% if form.elevator.errors %}
+                    <p class="text-danger">
+                        {% for error in form.elevator.errors %}
+                        {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="checkbox {% if form.intercom.errors %}has-error{% endif %}">
+                    <label>{{ form.intercom }} {{ form.intercom.label }}</label>
+                    {% if form.intercom.errors %}
+                    <p class="text-danger">
+                        {% for error in form.intercom.errors %}
+                        {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="checkbox {% if form.digicode.errors %}has-error{% endif %}">
+                    <label>{{ form.digicode }} {{ form.digicode.label }}</label>
+                    {% if form.digicode.errors %}
+                    <p class="text-danger">
+                        {% for error in form.digicode.errors %}
+                        {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="checkbox {% if form.doorman.errors %}has-error{% endif %}">
+                    <label>{{ form.doorman }} {{ form.doorman.label }}</label>
+                    {% if form.doorman.errors %}
+                    <p class="text-danger">
+                        {% for error in form.doorman.errors %}
+                        {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
             </div>
             <h4 class="page-header">Commodités</h4>
 
