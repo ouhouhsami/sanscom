@@ -9,11 +9,11 @@ else {
     map.setView([48.86, 2.33], 12);
 }
 
-$('#localize').on('click', function(evt){
+$('.localize').on('click', function(evt){
     $(this).button('loading');
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            $("#localize").button('reset');
+            $(".localize").button('reset');
             var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
             map.setView(latlng, 14);
             enableAutoLocationZone(latlng, "geolocated");
@@ -26,19 +26,19 @@ $('#localize').on('click', function(evt){
                 var latlng = new L.LatLng(json.latitude, json.longitude);
                 map.setView(latlng, 14);
                 enableAutoLocationZone(latlng, "geolocated");
-                $("#localize").button('reset');
+                $(".localize").button('reset');
             };
             req.onerror = function(e){
-                $("#localize").button('reset');
+                $(".localize").button('reset');
             }
             req.send(null);
         });
     }else{
-        $("#localize").button('reset');
+        $(".localize").button('reset');
         l.stop();
     }
 })
-$('#address_localize').on('click', function(evt){
+$('.address_localize').on('click', function(evt){
     $(this).button('loading');
     var address = document.getElementById("address").value;
     var self = this;
