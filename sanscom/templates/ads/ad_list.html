@@ -263,9 +263,9 @@ $(window).on("map:init", function (e) {
 <th></th>
 <th>Type de bien</th>
 <th>Prix</th>
-<th>Nb. de pièces</th>
 <th>Surface</th>
-<th>Date</th>
+<th>Pièces</th>
+<th>Mise en ligne</th>
 {% endblock %}
 
 
@@ -283,14 +283,14 @@ $(window).on("map:init", function (e) {
         {{ object.price|intcomma }} €{% if rent %}/mois{% endif %}
     </td>
     <td>
-        {{ object.rooms }}
+        {{ object.surface }} m<sup>2</sup>
     </td>
     <td>
-        {{ object.surface }} m<sup>2</sup>
+        {{ object.rooms }}
     </td>
 </td>
 <td>
-    {{ object.modified|naturaltime }}
+    {{ object.modified|naturalday|title }}
 </td>
 </tr>
 {% endblock %}
