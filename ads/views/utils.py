@@ -1,4 +1,6 @@
 #-*- coding: utf-8 -*-
+from sortable_listview import SortableListView
+
 from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
@@ -132,3 +134,46 @@ class MessageDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         view = MessageView.as_view(model=self.model, form_class=self.contact_form)
         return view(request, *args, **kwargs)
+
+
+class CustomSortableListView(SortableListView):
+    '''
+    This is ugly
+    '''
+    def get_sort_link_list(self, request):
+        sort_links = []
+        for sort_field in self.allowed_sort_fields:
+            sort_link_asc = {
+                'attrs': sort_field,
+                'path': self.get_basic_sort_link(request, sort_field, ''),
+                'indicator': 'true' if self.get_sort_indicator(sort_field) == 'sort-asc' else '',
+                'title': self.allowed_sort_fields[sort_field]['verbose_name_asc']}
+            sort_link_dsc = {
+                'attrs': sort_field,
+                'path': self.get_basic_sort_link(request, sort_field, '-'),
+                'indicator': 'true' if self.get_sort_indicator(sort_field) == 'sort-desc' else '',
+                'title': self.allowed_sort_fields[sort_field]['verbose_name_dsc']}
+            sort_links.append(sort_link_asc)
+            sort_links.append(sort_link_dsc)
+        return sort_links
+
+    def get_context_data(self, **kwargs):
+        context = super(CustomSortableListView, self).get_context_data(**kwargs)
+        if self.sort_order:
+            context['current_sort_label'] = self.allowed_sort_fields[self.sort_field]['verbose_name_dsc']
+        else:
+            context['current_sort_label'] = self.allowed_sort_fields[self.sort_field]['verbose_name_asc']
+        return context
+
+    def get_basic_sort_link(self, request, field, direction):
+        """
+        Thanks to del_query_parameters and get_querystring, we build the link
+        with preserving interesting get parameters and removing the others
+        """
+        query_string = self.get_querystring()
+        sort_string = "sort=" + direction + field
+        sort_link = request.path + '?' + sort_string
+        print sort_link
+        if query_string:
+            sort_link += '&' + query_string
+        return sort_link

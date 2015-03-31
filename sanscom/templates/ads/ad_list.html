@@ -280,14 +280,15 @@ $(window).on("map:init", function (e) {
     {% else %}
     Les dernières annonces de {% if sale %}vente{% endif %}{% if rent %}location{% endif %} <small>parmi {{ paginator.count }}</small>
     {% endif %}
+{% if valid %}{% include 'sortable_listview/sort_links.html' %}{% endif %}
 </h3>
 {% endblock %}
 
 
 {% block search_result_header %}
-{% if valid %}
-{% include 'sortable_listview/sort_links.html' %}
-{% endif %}
+
+
+
 <th></th>
 <th>Type de bien</th>
 <th>Prix</th>

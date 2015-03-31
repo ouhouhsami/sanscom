@@ -8,7 +8,7 @@ from ads.models import Search, AdSearchRelation
 from ads.forms import EditSearchForm, EditSearchFormWithLogin, ContactForm, SearchSearchForm
 from ads.utils import geo_from_address
 
-from .utils import SetUserAndTransactionMixin, FillInitialForm, MessageDetailView, LoginRequiredMixin, AssureOwnerMixin
+from .utils import SetUserAndTransactionMixin, FillInitialForm, MessageDetailView, LoginRequiredMixin, AssureOwnerMixin, CustomSortableListView
 
 
 class CreateSearchView(SetUserAndTransactionMixin, FillInitialForm, CreateView):
@@ -49,10 +49,33 @@ class ReadSearchView(DetailView):
         return context
 
 
-class SearchListView(ListView):
+class SearchListView(CustomSortableListView):
     model = Search
     paginate_by = 10
     transaction = None
+
+    allowed_sort_fields = {
+        'modified': {
+            'default_direction': '-',
+            'verbose_name': 'Date de mise en ligne',
+            'verbose_name_asc': u'Plus anciennes',
+            'verbose_name_dsc': u'Plus récentes',
+            'order': 3},
+        'price_max': {
+            'default_direction': '',
+            'verbose_name': 'Prix',
+            'verbose_name_asc': u'Moins chères',
+            'verbose_name_dsc': u'Plus chères'
+        },
+        'surface_min': {
+            'default_direction': '',
+            'verbose_name': 'Surface',
+            'verbose_name_asc': u'Plus petites',
+            'verbose_name_dsc': u'Plus grandes'
+        },
+    }
+
+    default_sort_field = 'modified'
 
     _valid = False
     _urlencode_get = ''
@@ -65,7 +88,7 @@ class SearchListView(ListView):
         return get
 
     def get_queryset(self):
-        q = super(SearchListView, self).get_queryset().order_by('-modified')
+        q = super(SearchListView, self).get_queryset()
         q = q.filter(transaction=self.transaction)
         data = self.request.GET.copy()
         if 'page' in data:

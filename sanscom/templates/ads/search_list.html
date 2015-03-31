@@ -133,6 +133,7 @@ Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log
     {% else %}
     Les dernières annonces de recherche <small>parmi {{ paginator.count }}</small>
     {% endif %}
+    {% if valid %}{% include 'sortable_listview/sort_links.html' %}{% endif %}
 </h3>
 {% endblock %}
 

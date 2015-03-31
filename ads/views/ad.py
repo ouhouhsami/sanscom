@@ -1,7 +1,5 @@
 #-*- coding: utf-8 -*-
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
-from sortable_listview import SortableListView
-
 
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
@@ -10,7 +8,7 @@ from django.views.generic import DetailView, DeleteView, ListView
 from ads.models import Ad, AdPicture, AdSearchRelation
 from ads.forms import EditAdForm, EditAdFormWithLogin, ContactForm, SearchAdForm, AdPictureForm
 
-from .utils import SetUserAndTransactionMixin, FillInitialForm, MessageDetailView, LoginRequiredMixin, AssureOwnerMixin
+from .utils import SetUserAndTransactionMixin, FillInitialForm, MessageDetailView, LoginRequiredMixin, AssureOwnerMixin, CustomSortableListView
 
 
 class AdPictureInline(InlineFormSet):
@@ -80,18 +78,33 @@ class DeleteAdView(LoginRequiredMixin, AssureOwnerMixin, DeleteView):
         return reverse_lazy('user_account', kwargs={'slug':slug, })
 
 
-class AdListView(SortableListView):
+class AdListView(CustomSortableListView):
     model = Ad
     paginate_by = 10
 
     transaction = None
 
     allowed_sort_fields = {
-        'modified': {'default_direction': '-', 'verbose_name': 'Date de mise en ligne', 'order': 3},
-        'price': {'default_direction': '', 'verbose_name': 'Prix'},
-        'surface': {'default_direction': '', 'verbose_name': 'Surface'},
-        'rooms': {'default_direction': '', 'verbose_name': u'Nombre de pièces'}
+        'modified': {
+            'default_direction': '-',
+            'verbose_name': 'Date de mise en ligne',
+            'verbose_name_asc': u'Plus anciennes',
+            'verbose_name_dsc': u'Plus récentes',
+            'order': 3},
+        'price': {
+            'default_direction': '',
+            'verbose_name': 'Prix',
+            'verbose_name_asc': u'Moins chères',
+            'verbose_name_dsc': u'Plus chères'
+        },
+        'surface': {
+            'default_direction': '',
+            'verbose_name': 'Surface',
+            'verbose_name_asc': u'Plus petites',
+            'verbose_name_dsc': u'Plus grandes'
+        },
     }
+
     default_sort_field = 'modified'
 
     _valid = False
