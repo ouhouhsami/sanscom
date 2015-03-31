@@ -1,5 +1,5 @@
 {% extends 'ads/list.html' %}
-{% load humanize leaflet_tags geojson_tags l10n static %}
+{% load humanize leaflet_tags geojson_tags l10n static thumbnails %}
 
 {% block css %}
 {{ block.super }}
@@ -21,16 +21,16 @@ NoRectangleGeometryField = L.GeometryField.extend({
     _controlDrawOptions: function () {
         var toolbar = L.drawLocal.draw.toolbar
         toolbar.finish = {
-                title: 'Fermer la forme',
-                text: 'Fermer'
+            title: 'Fermer la forme',
+            text: 'Fermer'
         }
         return {
             edit: {
-                 featureGroup: this.drawnItems
-            },
-            draw: {
-                polyline: this.options.is_linestring,
-                polygon: this.options.is_polygon,
+               featureGroup: this.drawnItems
+           },
+           draw: {
+            polyline: this.options.is_linestring,
+            polygon: this.options.is_polygon,
                 circle: false, // Turns off this drawing tool
                 rectangle: false, // Turns off this drawing tool too
                 marker: this.options.is_point,
@@ -61,11 +61,11 @@ current_location = _feature.getBounds();
 var field;
 
 $(window).on("map:init", function (e) {
-   var detail = e.originalEvent ?
-   e.originalEvent.detail : e.detail;
-   detail.map.on('map:loadfield', function (e) {
-       field = e.field;
-   });
+ var detail = e.originalEvent ?
+ e.originalEvent.detail : e.detail;
+ detail.map.on('map:loadfield', function (e) {
+     field = e.field;
+ });
 });
 
 </script>
@@ -298,27 +298,36 @@ $(window).on("map:init", function (e) {
 
 
 {% block search_result %}
-<tr onclick="document.location='{{ object.get_absolute_url }}';">
-    <td>
-        <a class="show-marker btn btn-default btn-xs" data-lng="{{ object.location.y|unlocalize }}" data-lat="{{ object.location.x|unlocalize }}" data-href="{{ object.get_absolute_url }}">Localiser</a>
-    </td>
-    <td>
-        <a href="{{ object.get_absolute_url }}">
-            {{ object.habitation_type }}
+
+<div class="media well well-sm ad-preview" onclick="document.location='{{ object.get_absolute_url }}';" style="background-color: white">
+    <div class="pull-right price"><h4>{{ object.price|intcomma }} €{% if rent %}/mois{% endif %}</h4></div>
+    <h4><a class="show-marker btn btn-default btn-xs" data-lng="{{ object.location.y|unlocalize }}" data-lat="{{ object.location.x|unlocalize }}" data-href="{{ object.get_absolute_url }}">Localiser</a> {% if sale %}Vente{% else %}Location{% endif %} {{ object.habitation_type|lower }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} {{ object.surface }} m<sup>2</sup> </h4>
+
+    <p><small>{{ object.modified|naturalday|title }}</small></p>
+    <div class="media-left">
+        <a href="{{ object.get_absolute_url }}" class="pull-left relative">
+            {% if object.adpicture_set.all %}
+            <img class="media-object" src="{% thumbnail object.adpicture_set.all.0.image 190 180 %}" alt="{{ object.adpicture_set.all.0.title }}">
+            <span class="label label-default bottom-right"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span> {{ object.adpicture_set.all|length }} </span>
+            {% else %}
+            <img class="media-object" src="{{ STATIC_URL }}img/no-image.png" alt="">
+            {% endif %}
         </a>
-    </td>
-    <td>
-        {{ object.price|intcomma }} €{% if rent %}/mois{% endif %}
-    </td>
-    <td>
-        {{ object.surface }} m<sup>2</sup>
-    </td>
-    <td>
-        {{ object.rooms }}
-    </td>
-</td>
-<td>
-    {{ object.modified|naturalday|title }}
-</td>
-</tr>
+    </div>
+    <div class="media-body relative">
+        <p style="color:#444">
+            {{ object.description|truncatechars:250 }}
+        </p>
+        <div>
+            <div style='position:absolute; bottom:0px;left:0px'>
+                <span class="label label-default">{{ object.rooms }} pièce{{ object.rooms|pluralize }}</span>
+                <span class="label label-default">{{ object.bedrooms }} chambre{{ object.bedrooms|pluralize }}</span>
+                <span class="label label-default">{{ object.surface }} m<sup>2</sup></span>
+            </div>
+            <div style='position:absolute; bottom:0px;right:0px'>
+                <a class="btn btn-primary" href="{{ object.get_absolute_url }}">Détails</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
