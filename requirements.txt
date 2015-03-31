@@ -11,6 +11,7 @@ django-floppyforms==1.3.0
 django-geojson==2.6.0
 -e git+https://github.com/ouhouhsami/django-leaflet.git@39eda409b4da2a52f3dfc9b96b34b0c09d73d632#egg=django_leaflet-master
 django-registration-redux==1.1
+django-sortable-listview==0.40
 ecdsa==0.13
 factory-boy==2.4.1
 geopy==1.9.1

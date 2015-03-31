@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineFormSet
+from sortable_listview import SortableListView
+
 
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
@@ -78,11 +80,19 @@ class DeleteAdView(LoginRequiredMixin, AssureOwnerMixin, DeleteView):
         return reverse_lazy('user_account', kwargs={'slug':slug, })
 
 
-class AdListView(ListView):
+class AdListView(SortableListView):
     model = Ad
     paginate_by = 10
 
     transaction = None
+
+    allowed_sort_fields = {
+        'modified': {'default_direction': '-', 'verbose_name': 'Date de mise en ligne', 'order': 3},
+        'price': {'default_direction': '', 'verbose_name': 'Prix'},
+        'surface': {'default_direction': '', 'verbose_name': 'Surface'},
+        'rooms': {'default_direction': '', 'verbose_name': u'Nombre de pièces'}
+    }
+    default_sort_field = 'modified'
 
     _valid = False
     _total = False
@@ -97,7 +107,7 @@ class AdListView(ListView):
         return get
 
     def get_queryset(self):
-        q = super(AdListView, self).get_queryset().order_by('-modified')
+        q = super(AdListView, self).get_queryset() #.order_by('-modified')
         # Filter by transaction (sale or rent)
         q = q.select_related('habitation_type')
         q = q.filter(transaction=self.transaction)
