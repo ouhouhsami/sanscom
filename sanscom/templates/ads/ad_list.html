@@ -19,9 +19,14 @@ Override _controlDrawOptions to prevent rectangle draw
 */
 NoRectangleGeometryField = L.GeometryField.extend({
     _controlDrawOptions: function () {
+        var toolbar = L.drawLocal.draw.toolbar
+        toolbar.finish = {
+                title: 'Fermer la forme',
+                text: 'Fermer'
+        }
         return {
             edit: {
-                featureGroup: this.drawnItems
+                 featureGroup: this.drawnItems
             },
             draw: {
                 polyline: this.options.is_linestring,
@@ -29,8 +34,9 @@ NoRectangleGeometryField = L.GeometryField.extend({
                 circle: false, // Turns off this drawing tool
                 rectangle: false, // Turns off this drawing tool too
                 marker: this.options.is_point,
+                toolbar: toolbar
             }
-        };
+        }
     }
 });
 
