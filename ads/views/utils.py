@@ -147,13 +147,9 @@ class CustomSortableListView(SortableListView):
         """
         to_remove = self.get_querystring_parameter_to_remove()
         query_dict = self.request.GET.copy()
-        #query_string = urlparse(self.request.get_full_path()).query
-        #query_dict = parse_qs(query_string)
         for arg in to_remove:
             if arg in query_dict:
                 query_dict.pop(arg)
-        #clean_query_string = urlencode(query_dict, doseq=True)
-        #return clean_query_string
         return query_dict.urlencode()
 
     def get_sort_link_list(self, request):
