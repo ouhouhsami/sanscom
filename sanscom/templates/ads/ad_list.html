@@ -199,7 +199,7 @@ $(window).on("map:init", function (e) {
 <div class="col-md-4">
 
     <div class="form-group {% if form.habitation_types.errors %}has-error{% endif %}">
-        <label class="control-label">Types d'habitations</label>
+        <label class="control-label">{{ form.habitation_types.label }}</label>
         {{ form.habitation_types }}
         {% if form.habitation_types.errors %}
         <p class="text-danger">
