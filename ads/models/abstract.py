@@ -17,5 +17,17 @@ class BaseModel(TimeStampedModel):
     user = models.ForeignKey(User)
     transaction = models.CharField(choices=TRANSACTION_CHOICES, max_length=4)
 
+    @property
+    def sale(self):
+        if self.transaction == 'sale':
+            return True
+        return False
+
+    @property
+    def rent(self):
+        if self.transaction == 'rent':
+            return True
+        return False
+
     class Meta:
         abstract = True

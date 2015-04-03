@@ -151,29 +151,6 @@ Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log
 
 {% block search_result %}
 
-<div class="media well well-sm ad-preview" onclick="document.location='{{ object.get_absolute_url }}';" style="background-color: white">
-    <div class="pull-right price"><h4>{{ object.price_max|intcomma }} €{% if rent %}/mois{% endif %} max.</h4></div>
-    <h4> {% if sale %}Achat{% else %}Location{% endif %} {{ object.habitation_types.all|join:', '|lower }} {{ object.rooms_min }} pièce{{ object.rooms|pluralize }} min. {{ object.surface_min }} m<sup>2</sup> min. </h4>
-
-    <p><small>{{ object.modified|naturalday|title }}</small></p>
-
-    <div class="media-body relative">
-        <p style="color:#444">
-            {{ object.description|truncatechars:250 }}
-        </p>
-        <div>
-            <div class="pull-left">
-                <span class="label label-default">{{ object.rooms_min }} pièce{{ object.rooms_min|pluralize }} min.</span>
-                {% if object.bedrooms_min %}
-                <span class="label label-default">{{ object.bedrooms_min }} chambre{{ object.bedrooms_min|pluralize }} min.</span>
-                {% endif %}
-                <span class="label label-default">{{ object.surface_min }} m<sup>2</sup> min.</span>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary" href="{{ object.get_absolute_url }}">Détails</a>
-            </div>
-        </div>
-    </div>
-</div>
+{% include "ads/search_preview.html" with object=object %}
 
 {% endblock %}

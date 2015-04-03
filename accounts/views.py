@@ -18,6 +18,8 @@ class UserAccount(DetailView):
         context['sales'] = Ad.objects.filter(user=user_profile.user, transaction="sale")
         context['rent_searches'] = Search.objects.filter(user=user_profile.user, transaction="rent")
         context['sale_searches'] = Search.objects.filter(user=user_profile.user, transaction="sale")
+        if user_profile.user == self.request.user:
+            context['owner'] = True
         return context
 
 
