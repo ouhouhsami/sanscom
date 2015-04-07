@@ -1,0 +1,17 @@
+{% load humanize leaflet_tags geojson_tags l10n static thumbnails %}
+
+<div class="col-sm-6 col-md-4">
+    <div class="thumbnail ">
+        <a href="{{ object.get_absolute_url }}" class="relative">
+            {% if object.adpicture_set.all %}
+            <img class="media-object" src="{% thumbnail object.adpicture_set.all.0.image 190 180 %}" alt="{{ object.adpicture_set.all.0.title }}" />
+            {% else %}
+            <img class="media-object" src="{{ STATIC_URL }}img/no-image.png" alt="" />
+            {% endif %}
+            <span class="label label-info top-left"><span style="font-size:1.4em">{{ object.price|intcomma }} €</span> </span>
+        </a>
+        <div class="caption">
+            <p class="small"><small>{{ object.habitation_type }}, {{ object.rooms }} pièce{{ object.rooms|pluralize }}, {{ object.surface }}</span> m<sup>2</sup></small></p>
+        </div>
+    </div>
+</div>

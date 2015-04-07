@@ -26,6 +26,16 @@ def geo_from_address(address):
         raise WrongAddressError
 
 
+def json_from_address(address):
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=true&key=%s" % (address, GOOGLE_KEY_API)
+    r = requests.get(url)
+    try:
+        json = r.json()
+        return json
+    except:
+        raise WrongAddressError
+
+
 def address_from_geo(lat, lng):
     url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=%s,%s&sensor=true&key=%s" % (lat, lng, GOOGLE_KEY_API)
     #url = "http://nominatim.openstreetmap.org/reverse?format=json&lat=%s&lon=%s" % (lat, lng)

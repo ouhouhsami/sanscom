@@ -1,0 +1,12 @@
+{% load humanize l10n static %}
+
+<div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+        <a href="{{ object.get_absolute_url }}">
+        <div class="caption">
+            <span class="label label-info">{{ object.price_max|intcomma }} €{% if object.rent %}/mois{% endif %} max.</span>
+            <p class="small"><small>{{ object.habitation_types.all|join:', '|title }}, {{ object.rooms_min }} pièce{{ object.rooms|pluralize }} min., {{ object.surface_min }} m<sup>2</sup> min. </small></p>
+        </div>
+        </a>
+    </div>
+</div>
