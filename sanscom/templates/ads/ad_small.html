@@ -1,18 +1,18 @@
 {% load humanize leaflet_tags geojson_tags l10n static thumbnails %}
 
-<div class="col-sm-6 col-md-4">
-    <div class="thumbnail ">
-        <a href="{{ object.get_absolute_url }}" class="relative">
-            {% if object.adpicture_set.all %}
-            <img class="media-object" src="{% thumbnail object.adpicture_set.all.0.image 190 180 %}" alt="{{ object.adpicture_set.all.0.title }}" />
+<div class="ad-small" onclick="document.location='{{ object.get_absolute_url }}';">
+    <div class="picture">
+        {% if object.adpicture_set.all %}
+            <img src="{% thumbnail object.adpicture_set.all.0.image 190 180 %}" alt="{{ object.adpicture_set.all.0.title }}" />
             {% else %}
-            <img class="media-object" src="{{ STATIC_URL }}img/no-image.png" alt="" />
+            <img src="{{ STATIC_URL }}img/no-image.png" alt="" />
             {% endif %}
-            <span class="label label-info top-left"><span style="font-size:1.4em">{{ object.price|intcomma }} €</span> </span>
-        </a>
-        <div class="caption">
-            <p class="small"><b>{{ object.district }}</b></p>
-            <p class="small"><small>{{ object.habitation_type }}, {{ object.rooms }} pièce{{ object.rooms|pluralize }}, {{ object.surface }}</span> m<sup>2</sup></small></p>
-        </div>
+        <div class="price">{{ object.price|intcomma }} €</div>
+    </div>
+    <div class="district">
+        {{ object.district }}
+    </div>
+    <div class="summary">
+        {{ object.habitation_type }}, {{ object.rooms }} pièce{{ object.rooms|pluralize }}, {{ object.surface }}</span> m²
     </div>
 </div>

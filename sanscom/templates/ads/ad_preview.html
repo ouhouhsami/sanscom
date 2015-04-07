@@ -1,48 +1,55 @@
 {% load humanize leaflet_tags geojson_tags l10n static thumbnails %}
 
-<div class="media well well-sm ad-preview" onclick="document.location='{{ object.get_absolute_url }}';" style="background-color: white">
-    <div class="pull-right price"><h4>{{ object.price|intcomma }} €{% if object.rent %}/mois{% endif %}</h4></div>
-    <h4>{% if map %}<a class="show-marker btn btn-default btn-xs" data-lng="{{ object.location.y|unlocalize }}" data-lat="{{ object.location.x|unlocalize }}" data-href="{{ object.get_absolute_url }}">Localiser</a> {% endif %} {% if object.sale %}Vente{% else %}Location{% endif %} {{ object.habitation_type|lower }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} {{ object.surface }} m<sup>2</sup> {{ object.locality }}</h4>
-
-    <p><small>{{ object.modified|naturalday|title }}</small></p>
-    <div class="media-left">
-        <a href="{{ object.get_absolute_url }}" class="pull-left relative">
-            {% if object.adpicture_set.all %}
-            <img class="media-object" src="{% thumbnail object.adpicture_set.all.0.image 190 180 %}" alt="{{ object.adpicture_set.all.0.title }}">
-            <span class="label label-info bottom-right"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span> <br /> <span style="font-size:1.4em">{{ object.adpicture_set.all|length }}</span> </span>
-            {% else %}
-            <img class="media-object" src="{{ STATIC_URL }}img/no-image.png" alt="">
+<div class="ad-preview" onclick="document.location='{{ object.get_absolute_url }}';">
+    <div class="header">
+        <div class="title">
+            {% if map %}
+            <a class="show-marker localize_bt" data-lng="{{ object.location.y|unlocalize }}" data-lat="{{ object.location.x|unlocalize }}" data-href="{{ object.get_absolute_url }}">Localiser</a>
             {% endif %}
-        </a>
+            {% if object.sale %}Vente{% else %}Location{% endif %} {{ object.habitation_type|lower }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} {{ object.surface }} m² {{ object.locality }}
+        </div>
+        <div class="price">
+            {{ object.price|intcomma }} €{% if object.rent %}/mois{% endif %}
+        </div>
     </div>
-    <div class="media-body relative">
-        <p style="color:#555">
-            <b>{{ object.district }}.</b> {{ object.description|truncatechars:250 }}
-        </p>
-        <div>
-            <div style='position:absolute; bottom:0px;left:0px'>
-                <div class="label label-info" style="display:inline-block">Pièce{{ object.rooms|pluralize }}<br /> <span style="font-size:1.4em">{{ object.rooms }}</span></div>
-                <div class="label label-info" style="display:inline-block">Chambre{{ object.bedrooms|pluralize }} <br /><span style="font-size:1.4em">{{ object.bedrooms }} </span></div>
-                <div class="label label-info" style="display:inline-block">Surface <br /><span style="font-size:1.4em">{{ object.surface }}</span> m<sup>2</sup></div>
+    <div class="subtitle">{{ object.modified|naturalday|title }}</div>
+    <div class="content">
+        <div class="picture">
+            {% if object.adpicture_set.all %}
+            <img src="{% thumbnail object.adpicture_set.all.0.image 190 180 %}" alt="{{ object.adpicture_set.all.0.title }}">
+            <div class="item picture-number">Photo{{ object.adpicture_set.all|length|pluralize }}<br/><span class="value">{{ object.adpicture_set.all|length }}</span></div>
+            {% else %}
+            <img src="{{ STATIC_URL }}img/no-image.png" alt="">
+            {% endif %}
+        </div>
+        <div class="detail">
+            <div class="description">
+                <span class="district">{{ object.district }}.</span>
+                {{ object.description|truncatechars:250 }}
             </div>
-            <div style='position:absolute; bottom:0px;right:0px'>
+            <div class="focus">
+                <div class="item">Pièce{{ object.rooms|pluralize }}<br/><span class="value">{{ object.rooms }}</span></div>
+                <div class="item">Chambre{{ object.bedrooms|pluralize }}<br/><span class="value">{{ object.bedrooms }}</span></div>
+                <div class="item">Surface<br/><span class="value">{{ object.surface }}</span> m²</div>
                 {% if manage %}
-                {{ object.interested_count }} acheteur{{ object.interested_count|pluralize }} interessé{{ object.interested_count|pluralize }}
-                {{ object.contacted_count }} acheteur{{ object.contacted_count|pluralize }} contacté{{ object.contacted_count|pluralize }}
-                {{ object.approached_count }} acheteur{{ object.approached_count|pluralize }} vous a contacté
-                <br>
-                <div class="btn-group">
-                    {% endif %}
-                <a class="btn btn-primary btn-sm" href="{{ object.get_absolute_url }}">Détails</a>
-                {% if manage %}
-                <a class="btn btn-default btn-sm" href="{% if object.sale %}{% url 'sale:ads_ad_update' object.slug %}{% endif %}{% if object.rent %}{% url 'rent:ads_ad_update' object.slug %}{% endif %}">
-                    Modifier
-                </a>
-                <a class="btn btn-danger btn-sm" href="{% if object.sale %}{% url 'sale:ads_ad_delete' object.slug %}{% endif %}{% if object.rent %}{% url 'rent:ads_ad_delete' object.slug %}{% endif %}">
-                    Supprimer
-                </a>
+                <div class="item">
+                Contacté{{ object.contacts|length|pluralize }}
+                <br/><span class="value">{{ object.contacts|length }}/{{ object.interested_count }}</span>
                 </div>
                 {% endif %}
+                <div class="actions">
+                    <a href="{{ object.get_absolute_url }}">
+                        Détails
+                    </a>
+                    {% if manage %}
+                    <a href="{% if object.sale %}{% url 'sale:ads_ad_update' object.slug %}{% endif %}{% if object.rent %}{% url 'rent:ads_ad_update' object.slug %}{% endif %}">
+                        Modifier
+                    </a>
+                    <a href="{% if object.sale %}{% url 'sale:ads_ad_delete' object.slug %}{% endif %}{% if object.rent %}{% url 'rent:ads_ad_delete' object.slug %}{% endif %}">
+                        Supprimer
+                    </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

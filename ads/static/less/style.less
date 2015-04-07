@@ -30,7 +30,7 @@
 
 
 .container h2, .container h3, .container h4 {
-    font-family: TypoSlabserif,sans-serif;
+    font-family: "Open Sans",Helvetica,Arial,sans-serif;
     font-weight: bold;
 }
 
@@ -185,3 +185,164 @@ input[type=file]{
 @-moz-document url-prefix() {
   fieldset { display: table-cell; }
 }
+
+
+/* flexbox */
+
+html {
+    font-family: Arial
+}
+
+
+/* .ad-preview */
+
+/* Positions */
+
+
+.ad-preview, .ad-small, .search-small {
+  background-color:white;
+  padding:10px;
+  border:2px solid #eee;
+  margin-bottom: 10px;
+}
+
+.small-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.ad-preview .header {
+    display: flex;
+}
+
+.ad-preview .subtitle {
+    display: flex;
+}
+
+.ad-preview .content {
+    display: flex;
+}
+
+
+.ad-preview .header .title {
+    flex: 4;
+}
+
+.ad-preview .header .price {
+    flex: 1;
+    margin-top: auto;
+    text-align: right;
+}
+
+
+.ad-preview .content .picture {
+    flex: 1;
+    position: relative;
+}
+
+.ad-preview .content .picture img {
+    max-width: 100%;
+    padding-right:10px;
+}
+
+.ad-preview .content .picture .picture-number {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+}
+
+.ad-preview .content .detail {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+
+}
+.ad-preview .content .detail .focus {
+    display: flex;
+    margin-top: auto;
+}
+
+.ad-preview .content .detail .focus .actions {
+    margin-left: auto;
+    display: flex;
+}
+
+/* Style */
+
+.value {
+    font-size: 1.4em;
+}
+
+.item {
+    text-align: center;
+    font-size: 0.85em;
+    padding:4px;
+    background-color: #f4f4f4;
+    margin-right:2px;
+}
+
+.actions a, a.localize_bt {
+  text-align: center;
+  background-color: #f4f4f4;
+  padding:4px;
+  margin-right:2px;
+}
+
+
+
+.subtitle {
+    font-size: 0.8em;
+    margin-bottom: 10px;
+}
+
+.localize_bt {
+  font-size:0.8em;
+  font-weight: normal;
+}
+
+.ad-preview .district {
+    font-weight: bold;
+}
+
+.ad-preview .header .title, .ad-preview .header, .ad-preview .header .price {
+    &:extend(h4);
+    font-family: "Open Sans",Helvetica,Arial,sans-serif;
+    font-size: 1.2em;
+    font-weight: 200;
+    margin-top:0px;
+    margin-bottom: 2px;
+}
+
+.ad-preview .header .price {
+  font-weight: 700;
+}
+
+/* ad-small */
+
+.ad-small, .search-small {
+    display: flex;
+    flex-direction: column;
+    /*width: 234px;*/
+}
+
+.ad-small .picture {
+    position: relative;
+}
+
+.ad-small .picture .price {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.ad-small .district {
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.ad-small .summary {
+    font-size: 0.8em;
+}
+
+

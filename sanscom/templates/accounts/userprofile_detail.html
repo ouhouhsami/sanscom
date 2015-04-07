@@ -19,7 +19,7 @@ $(function(){
 
 <div class="row">
 
-    <div class="col-md-8">
+    <div class="col-lg-8 col-md-9">
         {% if user == object.user %}
 
         <div class="panel panel-default">
@@ -85,30 +85,6 @@ $(function(){
             {% for ad in sales %}
             {% include "ads/ad_preview.html" with object=ad manage=owner %}
 
-            {% comment %}
-            {% if owner %}
-            <div class="row">
-                {% for asr in ad.adsearchrelation_set.all %}
-                {% if asr.valid %}
-
-                {% include "ads/search_small.html" with object=asr.search %}
-
-                {% if asr.search_contacted %}
-                Vous avez déjà contacté l'acheteur
-                {% endif %}
-                {% if asr.ad_contacted %}
-                Vous avez été contacté par l'acheteur
-                {% endif %}
-                <a href="{% url 'sale:ads_search_detail' asr.search.slug %}#contact">
-                    Contactez l'acheteur
-                </a>
-                {% endif %}
-                {% endfor %}
-            </div>
-            <hr>
-
-            {% endif %}
-            {% endcomment %}
             {% endfor %}
             {% endif %}
             {% if owner %}
@@ -127,28 +103,6 @@ $(function(){
 
             {% for ad in rentals %}
             {% include "ads/ad_preview.html" with object=ad manage=owner %}
-            {% comment %}
-            {% if owner %}
-            <div class="row">
-                {% for asr in ad.adsearchrelation_set.all %}
-                {% if asr.valid %}
-
-                {% include "ads/search_small.html" with object=asr.search %}
-
-                {% if asr.search_contacted %}
-                Vous avez déjà contacté l'acheteur
-                {% endif %}
-                {% if asr.ad_contacted %}
-                Vous avez été contacté par l'acheteur
-                {% endif %}
-                <a href="{% url 'sale:ads_search_detail' asr.search.slug %}#contact">
-                    Contactez l'acheteur
-                </a>
-                {% endif %}
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endcomment %}
             {% endfor %}
             {% endif %}
             {% if owner %}
@@ -168,36 +122,6 @@ $(function(){
             {% for search in sale_searches %}
 
             {% include "ads/search_preview.html" with object=search manage=owner %}
-            {% comment %}
-            <div class="row">
-
-                {% for asr in search.adsearchrelation_set.all %}
-                {% if asr.valid %}
-                {% include 'ads/ad_small.html' with object=asr.ad %}
-
-                <tr>
-                    <td>
-                        <a href="{% url 'sale:ads_ad_detail' asr.ad.slug %}">
-                            {{ asr.ad }}
-                        </a>
-                    </td>
-                    <td>
-                        {% if asr.ad_contacted %}
-                        Vous avez déjà contacté le vendeur
-                        {% endif %}
-                        {% if asr.search_contacted %}
-                        Vous avez été contacté par le vendeur
-                        {% endif %}
-                        <a href="{% url 'sale:ads_ad_detail' asr.ad.slug %}#contact">
-                            Contactez le vendeur
-                        </a>
-                    </td>
-                </tr>
-
-                {% endif %}
-                {% endfor %}
-            </div>
-            {% endcomment %}
             {% endfor %}
 
             {% endif %}
@@ -217,28 +141,6 @@ $(function(){
 
             {% for search in rent_searches %}
             {% include "ads/search_preview.html" with object=search manage=owner %}
-            {% comment %}
-            {% if owner %}
-            <div class="row">
-                {% for asr in search.adsearchrelation_set.all %}
-                {% if asr.valid %}
-
-                {% include "ads/ad_small.html" with object=asr.search %}
-
-                {% if asr.ad_contacted %}
-                Vous avez déjà contacté le vendeur
-                {% endif %}
-                {% if asr.search_contacted %}
-                Vous avez été contacté par le vendeur
-                {% endif %}
-                <a href="{% url 'rent:ads_ad_detail' asr.ad.slug %}#contact">
-                    Contactez le vendeur
-                </a>
-                {% endif %}
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endcomment %}
             {% endfor %}
 
             {% if owner %}

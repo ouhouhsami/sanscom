@@ -46,8 +46,8 @@ function map_init_basic (map, options) {
     </div>
 
     {% if object.no_contacts %}
-    <div class="row">
     <h4>Vendeurs potentiels non contactés</h4>
+    <div class="small-container">
     {% for asr in object.no_contacts %}
     {% include "ads/ad_small.html" with object=asr.ad %}
     {% endfor %}
@@ -55,8 +55,9 @@ function map_init_basic (map, options) {
     {% endif %}
 
     {% if object.contacts %}
-    <div class="row">
+
     <h4>Vendeurs potentiels avec qui vous avez eu un échange</h4>
+      <div class="small-container">
     {% for asr in object.contacts %}
     {% include "ads/ad_small.html" with object=asr.ad %}
     {% endfor %}
