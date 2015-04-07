@@ -1,4 +1,5 @@
 @import "../bootstrap/less/bootstrap.less";
+@import "flexbox.less";
 
 @link-color: #20B2AB;
 @secondColor: #FFB82E;
@@ -62,11 +63,6 @@
   background-color: @brand-primary;
 }
 
-/*
-h2 {
-  font-family: TypoSlabserif,sans-serif;
-}
-*/
 
 #search_header {
   background-color: @secondColor;
@@ -207,37 +203,29 @@ html {
 }
 
 .small-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  .flex-display;
+  .flex-wrap(wrap);
+  .justify-content(space-between);
 }
 
-.ad-preview .header {
-    display: flex;
-}
-
-.ad-preview .subtitle {
-    display: flex;
-}
-
-.ad-preview .content {
-    display: flex;
+.ad-preview .content, .ad-preview .subtitle, .ad-preview .header {
+    .flex-display;
 }
 
 
 .ad-preview .header .title {
-    flex: 4;
+    .flex(4);
 }
 
 .ad-preview .header .price {
-    flex: 1;
+    .flex(1);
     margin-top: auto;
     text-align: right;
 }
 
 
 .ad-preview .content .picture {
-    flex: 1;
+    .flex(1);
     position: relative;
 }
 
@@ -253,19 +241,19 @@ html {
 }
 
 .ad-preview .content .detail {
-    flex: 3;
-    display: flex;
-    flex-direction: column;
+    .flex(3);
+    .flex-display;
+    .flex-direction(column);
 
 }
 .ad-preview .content .detail .focus {
-    display: flex;
+    .flex-display;
     margin-top: auto;
 }
 
 .ad-preview .content .detail .focus .actions {
     margin-left: auto;
-    display: flex;
+    .flex-display;
 }
 
 /* Style */
@@ -323,8 +311,8 @@ html {
 /* ad-small */
 
 .ad-small, .search-small {
-    display: flex;
-    flex-direction: column;
+    .flex-display;
+    .flex-direction(column);
     /*width: 234px;*/
 }
 

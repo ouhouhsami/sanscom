@@ -17,7 +17,9 @@
             </div>
             <div class="focus">
                 <div class="item">Pièce{{ object.rooms_min|pluralize }}<br/><span class="value">{{ object.rooms_min }}</span> min.</div>
+                {% if object.bedrooms_min %}
                 <div class="item">Chambre{{ object.bedrooms_min|pluralize }}<br/><span class="value">{{ object.bedrooms_min }}</span> min.</div>
+                {% endif %}
                 <div class="item">Surface<br/><span class="value">{{ object.surface_min }}</span> m² min.</div>
                 {% if manage %}
                 <div class="item">
