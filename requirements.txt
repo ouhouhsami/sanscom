@@ -15,6 +15,7 @@ django-sortable-listview==0.40
 ecdsa==0.13
 factory-boy==2.4.1
 geopy==1.9.1
+jsonfield==1.0.3
 mock==1.0.1
 numpy==1.9.2
 paramiko==1.15.2

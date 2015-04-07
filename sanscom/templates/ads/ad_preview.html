@@ -2,7 +2,7 @@
 
 <div class="media well well-sm ad-preview" onclick="document.location='{{ object.get_absolute_url }}';" style="background-color: white">
     <div class="pull-right price"><h4>{{ object.price|intcomma }} €{% if object.rent %}/mois{% endif %}</h4></div>
-    <h4>{% if map %}<a class="show-marker btn btn-default btn-xs" data-lng="{{ object.location.y|unlocalize }}" data-lat="{{ object.location.x|unlocalize }}" data-href="{{ object.get_absolute_url }}">Localiser</a> {% endif %} {% if object.sale %}Vente{% else %}Location{% endif %} {{ object.habitation_type|lower }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} {{ object.surface }} m<sup>2</sup> </h4>
+    <h4>{% if map %}<a class="show-marker btn btn-default btn-xs" data-lng="{{ object.location.y|unlocalize }}" data-lat="{{ object.location.x|unlocalize }}" data-href="{{ object.get_absolute_url }}">Localiser</a> {% endif %} {% if object.sale %}Vente{% else %}Location{% endif %} {{ object.habitation_type|lower }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} {{ object.surface }} m<sup>2</sup> {{ object.locality }}</h4>
 
     <p><small>{{ object.modified|naturalday|title }}</small></p>
     <div class="media-left">
@@ -17,7 +17,7 @@
     </div>
     <div class="media-body relative">
         <p style="color:#555">
-            {{ object.description|truncatechars:250 }}
+            <b>{{ object.district }}.</b> {{ object.description|truncatechars:250 }}
         </p>
         <div>
             <div style='position:absolute; bottom:0px;left:0px'>

@@ -179,7 +179,7 @@ class EditAdForm(forms.ModelForm):
 
     class Meta:
         model = Ad
-        exclude = ('user', 'location', 'transaction')
+        exclude = ('user', 'location', 'transaction', 'json_address')
         widgets = {
             'address': forms.TextInput(),
             'price': forms.TextInput(),

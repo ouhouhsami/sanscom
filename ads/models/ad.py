@@ -1,6 +1,8 @@
 #-*- coding: utf-8 -*-
 from PIL import Image
 
+import json
+
 from django.db import models
 from django.db.models import Q
 from django.contrib.gis.db import models
@@ -9,7 +11,9 @@ from django.utils.translation import ugettext as _
 
 from django_extensions.db.fields import AutoSlugField
 
-from ads.utils import geo_from_address
+from jsonfield import JSONField
+
+from ads.utils import geo_from_address, json_from_address
 
 from .abstract import BaseModel
 from .choices import ENERGY_CONSUMPTION_CHOICES, EMISSION_OF_GREENHOUSE_GASES_CHOICES, HEATING_CHOICES, FIREPLACE_CHOICES, PARKING_CHOICES
@@ -38,6 +42,7 @@ class Ad(BaseModel):
     slug = AutoSlugField(_('slug'), populate_from='slug_format')
     location = models.PointField(u"Localisation")
     address = models.CharField(_(u"Adresse"), max_length=255)
+    json_address = JSONField()
     price = models.PositiveIntegerField(_(u"Prix"))
     habitation_type = models.ForeignKey(HabitationType, verbose_name="Type de bien")
     surface = models.IntegerField(_(u"Surface habitable"))
@@ -99,6 +104,7 @@ class Ad(BaseModel):
 
     def save(self, *args, **kwargs):
         self.location = geo_from_address(self.address)
+        self.json_address = json_from_address(self.address)
         super(Ad, self).save(*args, **kwargs)
 
     def _get_slug_format(self):
@@ -140,6 +146,30 @@ class Ad(BaseModel):
     @property
     def contacts(self):
         return self.adsearchrelation_set.all().filter(valid=True).filter(Q(ad_contacted__isnull=False) | Q(search_contacted__isnull=False))
+
+    @property
+    def district(self):
+        address_components = self.json_address['results'][0]['address_components']
+        for component in address_components:
+            if "locality" in component["types"]:
+                locality = component["long_name"]
+            if "postal_code" in component["types"]:
+                postal_code = component["long_name"]
+        if locality and postal_code:
+            return u"%s, %s" % (locality, postal_code)
+        else:
+            return False
+
+    @property
+    def locality(self):
+        address_components = self.json_address['results'][0]['address_components']
+        for component in address_components:
+            if "locality" in component["types"]:
+                locality = component["long_name"]
+        if locality:
+            return u"%s" % locality
+        else:
+            return False
 
     def __unicode__(self):
         unity = u'€'

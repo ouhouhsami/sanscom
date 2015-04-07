@@ -39,7 +39,7 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
 
 {% block content %}
 
-<h2 class="page-header">{% if sale %}Vente{% endif %}{% if rent %}Location{% endif %} {{ object.habitation_type }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} ({{ object.bedrooms }} ch.) {{ object.surface }}m² {{ object.price|intcomma }} €{% if rent %}/mois{% endif %}</h2>
+<h2 class="page-header">{% if sale %}Vente{% endif %}{% if rent %}Location{% endif %} {{ object.habitation_type }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} ({{ object.bedrooms }} ch.) {{ object.surface }}m² {{ object.price|intcomma }} €{% if rent %}/mois{% endif %} {{ object.locality }}</h2>
 <p class="small">
     Mise en ligne par <a href="{% url 'user_account' object.user.username %}">{{ object.user }}</a> le {{ object.created|date:"SHORT_DATETIME_FORMAT" }}{#, modifié le {{ object.modified }}#}
 </p>
@@ -131,7 +131,7 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
 
         {% if object.description %}
         <div>
-        <h3>Informations complémentaires</h3>
+        <h3>{{ object.district }}</h3>
         {{ object.description|linebreaks }}
         </div>
         {% endif %}
