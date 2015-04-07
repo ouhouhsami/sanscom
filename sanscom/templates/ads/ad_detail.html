@@ -46,6 +46,32 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
 
 {% leaflet_map "map" callback="window.map_init_basic"%} <br />
 
+{% if owner %}
+
+    <div class="alert alert-info">
+        Vous avez mis en ligne cette annonce, {% if sale %}<a href="{% url 'sale:ads_ad_update' object.slug %}" class="alert-link">{% endif %}{% if rent %}<a href="{% url 'rent:ads_ad_update' object.slug %}" class="alert-link">{% endif %}vous pouvez si besoin la modifier</a>.
+    </div>
+
+    {% if object.no_contacts %}
+    <div class="row">
+    <h4>Acheteurs potentiels non contactés</h4>
+    {% for asr in object.no_contacts %}
+    {% include "ads/search_small.html" with object=asr.search %}
+    {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if object.contacts %}
+    <div class="row">
+    <h4>Acheteurs potentiels avec qui vous avez eu un échange</h4>
+    {% for asr in object.contacts %}
+    {% include "ads/search_small.html" with object=asr.search %}
+    {% endfor %}
+    </div>
+    {% endif %}
+
+{% endif %}
+
 <div class="row">
 
     <div class="col-md-6">
@@ -125,9 +151,6 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
 
 
     {% if owner %}
-    <div class="alert alert-info">
-        Vous avez mis en ligne cette annonce, {% if sale %}<a href="{% url 'sale:ads_ad_update' object.slug %}" class="alert-link">{% endif %}{% if rent %}<a href="{% url 'rent:ads_ad_update' object.slug %}" class="alert-link">{% endif %}vous pouvez si besoin la modifier</a>.
-    </div>
     {% else %}
 
     {% if user.is_authenticated %}

@@ -30,11 +30,42 @@ function map_init_basic (map, options) {
 
 {% block content %}
 
+
 <h2 class="page-header">Recherche {{ object.habitation_types.all|join:', ' }} {% if object.rooms_min %}{{ object.rooms_min }} pièce{{ object.rooms_min|pluralize }} min.{% endif %} {{ object.surface_min }}m² min. {{ object.price_max|intcomma }} € max.</h2>
+
 <p  class="small">
     Mise en ligne par <a href="{% url 'user_account' object.user.username %}">{{ object.user }}</a> le {{ object.created|date:"SHORT_DATE_FORMAT" }} à {{ object.created|time:'H:i' }}{#, modifié le {{ object.modified|date:"SHORT_DATE_FORMAT" }} à {{ object.modified|time:"H:i" }}#}
 </p>
+
 {% leaflet_map "map" callback="window.map_init_basic"%}<br />
+
+{% if owner %}
+
+    <div class="alert alert-info">
+        Vous avez mis en ligne cette recherche, {% if sale %}<a href="{% url 'sale:ads_search_update' object.slug %}" class="alert-link">{% endif %}{% if rent %}<a href="{% url 'rent:ads_search_update' object.slug %}" class="alert-link">{% endif %}vous pouvez si besoin la modifier</a>.
+    </div>
+
+    {% if object.no_contacts %}
+    <div class="row">
+    <h4>Vendeurs potentiels non contactés</h4>
+    {% for asr in object.no_contacts %}
+    {% include "ads/ad_small.html" with object=asr.ad %}
+    {% endfor %}
+</div>
+    {% endif %}
+
+    {% if object.contacts %}
+    <div class="row">
+    <h4>Vendeurs potentiels avec qui vous avez eu un échange</h4>
+    {% for asr in object.contacts %}
+    {% include "ads/ad_small.html" with object=asr.ad %}
+    {% endfor %}
+</div>
+    {% endif %}
+
+{% endif %}
+
+
 
 <div class="row">
 
@@ -82,9 +113,7 @@ function map_init_basic (map, options) {
 
 
     {% if owner %}
-    <div class="alert alert-info">
-        Vous avez mis en ligne cette recherche, {% if sale %}<a href="{% url 'sale:ads_search_update' object.slug %}" class="alert-link">{% endif %}{% if rent %}<a href="{% url 'rent:ads_search_update' object.slug %}" class="alert-link">{% endif %}vous pouvez si besoin la modifier</a>.
-    </div>
+
     {% else %}
 
         {% if user.is_authenticated %}

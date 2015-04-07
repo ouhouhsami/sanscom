@@ -2,6 +2,7 @@
 from PIL import Image
 
 from django.db import models
+from django.db.models import Q
 from django.contrib.gis.db import models
 from django.contrib.gis import geos
 from django.utils.translation import ugettext as _
@@ -107,6 +108,38 @@ class Ad(BaseModel):
     def _get_search_query(self):
         return '?price_max=%s&surface_min=%s&location=%s' % (self.price, self.surface, geos.MultiPolygon(self.location.buffer(0.015)))
     search_query = property(_get_search_query)
+
+    @property
+    def interested_count(self):
+        return self.interested.count()
+
+    @property
+    def contacted_count(self):
+        return self.contacted.count()
+
+    @property
+    def approached_count(self):
+        return self.approached.count()
+
+    @property
+    def interested(self):
+        return self.adsearchrelation_set.all().filter(valid=True)
+
+    @property
+    def contacted(self):
+        return self.adsearchrelation_set.all().filter(valid=True).filter(search_contacted__isnull=False)
+
+    @property
+    def approached(self):
+        return self.adsearchrelation_set.all().filter(valid=True).filter(ad_contacted__isnull=False)
+
+    @property
+    def no_contacts(self):
+        return self.adsearchrelation_set.all().filter(valid=True).filter(ad_contacted__isnull=True).filter(search_contacted__isnull=True)
+
+    @property
+    def contacts(self):
+        return self.adsearchrelation_set.all().filter(valid=True).filter(Q(ad_contacted__isnull=False) | Q(search_contacted__isnull=False))
 
     def __unicode__(self):
         unity = u'€'
