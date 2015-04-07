@@ -47,112 +47,111 @@ $(function(){
     <div role="tabpanel">
 
       <ul class="nav nav-tabs" role="tablist">
-        {% if sales %}
         <li role="presentation" class="active">
             <a href="#sale" aria-controls="home" role="tab" data-toggle="tab">
                 A vendre
             </a>
         </li>
-        {% endif %}
-         {% if rentals %}
         <li role="presentation">
             <a href="#rent" aria-controls="rent" role="tab" data-toggle="tab">
                 A louer
             </a>
         </li>
-        {% endif %}
-        {% if sale_searches %}
         <li role="presentation">
             <a href="#sale_search" aria-controls="sale_search" role="tab" data-toggle="tab">
                 Recherche achat
             </a>
         </li>
-        {% endif %}
-        {% if rent_searches %}
         <li role="presentation">
             <a href="#rent_search" aria-controls="rent_search" role="tab" data-toggle="tab">
                 Recherche location
             </a>
         </li>
-        {% endif %}
     </ul>
 
     <div class="tab-content">
-        {% if sales %}
         <div role="tabpanel" class="tab-pane active" id="sale">
-            <br />
+           <br />
+           {% if sales %}
 
-            {% for ad in sales %}
-            {% include "ads/ad_preview.html" with object=ad manage=owner %}
 
-            {% endfor %}
-            {% endif %}
-            {% if owner %}
-            <div>
-                <a class="btn btn-default btn-primary" href="{% url 'sale:ads_ad_add' %}">
-                    Ajouter une annonce de bien à vendre
-                </a>
-            </div>
-{% endif %}
+           {% for ad in sales %}
+           {% include "ads/ad_preview.html" with object=ad manage=owner %}
+
+           {% endfor %}
+           {% endif %}
+           {% if owner %}
+           <div>
+            <a class="btn btn-default btn-primary" href="{% url 'sale:ads_ad_add' %}">
+                Ajouter une annonce de bien à vendre
+            </a>
         </div>
-
-        {% if rentals %}
-        <div role="tabpanel" class="tab-pane" id="rent">
-            <br />
-
-
-            {% for ad in rentals %}
-            {% include "ads/ad_preview.html" with object=ad manage=owner %}
-            {% endfor %}
-            {% endif %}
-            {% if owner %}
-            <div>
-                <a class="btn btn-default btn-primary" href="{% url 'rent:ads_ad_add' %}">
-                    Ajouter une annonce de bien à louer
-                </a>
-            </div>
-{% endif %}
-
-        </div>
-
-         {% if sale_searches %}
-        <div role="tabpanel" class="tab-pane" id="sale_search">
-            <br />
-
-            {% for search in sale_searches %}
-
-            {% include "ads/search_preview.html" with object=search manage=owner %}
-            {% endfor %}
-
-            {% endif %}
-            {% if owner %}
-            <div>
-                <a class="btn btn-default btn-primary" href="{% url 'sale:ads_search_add' %}">
-                    Ajouter une annonce de recherche d'achat
-                </a>
-            </div>
-{% endif %}
-
-        </div>
-
-        {% if rent_searches %}
-        <div role="tabpanel" class="tab-pane" id="rent_search">
-            <br />
-
-            {% for search in rent_searches %}
-            {% include "ads/search_preview.html" with object=search manage=owner %}
-            {% endfor %}
-
-            {% if owner %}
-            <div>
-                <a class="btn btn-default btn-primary" href="{% url 'rent:ads_search_add' %}">
-                    Ajouter une annonce de recherche de location
-                </a>
-            </div>
-            {% endif %}
-        </div>
-{% endif %}
+        {% endif %}
     </div>
+
+    <div role="tabpanel" class="tab-pane" id="rent">
+        <br />
+        {% if rentals %}
+
+
+
+
+        {% for ad in rentals %}
+        {% include "ads/ad_preview.html" with object=ad manage=owner %}
+        {% endfor %}
+        {% endif %}
+        {% if owner %}
+        <div>
+            <a class="btn btn-default btn-primary" href="{% url 'rent:ads_ad_add' %}">
+                Ajouter une annonce de bien à louer
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="sale_search">
+        <br />
+        {% if sale_searches %}
+
+
+
+        {% for search in sale_searches %}
+
+        {% include "ads/search_preview.html" with object=search manage=owner %}
+        {% endfor %}
+
+        {% endif %}
+        {% if owner %}
+        <div>
+            <a class="btn btn-default btn-primary" href="{% url 'sale:ads_search_add' %}">
+                Ajouter une annonce de recherche d'achat
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="rent_search">
+       <br />
+       {% if rent_searches %}
+
+
+
+       {% for search in rent_searches %}
+       {% include "ads/search_preview.html" with object=search manage=owner %}
+       {% endfor %}
+       {% endif %}
+       {% if owner %}
+       <div>
+        <a class="btn btn-default btn-primary" href="{% url 'rent:ads_search_add' %}">
+            Ajouter une annonce de recherche de location
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+</div>
 </div>
 
 </div>

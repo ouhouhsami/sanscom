@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import jsonfield.fields
 import django.contrib.gis.db.models.fields
 import django.utils.timezone
 from django.conf import settings
@@ -12,8 +13,7 @@ import django_extensions.db.fields
 # Functions from the following migrations need manual copying.
 # Move them and any dependencies into this file, then update the
 # RunPython operations to refer to the local versions:
-# ads.migrations.0004_auto_20150312_1420
-# ads.migrations.0002_auto_20150304_0915
+# ads.migrations.0001_squashed_0008_auto_20150321_1158
 
 a_propos = '''
 <h3>Achetersanscom c’est :</h3>
@@ -336,6 +336,7 @@ def fill_flatpages(apps, schema_editor):
         fp.sites.add(site)
 
 
+
 def create_habitation_types(apps, schema_editor):
     HabitationType = apps.get_model("ads", "HabitationType")
     db_alias = schema_editor.connection.alias
@@ -344,10 +345,9 @@ def create_habitation_types(apps, schema_editor):
         HabitationType(label="Maison")
     ])
 
-
 class Migration(migrations.Migration):
 
-    replaces = [(b'ads', '0001_initial'), (b'ads', '0002_auto_20150304_0915'), (b'ads', '0003_auto_20150305_1102'), (b'ads', '0004_auto_20150312_1420'), (b'ads', '0005_auto_20150312_1455'), (b'ads', '0006_search_rooms_min'), (b'ads', '0007_auto_20150317_1948'), (b'ads', '0008_auto_20150321_1158')]
+    replaces = [(b'ads', '0001_squashed_0008_auto_20150321_1158'), (b'ads', '0002_auto_20150407_1246')]
 
     dependencies = [
         ('flatpages', '0001_initial'),
@@ -456,10 +456,36 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(null=True, verbose_name='description', blank=True)),
                 ('slug', django_extensions.db.fields.AutoSlugField(populate_from=b'slug_format', verbose_name='slug', editable=False, blank=True)),
                 ('location', django.contrib.gis.db.models.fields.MultiPolygonField(srid=4326, verbose_name='Localisation')),
-                ('price_max', models.PositiveIntegerField(verbose_name='Prix max')),
-                ('surface_min', models.PositiveIntegerField(verbose_name='Surface min')),
-                ('habitation_types', models.ManyToManyField(to=b'ads.HabitationType')),
+                ('price_max', models.PositiveIntegerField(verbose_name='Prix maximum')),
+                ('surface_min', models.PositiveIntegerField(verbose_name='Surface minimale')),
+                ('habitation_types', models.ManyToManyField(to=b'ads.HabitationType', verbose_name="Types d'habitations")),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('rooms_min', models.PositiveIntegerField(null=True, verbose_name='Nombre de pi\xe8ces minimum', blank=True)),
+                ('air_conditioning', ads.models.search.IndifferentBooleanField(verbose_name='Climatisation', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('alarm', ads.models.search.IndifferentBooleanField(verbose_name='Alarme', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('balcony', ads.models.search.IndifferentBooleanField(verbose_name='Balcon', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('bathroom', ads.models.search.IndifferentBooleanField(verbose_name='Salle de bain', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('bedrooms_min', models.PositiveIntegerField(null=True, verbose_name='Nombre de chambres minimum', blank=True)),
+                ('cellar', ads.models.search.IndifferentBooleanField(verbose_name='Cave', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('digicode', ads.models.search.IndifferentBooleanField(verbose_name='Digicode', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('doorman', ads.models.search.IndifferentBooleanField(verbose_name='Gardien', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('duplex', ads.models.search.IndifferentBooleanField(verbose_name='Duplex', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('elevator', ads.models.search.IndifferentBooleanField(verbose_name='Ascenceur', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('fireplace', ads.models.search.IndifferentBooleanField(verbose_name='Chemin\xe9e', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('ground_floor', ads.models.search.IndifferentBooleanField(default=None, verbose_name='Rez de chauss\xe9', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('ground_surface_min', models.IntegerField(null=True, verbose_name='Surface du terrain minimale', blank=True)),
+                ('intercom', ads.models.search.IndifferentBooleanField(verbose_name='Interphone', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('kitchen', ads.models.search.IndifferentBooleanField(verbose_name='Cuisine \xe9quip\xe9e', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('not_overlooked', ads.models.search.IndifferentBooleanField(verbose_name='Sans vis-\xe0-vis', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('parking', ads.models.search.IndifferentBooleanField(verbose_name='Parking', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('separate_dining_room', ads.models.search.IndifferentBooleanField(verbose_name='Cuisine s\xe9par\xe9e', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('separate_entrance', ads.models.search.IndifferentBooleanField(verbose_name='Entr\xe9e s\xe9par\xe9e', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('separate_toilet', ads.models.search.IndifferentBooleanField(verbose_name='Toilettes s\xe9par\xe9s', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('shower', ads.models.search.IndifferentBooleanField(verbose_name="Salle d'eau (douche)", choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('swimming_pool', ads.models.search.IndifferentBooleanField(verbose_name='Piscine', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('terrace', ads.models.search.IndifferentBooleanField(verbose_name='Terrasse', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('top_floor', ads.models.search.IndifferentBooleanField(verbose_name='Dernier \xe9tage', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')])),
+                ('transaction', models.CharField(default='sale', max_length=4, choices=[(b'sale', 'Vente'), (b'rent', 'Location')])),
             ],
             options={
                 'abstract': False,
@@ -584,198 +610,18 @@ class Migration(migrations.Migration):
             field=models.BooleanField(default=False),
             preserve_default=True,
         ),
-        # migrations.AlterField(
-        #     model_name='ad',
-        #     name='location',
-        #     field=django.contrib.gis.db.models.fields.PointField(srid=4326, verbose_name='Localisation'),
-        #     preserve_default=True,
-        # ),
-        # migrations.AlterField(
-        #     model_name='search',
-        #     name='location',
-        #     field=django.contrib.gis.db.models.fields.MultiPolygonField(srid=4326, verbose_name='Localisation'),
-        #     preserve_default=True,
-        # ),
-        migrations.AlterField(
-            model_name='search',
-            name='price_max',
-            field=models.PositiveIntegerField(verbose_name='Prix maximum'),
-            preserve_default=True,
-        ),
-        migrations.AlterField(
-            model_name='search',
-            name='surface_min',
-            field=models.PositiveIntegerField(verbose_name='Surface minimale'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='rooms_min',
-            field=models.PositiveIntegerField(null=True, verbose_name='Nombre de pi\xe8ces minimum', blank=True),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='air_conditioning',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Climatisation', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='alarm',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Alarme', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='balcony',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Balcon', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='bathroom',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Salle de bain', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='bedrooms_min',
-            field=models.PositiveIntegerField(null=True, verbose_name='Nombre de chambres minimum', blank=True),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='cellar',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Cave', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='digicode',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Digicode', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='doorman',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Gardien', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='duplex',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Duplex', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='elevator',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Ascenceur', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='fireplace',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Chemin\xe9e', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='ground_floor',
-            field=ads.models.search.IndifferentBooleanField(default=None, verbose_name='Rez de chauss\xe9', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='ground_surface_min',
-            field=models.IntegerField(null=True, verbose_name='Surface du terrain minimale', blank=True),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='intercom',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Interphone', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='kitchen',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Cuisine \xe9quip\xe9e', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='not_overlooked',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Sans vis-\xe0-vis', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='parking',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Parking', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='separate_dining_room',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Cuisine s\xe9par\xe9e', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='separate_entrance',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Entr\xe9e s\xe9par\xe9e', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='separate_toilet',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Toilettes s\xe9par\xe9s', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='shower',
-            field=ads.models.search.IndifferentBooleanField(verbose_name="Salle d'eau (douche)", choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='swimming_pool',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Piscine', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='terrace',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Terrasse', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='search',
-            name='top_floor',
-            field=ads.models.search.IndifferentBooleanField(verbose_name='Dernier \xe9tage', choices=[(None, 'Indiff\xe9rent'), (True, 'Oui'), (False, 'Non')]),
-            preserve_default=True,
-        ),
         migrations.AddField(
             model_name='ad',
             name='transaction',
             field=models.CharField(default='sale', max_length=4, choices=[(b'sale', 'Vente'), (b'rent', 'Location')]),
             preserve_default=False,
         ),
-        migrations.AddField(
-            model_name='search',
-            name='transaction',
-            field=models.CharField(default='sale', max_length=4, choices=[(b'sale', 'Vente'), (b'rent', 'Location')]),
-            preserve_default=False,
-        ),
-        migrations.AlterField(
-            model_name='search',
-            name='habitation_types',
-            field=models.ManyToManyField(to=b'ads.HabitationType', verbose_name="Types d'habitations"),
-            preserve_default=True,
-        ),
         migrations.RunPython(create_habitation_types),
         migrations.RunPython(fill_flatpages),
+        migrations.AddField(
+            model_name='ad',
+            name='json_address',
+            field=jsonfield.fields.JSONField(default='{}'),
+            preserve_default=False,
+        ),
     ]
