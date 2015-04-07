@@ -81,11 +81,13 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
             <li class="list-group-item">Surface : {{ object.surface }}m² {% if object.surface_carrez %}(loi carrez : {{ object.surface_carrez }}m²){% endif %}</li>
             <li class="list-group-item">{{ object.rooms }} pièce{{ object.rooms|pluralize }}</li>
             <li class="list-group-item">{{ object.bedrooms }} chambre{{ object.bedrooms|pluralize }}</li>
-
             {% if object.ground_surface %}<li class="list-group-item">Terrain : {{ object.ground_surface }} m²</li>{% endif %}
             {% if object.ad_valorem_tax %}<li class="list-group-item">Taxe foncière : {{ object.ad_valorem_tax }} €/an</li>{% endif %}
             {% if object.housing_tax %}<li class="list-group-item">Taxe d'habitation : {{ object.housing_tax }} €/an</li>{% endif %}
             {% if object.maintenance_charges %}<li class="list-group-item">Charges : {{ object.maintenance_charges }} €/mois</li>{% endif %}
+            {% if sale %}
+            <li class="list-group-item">Prix m² : {{ object.square_meter_price|intcomma }} €{% if rent %}/mois{% endif %}</li>
+            {% endif %}
         </ul>
 
         <ul class="list-group">

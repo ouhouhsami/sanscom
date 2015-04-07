@@ -171,6 +171,10 @@ class Ad(BaseModel):
         else:
             return False
 
+    @property
+    def square_meter_price(self):
+        return self.price / self.surface
+
     def __unicode__(self):
         unity = u'€'
         if self.transaction == 'rent':
