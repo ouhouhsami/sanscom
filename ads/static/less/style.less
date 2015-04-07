@@ -54,7 +54,7 @@
     top: 14px;
 }
 
-.ad-preview {
+.ad-preview, .ad-small, .search-small {
   cursor: pointer
 }
 
@@ -284,9 +284,11 @@ html {
 
 .actions a, a.localize_bt {
   text-align: center;
-  background-color: #f4f4f4;
   padding:4px;
   margin-right:2px;
+  &:extend(.btn all);
+  &:extend(.btn-default all);
+  &:extend(.btn-primary all);
 }
 
 
