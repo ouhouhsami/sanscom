@@ -3,9 +3,6 @@
 <div class="ad-preview" onclick="document.location='{{ object.get_absolute_url }}';">
     <div class="header">
         <div class="title">
-            {% if map %}
-            <a class="show-marker localize_bt" data-lng="{{ object.location.y|unlocalize }}" data-lat="{{ object.location.x|unlocalize }}" data-href="{{ object.get_absolute_url }}">Localiser</a>
-            {% endif %}
             {% if object.sale %}Vente{% else %}Location{% endif %} {{ object.habitation_type|lower }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} {{ object.surface }} m² {{ object.locality }}
         </div>
         <div class="price">
@@ -28,16 +25,23 @@
                 {{ object.description|truncatechars:250 }}
             </div>
             <div class="focus">
-                <div class="item">Pièce{{ object.rooms|pluralize }}<br/><span class="value">{{ object.rooms }}</span></div>
-                <div class="item">Chambre{{ object.bedrooms|pluralize }}<br/><span class="value">{{ object.bedrooms }}</span></div>
-                <div class="item">Surface<br/><span class="value">{{ object.surface }}</span> m²</div>
-                {% if manage %}
-                <div class="item">
-                Contacté{{ object.contacts|length|pluralize }}
-                <br/><span class="value">{{ object.contacts|length }}/{{ object.interested_count }}</span>
+                <div class="highlights">
+                    <div class="item">Pièce{{ object.rooms|pluralize }}<br/><span class="value">{{ object.rooms }}</span></div>
+                    <div class="item">Chambre{{ object.bedrooms|pluralize }}<br/><span class="value">{{ object.bedrooms }}</span></div>
+                    <div class="item">Surface<br/><span class="value">{{ object.surface }}</span> m²</div>
+                    {% if manage %}
+                    <div class="item">
+                        Contacté{{ object.contacts|length|pluralize }}
+                        <br/><span class="value">{{ object.contacts|length }}/{{ object.interested_count }}</span>
+                    </div>
+                    {% endif %}
                 </div>
-                {% endif %}
                 <div class="actions">
+                    {% if map %}
+                    <a class="show-marker" data-lng="{{ object.location.y|unlocalize }}" data-lat="{{ object.location.x|unlocalize }}" data-href="{{ object.get_absolute_url }}">
+                        Localiser
+                    </a>
+                    {% endif %}
                     <a href="{{ object.get_absolute_url }}">
                         Détails
                     </a>

@@ -16,6 +16,7 @@
                 {{ object.description|truncatechars:250 }}
             </div>
             <div class="focus">
+                <div class="highlights">
                 <div class="item">Pièce{{ object.rooms_min|pluralize }}<br/><span class="value">{{ object.rooms_min }}</span> min.</div>
                 {% if object.bedrooms_min %}
                 <div class="item">Chambre{{ object.bedrooms_min|pluralize }}<br/><span class="value">{{ object.bedrooms_min }}</span> min.</div>
@@ -27,6 +28,7 @@
                 <br/><span class="value">{{ object.contacts|length }}/{{ object.interested_count }}</span>
                 </div>
                 {% endif %}
+            </div>
                 <div class="actions">
                     <a href="{{ object.get_absolute_url }}">
                         Détails
