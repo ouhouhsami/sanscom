@@ -99,6 +99,11 @@ class MessageView(SingleObjectMixin, FormView):
             subject = "[AcheterSansCom] Message à propos de %s" % self.get_object()
             mail = EmailMessage(subject, message, sender, recipients, [sender])
             mail.send()
+            # We send a copy of the mail to the sender
+            sender_subject = "[AcheterSansCom] Message envoyé à propos de %s " % self.get_object()
+            sender_message = u"Bonjour, \nVoici le message que vous avez envoyé : \n %s" % (message)
+            sender_mail = EmailMessage(sender_subject, sender_message, "contact@achetersanscom.com", [self.request.user.email, ], ["contact@achetersanscom.com"])
+            sender_mail.send()
             # here we must set 'contacted'
             # UGLY ...
             if self.model == Search:
