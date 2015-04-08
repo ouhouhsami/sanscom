@@ -18,8 +18,6 @@ class ChargeTestCase(TestCase):
     def test_create_a_lot_of_ads(self):
         ads = Ad.objects.all()
         searches = Search.objects.all()
-        print ads.count()
-        print searches.count()
         time_in = datetime.datetime.now()
         # We will update each search to correspond at least to an ad
         for ad in ads:

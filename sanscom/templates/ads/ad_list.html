@@ -278,7 +278,7 @@ $(window).on("map:init", function (e) {
     {% if valid %}
     {{ total }} offre{{  total|pluralize }} correspondent à votre recherche
     {% else %}
-    Les dernières annonces de {% if sale %}vente{% endif %}{% if rent %}location{% endif %} <small>parmi {{ paginator.count }}</small>
+    Dernières annonces de {% if sale %}vente{% endif %}{% if rent %}location{% endif %} <small>parmi {{ paginator.count }}</small>
     {% endif %}
 {% if valid %}{% include 'sortable_listview/sort_links.html' %}{% endif %}
 </h3>

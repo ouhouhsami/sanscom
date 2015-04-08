@@ -42,11 +42,14 @@ class NotificationTestCase(HackyTransactionTestCase):
         pnt = GEOSGeometry(geo_from_address(u"52 W 52nd St, New York, NY 10019, États-Unis"))
         # Create a search with ad.location outside search.location
         search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction=ad.transaction)
-        # here we should have results ...
+        # Here we should have no results ...
         self.assertEqual(AdSearchRelation.valid_objects.all().count(), 0)
-
         search.location = geos.MultiPolygon(ad.location.buffer(2))
         search.save()
+        self.assertEqual(AdSearchRelation.valid_objects.all().count(), 1)
+        # Then we update the ad
+        ad.price = 600001
+        ad.save()
         self.assertEqual(AdSearchRelation.valid_objects.all().count(), 1)
 
     def test_search_then_ad_the_search_update(self):

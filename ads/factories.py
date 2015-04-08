@@ -52,7 +52,6 @@ class FuzzyAddress(FuzzyText):
                 lng = random.uniform(LEFT, RIGHT)
                 lat = random.uniform(TOP, BOTTOM)
                 address = address_from_geo(lat, lng)
-                print address
             except WrongAddressError:
                 continue
             break

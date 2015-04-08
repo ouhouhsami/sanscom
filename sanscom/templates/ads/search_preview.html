@@ -34,10 +34,10 @@
                         Détails
                     </a>
                     {% if manage %}
-                    <a href="{% if object.sale %}{% url 'sale:ads_ad_update' object.slug %}{% endif %}{% if object.rent %}{% url 'rent:ads_ad_update' object.slug %}{% endif %}">
+                    <a href="{% if object.sale %}{% url 'sale:ads_search_update' object.slug %}{% endif %}{% if object.rent %}{% url 'rent:ads_ad_update' object.slug %}{% endif %}">
                         Modifier
                     </a>
-                    <a href="{% if object.sale %}{% url 'sale:ads_ad_delete' object.slug %}{% endif %}{% if object.rent %}{% url 'rent:ads_ad_delete' object.slug %}{% endif %}">
+                    <a href="{% if object.sale %}{% url 'sale:ads_search_delete' object.slug %}{% endif %}{% if object.rent %}{% url 'rent:ads_ad_delete' object.slug %}{% endif %}">
                         Supprimer
                     </a>
                     {% endif %}

@@ -190,7 +190,6 @@ class CustomSortableListView(SortableListView):
         query_string = self.get_querystring()
         sort_string = "sort=" + direction + field
         sort_link = request.path + '?' + sort_string
-        print sort_link
         if query_string:
             sort_link += '&' + query_string
         return sort_link

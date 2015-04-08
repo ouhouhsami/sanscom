@@ -168,11 +168,9 @@ class CreateAdsViewTestCase(TestCase):
         response = view(request)
         # Redirection
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, Ad.objects.all()[1].get_absolute_url())
-        # Test that create ad belongs to the newly registered user
-        self.assertEqual(Ad.objects.all()[1].user.username, user_credentials['username'])
+        self.assertEqual(response.url, Ad.objects.filter(user=User.objects.get(username="ouhouhsami"))[0].get_absolute_url())
         # Test that picture is also saved with the ad
-        self.assertEqual(len(Ad.objects.all()[1].adpicture_set.all()), 1)
+        self.assertEqual(len(Ad.objects.filter(user=User.objects.get(username="ouhouhsami"))[0].adpicture_set.all()), 1)
         self.assertEqual(len(Ad.objects.all()), 2)
 
     def test_ad_create_not_logged_user_but_having_username(self):
