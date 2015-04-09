@@ -82,30 +82,39 @@ class FillInitialForm(object):
 class MessageView(SingleObjectMixin, FormView):
 
     def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated():
-            return HttpResponseForbidden()
+        #if not request.user.is_authenticated():
+        #    return HttpResponseForbidden()
         self.object = self.get_object()
         self.request = request
         return super(MessageView, self).post(request, *args, **kwargs)
 
+    def get_form(self, form_class):
+        return form_class(self.request.user.is_authenticated(), **self.get_form_kwargs())
+
     def form_valid(self, form):
-        # I think we don't need this test here!
-        if form.is_valid():
-            # TODO: need to test if we can send this mail !
-            # if user is autorized to = if ad/search fit together
-            message = form.cleaned_data['message']
-            sender = self.request.user.email
-            recipients = [self.get_object().user.email, ]
-            subject = "[AcheterSansCom] Message à propos de %s" % self.get_object()
-            mail = EmailMessage(subject, message, sender, recipients, [sender])
-            mail.send()
-            # We send a copy of the mail to the sender
-            sender_subject = "[AcheterSansCom] Message envoyé à propos de %s " % self.get_object()
-            sender_message = u"Bonjour, \nVoici le message que vous avez envoyé : \n %s" % (message)
-            sender_mail = EmailMessage(sender_subject, sender_message, "contact@achetersanscom.com", [self.request.user.email, ], ["contact@achetersanscom.com"])
-            sender_mail.send()
-            # here we must set 'contacted'
-            # UGLY ...
+
+        message = form.cleaned_data['message']
+        logged = True
+        email = None
+        if 'email' in form.cleaned_data:
+            email = form.cleaned_data['email']
+            logged = False
+
+        # Send the mail
+        sender = email or self.request.user.email
+        recipients = [self.get_object().user.email, ]
+        subject = "[AcheterSansCom] Message à propos de %s" % self.get_object()
+        mail = EmailMessage(subject, message, sender, recipients, [sender])
+        mail.send()
+
+        # Send a copy of the mail to the sender
+        sender_subject = "[AcheterSansCom] Message envoyé à propos de %s " % self.get_object()
+        sender_message = u"Bonjour, \nVoici le message que vous avez envoyé : \n %s" % (message)
+        sender_mail = EmailMessage(sender_subject, sender_message, "contact@achetersanscom.com", [sender, ], ["contact@achetersanscom.com"])
+        sender_mail.send()
+        # here we must set 'contacted'
+        # UGLY ...
+        if logged:
             if self.model == Search:
                 asr = AdSearchRelation.objects.filter(search=self.object, ad__user=self.request.user)
                 asr.update(search_contacted=timezone.now())

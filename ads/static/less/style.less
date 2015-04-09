@@ -33,7 +33,6 @@
 
 .container h2, .container h3, .container h4 {
   font-family: "Open Sans",Helvetica,Arial,sans-serif;
-  font-weight: bold;
 }
 
 .price {
@@ -198,7 +197,7 @@ html {
 .small-container {
   .flex-display;
   .flex-wrap(wrap);
-  .justify-content(space-between);
+  .justify-content(flex-start);
 }
 
 .ad-preview {
@@ -264,6 +263,8 @@ html {
 .ad-small, .search-small {
   .flex-display;
   .flex-direction(column);
+  margin-bottom:4px;
+  margin-right:4px;
 }
 
 .ad-small .picture {
@@ -274,6 +275,10 @@ html {
   position: absolute;
   top: 0;
   left: 0;
+  color: black;
+  background-color: @verySofthColor;
+  padding: 4px;
+  font-weight: bold;
 }
 
 

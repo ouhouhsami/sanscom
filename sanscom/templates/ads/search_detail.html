@@ -113,6 +113,26 @@ function map_init_basic (map, options) {
     <div class="col-md-6">
 
 
+
+        {# Contact #}
+        {% if already_contacted %}
+        <div class="alert alert-info">
+            Vous avez déjà contacté ce vendeur.
+        </div>
+        {% endif %}
+
+        {% if contact_form %}
+        {% include "ads/contact_form.html" %}
+        {% endif %}
+
+        {% if object.user.userprofile_set.all.0.phone %}
+        <hr />
+        <div>
+            <b>N° de téléphone : {{ object.user.userprofile_set.all.0.phone }}</b>
+        </div>
+        {% endif %}
+
+{% comment %}
     {% if owner %}
 
     {% else %}
@@ -129,23 +149,8 @@ function map_init_basic (map, options) {
 
         {% if contact_form %}
 
-        <form method="POST" action="." id="contact">
-            {% csrf_token %}
+        {% include "ads/contact_form.html" %}
 
-            <div class="form-group {% if contact_form.message.errors %}has-error{% endif %}">
-                <label class="control-label" for="{{ contact_form.message.auto_id }}">Votre message à l'acheteur</label>
-                {{ contact_form.message }}
-                {% if contact_form.message.errors %}
-                <p class="text-danger">
-                    {% for error in contact_form.message.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-
-            <input class="btn btn-default btn-block btn-primary" type="submit" value="Envoyer le message"/>
-        </form>
         {% if object.user.userprofile_set.all.0.phone %}
         <hr />
         <div>
@@ -167,6 +172,7 @@ function map_init_basic (map, options) {
         {% endif %}
 {% endif %}
 
+{% endcomment %}
 
     </div>
 </div>

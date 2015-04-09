@@ -39,36 +39,36 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
 
 {% block content %}
 
-<h2 class="page-header">{% if sale %}Vente{% endif %}{% if rent %}Location{% endif %} {{ object.habitation_type }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} ({{ object.bedrooms }} ch.) {{ object.surface }}m² {{ object.price|intcomma }} €{% if rent %}/mois{% endif %} {{ object.locality }}</h2>
+<h2 class="page-header">{% if sale %}Vente{% endif %}{% if rent %}Location{% endif %} {{ object.habitation_type|lower }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} {{ object.surface }}m² {{ object.price|intcomma }} €{% if rent %}/mois{% endif %} {{ object.locality }}</h2>
 <p class="small">
-    Mise en ligne par <a href="{% url 'user_account' object.user.username %}">{{ object.user }}</a> le {{ object.created|date:"SHORT_DATETIME_FORMAT" }}{#, modifié le {{ object.modified }}#}
+    Mise en ligne par <a href="{% url 'user_account' object.user.username %}">{{ object.user }}</a> le {{ object.created|date:"SHORT_DATETIME_FORMAT" }}{#, dernière modification le {{ object.modified }}#}
 </p>
 
 {% leaflet_map "map" callback="window.map_init_basic"%} <br />
 
 {% if owner %}
 
-    <div class="alert alert-info">
-        Vous avez mis en ligne cette annonce, {% if sale %}<a href="{% url 'sale:ads_ad_update' object.slug %}" class="alert-link">{% endif %}{% if rent %}<a href="{% url 'rent:ads_ad_update' object.slug %}" class="alert-link">{% endif %}vous pouvez si besoin la modifier</a>.
-    </div>
+<div class="alert alert-info">
+    Vous avez mis en ligne cette annonce, {% if sale %}<a href="{% url 'sale:ads_ad_update' object.slug %}" class="alert-link">{% endif %}{% if rent %}<a href="{% url 'rent:ads_ad_update' object.slug %}" class="alert-link">{% endif %}vous pouvez si besoin la modifier</a>.
+</div>
 
-    {% if object.no_contacts %}
-    <h4>Acheteurs potentiels non contactés</h4>
-    <div class="small-container">
+{% if object.no_contacts %}
+<h4>Acheteurs potentiels non contactés</h4>
+<div class="small-container">
     {% for asr in object.no_contacts %}
     {% include "ads/search_small.html" with object=asr.search %}
     {% endfor %}
-    </div>
-    {% endif %}
+</div>
+{% endif %}
 
-    {% if object.contacts %}
-    <h4>Acheteurs potentiels avec qui vous avez eu un échange</h4>
-    <div class="small-container">
+{% if object.contacts %}
+<h4>Acheteurs potentiels avec qui vous avez eu un échange</h4>
+<div class="small-container">
     {% for asr in object.contacts %}
     {% include "ads/search_small.html" with object=asr.search %}
     {% endfor %}
-    </div>
-    {% endif %}
+</div>
+{% endif %}
 
 {% endif %}
 
@@ -133,93 +133,66 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
 
         {% if object.description %}
         <div>
-        <h3>{{ object.district }}</h3>
-        {{ object.description|linebreaks }}
+            <h3>{{ object.district }}</h3>
+            {{ object.description|linebreaks }}
         </div>
         {% endif %}
 
     </div>
 
     <div class="col-md-6">
+
+        {# Ad Pictures #}
         {% if object.adpicture_set.all %}
         {% for picture in object.adpicture_set.all %}
         <img src="{{ picture.image.url }}" class="center-block img-responsive img-thumbnail" />
         <div class="text-center">
-        <b>{{ picture.title }}</b>
+            <b>{{ picture.title }}</b>
         </div>
-        </br />
+        <br />
         {% endfor %}
         {% endif %}
 
-
-    {% if owner %}
-    {% else %}
-
-    {% if user.is_authenticated %}
-
-    {% if already_contacted %}
+        {# Contact #}
+        {% if already_contacted %}
         <div class="alert alert-info">
-        Vous avez déjà contacté ce vendeur.
-    </div>
-
-    {% endif %}
-
-        {% if contact_form %}
-            <form method="POST" action="." id="contact">
-                {% csrf_token %}
-                <div class="form-group {% if contact_form.message.errors %}has-error{% endif %}">
-                    <label class="control-label" for="{{ contact_form.message.auto_id }}">Votre message au vendeur</label>
-                    {{ contact_form.message }}
-                {% if contact_form.message.errors %}
-                <p class="text-danger">
-                    {% for error in contact_form.message.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-                </div>
-                <input class="btn btn-default btn-block btn-primary" type="submit" value="Envoyer le message" />
-            </form>
-            {% if object.user.userprofile_set.all.0.phone %}
-            <hr />
-            <div>
-
-            <b>N° de téléphone du vendeur : {{ object.user.userprofile_set.all.0.phone }}</b>
+            Vous avez déjà contacté ce vendeur.
         </div>
-            {% endif %}
-
-        {% else %}
-
-    <div class="alert alert-info">
-        Vous n'avez pas de recherche correspondant à ce bien,
-        {% if sale %}<a class="alert-link" href="{% url 'sale:ads_search_add' %}">{% endif %}{% if rent %}<a class="alert-link" href="{% url 'rent:ads_search_add' %}">{% endif %}déposez une recherche.</a>
-    </div>
-
         {% endif %}
 
-    {% else %}
+        {% if contact_form %}
+        {% include "ads/contact_form.html" %}
+        {% endif %}
 
-    <div class="alert alert-info">
-    Pour contacter les vendeurs, il vous faut avoir un compte et avoir une recherche correpondant à ce bien.
-    {% if sale %}
-    <a class="btn btn-default" href="{% url 'sale:ads_search_add' %}">
-        Ajouter une annonce de recherche
-    </a>
-    {% endif %}
-    {% if rent %}
-    <a class="btn btn-default" href="{% url 'rent:ads_search_add' %}">
-        Ajouter une annonce de recherche de location
-    </a>
-    {% endif %}
+        {% if object.user.userprofile_set.all.0.phone %}
+        <hr />
+        <div>
+            <b>N° de téléphone : {{ object.user.userprofile_set.all.0.phone }}</b>
+        </div>
+        {% endif %}
+
+        {% comment %}
+        <div class="alert alert-info">
+            Vous n'avez pas de recherche correspondant à ce bien,
+            {% if sale %}<a class="alert-link" href="{% url 'sale:ads_search_add' %}">{% endif %}{% if rent %}<a class="alert-link" href="{% url 'rent:ads_search_add' %}">{% endif %}déposez une recherche.</a>
+        </div>
+
+        <div class="alert alert-info">
+            Pour contacter les vendeurs, il vous faut avoir un compte et avoir une recherche correpondant à ce bien.
+            {% if sale %}
+            <a class="btn btn-default" href="{% url 'sale:ads_search_add' %}">
+                Ajouter une annonce de recherche
+            </a>
+            {% endif %}
+            {% if rent %}
+            <a class="btn btn-default" href="{% url 'rent:ads_search_add' %}">
+                Ajouter une annonce de recherche de location
+            </a>
+            {% endif %}
+        </div>
+        {% endcomment %}
+
     </div>
-
-
-    {% endif %}
-
-    {% endif %}
-
-</div>
-
 
 </div>
 

@@ -44,6 +44,7 @@ class ReadAdView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ReadAdView, self).get_context_data(**kwargs)
+        context['contact_form'] = self.contact_form(self.request.user.is_authenticated())
         if self.request.user.is_authenticated():
             if self.request.user == self.object.user:
                 context['owner'] = True
@@ -52,7 +53,7 @@ class ReadAdView(DetailView):
                 if ars.count() > 0:
                     if any(ars.values_list('ad_contacted', flat=True)):
                         context['already_contacted'] = True
-                    context['contact_form'] = self.contact_form()
+                    #context['contact_form'] = self.contact_form()
         return context
 
 

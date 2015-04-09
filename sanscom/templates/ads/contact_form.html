@@ -1,0 +1,28 @@
+<form method="POST" action="." id="contact">
+    {% csrf_token %}
+    <div class="form-group {% if contact_form.message.errors %}has-error{% endif %}">
+        <label class="control-label" for="{{ contact_form.message.auto_id }}">Votre message</label>
+        {{ contact_form.message }}
+        {% if contact_form.message.errors %}
+        <p class="text-danger">
+            {% for error in contact_form.message.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
+    </div>
+    {% if contact_form.email %}
+    <div class="form-group {% if contact_form.email.errors %}has-error{% endif %}">
+        <label class="control-label" for="{{ contact_form.email.auto_id }}">{{ contact_form.email.label }}</label>
+        {{ contact_form.email }}
+        {% if contact_form.email.errors %}
+        <p class="text-danger">
+            {% for error in contact_form.email.errors %}
+            {{ error|escape }}
+            {% endfor %}
+        </p>
+        {% endif %}
+    </div>
+    {% endif %}
+    <input class="btn btn-default btn-block btn-primary" type="submit" value="Envoyer le message" />
+</form>

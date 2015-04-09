@@ -246,5 +246,10 @@ class SearchAdForm(forms.ModelForm):
 
 
 class ContactForm(forms.Form):
+    def __init__(self, logged, *args, **kwargs):
+        super(ContactForm, self).__init__(*args, **kwargs)
+        if not logged:
+            self.fields['email'] = forms.EmailField()
+
     message = forms.CharField(widget=forms.Textarea)
 

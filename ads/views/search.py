@@ -34,6 +34,7 @@ class ReadSearchView(DetailView):
     def get_context_data(self, **kwargs):
         # here we test if logged user can contact search owner
         context = super(ReadSearchView, self).get_context_data(**kwargs)
+        context['contact_form'] = self.contact_form(self.request.user.is_authenticated())
         if self.request.user.is_authenticated():
             if self.request.user == self.object.user:
                 context['owner'] = True
@@ -45,7 +46,7 @@ class ReadSearchView(DetailView):
                     # this is what the line below does
                     if any(ars.values_list('search_contacted', flat=True)):
                         context['already_contacted'] = True
-                    context['contact_form'] = self.contact_form()
+                    #context['contact_form'] = self.contact_form()
         return context
 
 

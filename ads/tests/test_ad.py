@@ -30,7 +30,7 @@ class ReadAdsViewTestCase(TestCase):
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.has_key('contact_form'), False)
+        self.assertEqual(response.context_data.has_key('contact_form'), True)
 
     def test_ad_read_logged_user_no_adsearch_for_ad(self):
         ad = AdFactory.create()
@@ -41,7 +41,7 @@ class ReadAdsViewTestCase(TestCase):
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.has_key('contact_form'), False)
+        self.assertEqual(response.context_data.has_key('contact_form'), True)
 
     def test_ad_read_logged_user_adsearch_for_ad(self):
         house, create = HabitationType.objects.get_or_create(label="Maison")

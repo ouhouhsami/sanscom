@@ -1,8 +1,10 @@
 {% load humanize l10n static %}
 
 <div class="search-small" onclick="document.location='{{ object.get_absolute_url }}';">
-    <div class="price">{{ object.price_max|intcomma }} €</div>
     <div class="summary">
-        {{ object.habitation_types.all|join:', '|title }}, {{ object.rooms_min }} pièce{{ object.rooms|pluralize }} min., {{ object.surface_min }} m²
+        Recherche
+        <br>
+        <b>{{ object.habitation_types.all|join:', '|title }}{% if object.rooms_min%}, {{ object.rooms_min }} pièce{{ object.rooms|pluralize }} min.{% endif %}, {{ object.surface_min }} m²</b>
     </div>
+    <div class="price">{{ object.price_max|intcomma }} € max.</div>
 </div>
