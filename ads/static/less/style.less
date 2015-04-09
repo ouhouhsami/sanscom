@@ -1,5 +1,6 @@
 @import "../bootstrap/less/bootstrap.less";
 @import "flexbox.less";
+@import "containers.less";
 
 @link-color: #20B2AB;
 @secondColor: #FFB82E;
@@ -17,7 +18,7 @@
   src: url('/static/font/TypoSlabserif-Light.ttf');
 }
 
-.navbar .navbar-brand {
+.navbar .navbar-brand, .brand {
   color: white;
   font-family: Cafeta,sans-serif;
   font-size: 2.55em;
@@ -29,7 +30,6 @@
   color: #FFF;
   background-color: @brand-primary;
 }
-
 
 .container h2, .container h3, .container h4 {
   font-family: "Open Sans",Helvetica,Arial,sans-serif;
@@ -122,9 +122,11 @@ textarea {
 
 
 
+/*
 body {
   padding-top: 70px;
 }
+*/
 
 form li {
   list-style: none;
@@ -194,12 +196,6 @@ html {
 
 /* Positions */
 
-.small-container {
-  .flex-display;
-  .flex-wrap(wrap);
-  .justify-content(flex-start);
-}
-
 .ad-preview {
   .flex-display;
   .flex-direction(column);
@@ -211,6 +207,10 @@ html {
   .content {
     .flex-display;
     .flex-wrap(wrap);
+    @media(max-width: 768px){
+      .flex-direction(column);
+      .align-items(center)
+    }
     .picture {
       position: relative;
       img {
@@ -251,13 +251,10 @@ html {
   }
 }
 
-@media(max-width: 768px){
-  .ad-preview {
-    .content {
-      .flex-direction(column);
-      .align-items(center)
-    }
-  }
+.small-container {
+  .flex-display;
+  .flex-wrap(wrap);
+  .justify-content(flex-start);
 }
 
 .ad-small, .search-small {
@@ -305,8 +302,13 @@ html {
 }
 
 .actions a {
-  padding:4px;
   margin-left:2px;
+  .flat-btn
+}
+
+
+.flat-btn {
+  padding:4px;
   background-color: @verySofthColor;
   border-bottom: 4px solid darken(@verySofthColor, 20%);
   color:black;

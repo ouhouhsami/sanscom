@@ -26,9 +26,9 @@ NoRectangleGeometryField = L.GeometryField.extend({
         }
         return {
             edit: {
-               featureGroup: this.drawnItems
-           },
-           draw: {
+             featureGroup: this.drawnItems
+         },
+         draw: {
             polyline: this.options.is_linestring,
             polygon: this.options.is_polygon,
                 circle: false, // Turns off this drawing tool
@@ -61,11 +61,11 @@ current_location = _feature.getBounds();
 var field;
 
 $(window).on("map:init", function (e) {
- var detail = e.originalEvent ?
- e.originalEvent.detail : e.detail;
- detail.map.on('map:loadfield', function (e) {
-     field = e.field;
- });
+   var detail = e.originalEvent ?
+   e.originalEvent.detail : e.detail;
+   detail.map.on('map:loadfield', function (e) {
+       field = e.field;
+   });
 });
 
 </script>
@@ -120,13 +120,12 @@ $(window).on("map:init", function (e) {
 </div>
 {% endif %}
 
-<form role="form" method="get" action=".">
+<form class="ad-search" role="form" method="get" action=".">
 
     {{ form.non_field_errors }}
 
-    <div class="row">
 
-        <div class="col-md-8">
+        <div class="map-side">
             <div class="form-group hidden-xs">
                 <div class="input-group">
                     <span class="input-group-btn">
@@ -196,7 +195,7 @@ $(window).on("map:init", function (e) {
     </div>
 
 </div>
-<div class="col-md-4">
+<div class="fields-side">
 
     <div class="form-group {% if form.habitation_types.errors %}has-error{% endif %}">
         <label class="control-label">{{ form.habitation_types.label }}</label>
@@ -266,35 +265,20 @@ $(window).on("map:init", function (e) {
 </div>
 
 
-</div>
-
-
 </form>
+
 {% endblock %}
 
 
 {% block list_title %}
-<h3 id="results">
+<h3>
     {% if valid %}
     {{ total }} offre{{  total|pluralize }} correspondent à votre recherche
     {% else %}
     Dernières annonces de {% if sale %}vente{% endif %}{% if rent %}location{% endif %} <small>parmi {{ paginator.count }}</small>
     {% endif %}
-{% if valid %}{% include 'sortable_listview/sort_links.html' %}{% endif %}
+    {% if valid %}{% include 'sortable_listview/sort_links.html' %}{% endif %}
 </h3>
-{% endblock %}
-
-
-{% block search_result_header %}
-
-
-
-<th></th>
-<th>Type de bien</th>
-<th>Prix</th>
-<th>Surface</th>
-<th>Pièces</th>
-<th>Mise en ligne</th>
 {% endblock %}
 
 

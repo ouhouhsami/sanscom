@@ -171,27 +171,6 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
         </div>
         {% endif %}
 
-        {% comment %}
-        <div class="alert alert-info">
-            Vous n'avez pas de recherche correspondant à ce bien,
-            {% if sale %}<a class="alert-link" href="{% url 'sale:ads_search_add' %}">{% endif %}{% if rent %}<a class="alert-link" href="{% url 'rent:ads_search_add' %}">{% endif %}déposez une recherche.</a>
-        </div>
-
-        <div class="alert alert-info">
-            Pour contacter les vendeurs, il vous faut avoir un compte et avoir une recherche correpondant à ce bien.
-            {% if sale %}
-            <a class="btn btn-default" href="{% url 'sale:ads_search_add' %}">
-                Ajouter une annonce de recherche
-            </a>
-            {% endif %}
-            {% if rent %}
-            <a class="btn btn-default" href="{% url 'rent:ads_search_add' %}">
-                Ajouter une annonce de recherche de location
-            </a>
-            {% endif %}
-        </div>
-        {% endcomment %}
-
     </div>
 
 </div>

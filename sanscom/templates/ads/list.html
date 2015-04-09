@@ -11,19 +11,20 @@
 
 {% if object_list %}
 {% block list_title %}{% endblock %}
-<div class="row">
- <div class="col-md-8">
-    {% for object in object_list %}
-    {% block search_result %}
-    {% endblock %}
-    {% empty %}
-    <p>No results found.</p>
-    {% endfor %}
-{% pager %}
-</div>
-</div>
-</div>
+<div class="results">
+    <div class="result-list">
+        {% for object in object_list %}
+        {% block search_result %}
+        {% endblock %}
+        {% empty %}
+        <p>No results found.</p>
+        {% endfor %}
+        {% pager %}
+    </div>
+    <aside>
 
+    </aside>
+</div>
 
 
 {% else %}
