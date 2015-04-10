@@ -4,14 +4,6 @@
 {% block css %}
 {{ block.super }}
 {{ form.media.css }}
-<style type="text/css">
-#price-input-container{
-    width:130px;
-}
-#surface-input-container {
-    width: 120px;
-}
-</style>
 {% endblock %}
 
 {% block js %}
@@ -21,24 +13,20 @@
 
 {% block content-title %}
 
-<ul class="nav nav-tabs nav-justified">
+<nav class="second-nav">
     {% with namespace|add:':ads_ad_list' as ads_ad_list_url %}
-      <li role="presentation" class="hidden-xs">
-        <a href="{% url ads_ad_list_url %}">
+        <a href="{% url ads_ad_list_url %}" class="hidden-xs">
             {% if sale %}Acheteurs : Trouvez un bien{% endif %}
             {% if rent %}Locataires : Trouvez une location{% endif %}
         </a>
-    </li>
     {% endwith %}
     {% with namespace|add:':ads_search_list' as ads_search_list_url %}
-      <li role="presentation" class="active">
-        <a href="{% url ads_search_list_url %}">
+        <a href="{% url ads_search_list_url %}" class="active">
             {% if sale %}Vendeurs : Trouvez des acheteurs{% endif %}
             {% if rent %}Bailleurs : Louer votre bien{% endif %}
         </a>
-    </li>
     {% endwith %}
-</ul>
+</nav>
 {% endblock %}
 
 {% block form %}

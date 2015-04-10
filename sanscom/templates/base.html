@@ -27,7 +27,7 @@
   {% block js %}
 
   <script src="{{STATIC_URL}}jquery-1.11.0.min.js" type="text/javascript"></script>
-  <script src="{{STATIC_URL}}bootstrap.min.js" type="text/javascript"></script>
+  {#<script src="{{STATIC_URL}}bootstrap.min.js" type="text/javascript"></script> #}
 
   {% endblock %}
   {% endcompress %}
@@ -41,13 +41,13 @@
       <div>
         <div>
           <a class="brand" href="{% url 'sale:ads_ad_list' %}">
-            <img src="{{ STATIC_URL }}img/home.png" alt="AcheterSansCom" />Acheter<span class="sanscom_font">SansCom</span>
+            Acheter<span class="sanscom_font">SansCom</span>
           </a>
         </div>
-        <div >
+        <div>
           <a class="{% if namespace == 'sale' %}active{% endif %}" href="{% url 'sale:ads_ad_list' %}">Achat - Vente</a>
         </div>
-        <div >
+        <div>
           <a class="{% if namespace == 'rent' %}active{% endif %}" href="{% url 'rent:ads_ad_list' %}">Location</a>
         </div>
       </div>

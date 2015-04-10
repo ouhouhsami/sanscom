@@ -1,0 +1,45 @@
+/* input group */
+
+.input-group {
+  display: flex;
+  .align-items(center);
+}
+
+.input-group input {
+  flex: 1;
+  /* field styles */
+}
+
+.input-group-addon {
+  /* item styles */
+}
+
+/* style */
+
+.input-group input:not(:first-child) {
+  border-left: 0;
+}
+.input-group input:not(:last-child) {
+  border-right: 0;
+}
+
+.input-group-addon {
+  background-color: rgba(147, 128, 108, 0.1);
+  color: #666666;
+  font: inherit;
+  font-weight: normal;
+}
+
+input, .input-group input,
+.input-group-addon{
+  border: 1px solid rgba(147, 128, 108, 0.25);
+  padding: 0.5em 0.75em;
+}
+.input-group input:first-child,
+.input-group-addon:first-child {
+  border-radius: 2px 0 0 2px;
+}
+.input-group input:last-child,
+.input-group-addon:last-child {
+  border-radius: 0 2px 2px 0;
+}

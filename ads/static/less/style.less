@@ -1,6 +1,63 @@
-@import "../bootstrap/less/bootstrap.less";
+//@import "../bootstrap/less/bootstrap.less";
+@import "normalize.less";
 @import "flexbox.less";
 @import "containers.less";
+@import "fields.less";
+@import "palette.less";
+
+
+// Alerts
+
+.alert {
+  padding:10px;
+  margin-top:5px;
+  margin-bottom: 10px;
+}
+
+.alert-variant(@color) {
+  &{
+    .palette(@color, '50');
+    background-color: @palette;
+  }
+  &{
+    .palette(@color, '500');
+    border-bottom: 4px solid @palette;
+  }
+  &{
+    .palette(@color, '600');
+    color: @palette;
+    hr {
+    border-top-color: @palette;
+  }
+  }
+
+
+  & a {
+    .palette(@color, '700');
+    color: darken(@palette, 10%);
+    font-weight: bold;
+  }
+}
+
+
+
+.alert.alert-success {
+  .alert-variant('Green')
+}
+.alert.alert-info {
+  .alert-variant('Blue')
+}
+.alert.alert-warning {
+  .alert-variant('Orange')
+}
+.alert.alert-danger {
+  .alert-variant('Red')
+}
+
+
+.sr-only {
+  display: none;
+}
 
 @link-color: #20B2AB;
 @secondColor: #FFB82E;
@@ -21,9 +78,7 @@
 .navbar .navbar-brand, .brand {
   color: white;
   font-family: Cafeta,sans-serif;
-  font-size: 2.55em;
-  padding-bottom: 0;
-  padding-top: 0.5px;
+  font-size: 2em;
 }
 
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
@@ -84,7 +139,7 @@
 }
 
 // set form-control field style without using it
-
+/*
 select,
 textarea,
 input[type="text"],
@@ -105,6 +160,7 @@ input[type="button"] {
   &:extend(.form-control all);
 }
 
+
 textarea {
   height: auto;
 }
@@ -119,6 +175,7 @@ textarea {
     }
   }
 }
+*/
 
 
 
@@ -359,3 +416,14 @@ html {
 }
 
 
+a {
+  text-decoration: none;
+}
+
+
+.brand {
+  background-image:url('/static/img/home.png');
+  background-repeat: no-repeat;
+  padding-left:32px;
+
+}

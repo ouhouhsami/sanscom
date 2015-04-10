@@ -73,24 +73,20 @@ $(window).on("map:init", function (e) {
 {% endblock %}
 
 {% block content-title %}
-<ul class="nav nav-tabs nav-justified">
+<nav class="second-nav">
     {% with namespace|add:':ads_ad_list' as ads_ad_list_url %}
-    <li role="presentation" class="active">
-        <a href="{% url ads_ad_list_url%}">
-            {% if sale %}Acheteurs : Trouvez un bien{% endif %}
-            {% if rent %}Locataires : Trouvez une location{% endif %}
-        </a>
-    </li>
+    <a href="{% url ads_ad_list_url%}" class="active">
+        {% if sale %}Acheteurs : Trouvez un bien{% endif %}
+        {% if rent %}Locataires : Trouvez une location{% endif %}
+    </a>
     {% endwith %}
     {% with namespace|add:':ads_search_list' as ads_search_list_url %}
-    <li role="presentation" class="hidden-xs">
-        <a href="{% url  ads_search_list_url%}">
-            {% if sale %}Vendeurs : Trouvez des acheteurs{% endif %}
-            {% if rent %}Bailleurs : Louez votre bien{% endif %}
-        </a>
-    </li>
+    <a href="{% url  ads_search_list_url%}" class="hidden-xs">
+        {% if sale %}Vendeurs : Trouvez des acheteurs{% endif %}
+        {% if rent %}Bailleurs : Louez votre bien{% endif %}
+    </a>
     {% endwith %}
-</ul>
+</nav>
 {% endblock %}
 
 {% block form %}
@@ -124,74 +120,75 @@ $(window).on("map:init", function (e) {
 
     {{ form.non_field_errors }}
 
-
-        <div class="map-side">
-            <div class="form-group hidden-xs">
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <a class="btn btn-default localize" type="button">Centrer la carte sur votre localisation
-                        </a>
-                    </span>
-                    <input type="text" class="form-control" id="address" placeholder="ou indiquer une adresse">
-                    <span class="input-group-btn">
-                        <a class="btn btn-default address_localize" type="button">Centrer
-                        </a>
-                    </span>
-                </div>
+    <div class="map-side">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <a class="btn btn-default localize" type="button">Centrer la carte sur votre localisation
+                    </a>
+                </span>
+                <input type="text" class="form-control" id="address" placeholder="ou indiquer une adresse">
+                <span class="input-group-addon">
+                    <a class="btn btn-default address_localize" type="button">Centrer
+                    </a>
+                </span>
             </div>
-
-            <div class="form-group visible-xs-block">
-              <a class="btn btn-default btn-block localize" style="text-align: left" type="button">
-                Centrer la carte sur votre localisation
-            </a>
         </div>
+{% comment %}
         <div class="form-group visible-xs-block">
-          <div class="input-group">
-              <input type="text" class="form-control" id="address" placeholder="ou indiquer une adresse">
-              <span class="input-group-btn">
-                <a class="btn btn-default address_localize" type="button">
-                    Centrer
-                </a>
-            </span>
-        </div>
+          <a class="btn btn-default btn-block localize" style="text-align: left" type="button">
+            Centrer la carte sur votre localisation
+        </a>
     </div>
-
-    <div class="row" style="margin-top:3px;margin-bottom:3px">
-        <div class="col-md-12 hidden" id="auto-zone">
-            Chercher dans un rayon de
-            <div class="btn-group" role="group" data-toggle="buttons">
-                <label class="btn btn-default btn-sm" data-radius="1">
-                    <input type="radio" name="options" id="option1" autocomplete="off">1 km
-                </label>
-                <label class="btn btn-default btn-sm" data-radius="2">
-                    <input type="radio" name="options" id="option2" autocomplete="off">2 km
-                </label>
-                <label class="btn btn-default btn-sm" data-radius="5">
-                    <input type="radio" name="options" id="option3" autocomplete="off">5 km
-                </label>
-                <label class="btn btn-default btn-sm" data-radius="10">
-                    <input type="radio" name="options" id="option1" autocomplete="off">10 km
-                </label>
-                <label class="btn btn-default btn-sm" data-radius="20">
-                    <input type="radio" name="options" id="option2" autocomplete="off">20 km
-                </label>
-            </div> <span id="user-address" class"hidden">autour de votre localisation</span>.
-        </div>
+    <div class="form-group visible-xs-block">
+      <div class="input-group">
+          <input type="text" class="form-control" id="address" placeholder="ou indiquer une adresse">
+          <span class="input-group-btn">
+            <a class="btn btn-default address_localize" type="button">
+                Centrer
+            </a>
+        </span>
     </div>
+</div>
+{% endcomment %}
 
-    <div class="form-group {% if form.location.errors %}has-error{% endif %}">
-        <label class="sr-only">Zone</label>
-        {{ form.location }}
-        {% if form.location.errors %}
-        <p class="text-danger">
-            {% for error in form.location.errors %}
-            {{ error|escape }}
-            {% endfor %}
-        </p>
-        {% endif %}
-        <div class="alert alert-info" role="alert" style="margin-top:3px; margin-bottom:3px;padding:5px">
-            Pour dessiner une zone de recherche précise, utiliser l'icône <span id="icon-draw"></span> sur la carte ci-dessus.
-        </div>
+<div class="hidden" id="auto-zone">
+    <div>
+    Chercher dans un rayon de
+</div>
+    <div class="btn-group" role="group" data-toggle="buttons">
+        <label class="btn btn-default btn-sm" data-radius="1">
+            <input type="radio" name="options" id="option1" autocomplete="off">1 km
+        </label>
+        <label class="btn btn-default btn-sm" data-radius="2">
+            <input type="radio" name="options" id="option2" autocomplete="off">2 km
+        </label>
+        <label class="btn btn-default btn-sm" data-radius="5">
+            <input type="radio" name="options" id="option3" autocomplete="off">5 km
+        </label>
+        <label class="btn btn-default btn-sm" data-radius="10">
+            <input type="radio" name="options" id="option1" autocomplete="off">10 km
+        </label>
+        <label class="btn btn-default btn-sm" data-radius="20">
+            <input type="radio" name="options" id="option2" autocomplete="off">20 km
+        </label>
+    </div> <span id="user-address" class"hidden">autour de votre localisation</span>
+</div>
+
+<div class="form-group {% if form.location.errors %}has-error{% endif %}">
+    <label class="sr-only">Zone</label>
+    {{ form.location }}
+    {% if form.location.errors %}
+    <p class="text-danger">
+        {% for error in form.location.errors %}
+        {{ error|escape }}
+        {% endfor %}
+    </p>
+    {% endif %}
+</div>
+
+    <div class="alert alert-info" role="alert" style="margin-bottom: 0px;">
+        Pour dessiner une zone de recherche précise, utiliser l'icône <span id="icon-draw"></span> sur la carte ci-dessus.
     </div>
 
 </div>

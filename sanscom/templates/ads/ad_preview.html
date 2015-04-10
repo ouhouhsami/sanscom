@@ -2,9 +2,9 @@
 
 <div class="ad-preview" onclick="document.location='{{ object.get_absolute_url }}';">
     <div class="header">
-        <div class="title">
+        <h4 class="title">
             {% if object.sale %}Vente{% else %}Location{% endif %} {{ object.habitation_type|lower }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} {{ object.surface }} m² {{ object.locality }}
-        </div>
+        </h4>
         <div class="price">
             {{ object.price|intcomma }} €{% if object.rent %}/mois{% endif %}
         </div>
