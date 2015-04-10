@@ -9,6 +9,7 @@
   <meta name="description" content="annonces immobilières géolocalisées">
   <meta name="author" content="AcheterSansCom">
   <link rel="icon" href="{{STATIC_URL}}img/favicon.ico" />
+
   {% block head %}
   <title>
     {% block title %}
@@ -37,38 +38,30 @@
 
   <div class="header-back">
     <header>
-
       <div>
-        <div>
-          <a class="brand" href="{% url 'sale:ads_ad_list' %}">
-            Acheter<span class="sanscom_font">SansCom</span>
-          </a>
-        </div>
-        <div>
-          <a class="{% if namespace == 'sale' %}active{% endif %}" href="{% url 'sale:ads_ad_list' %}">Achat - Vente</a>
-        </div>
-        <div>
+        <a class="brand" href="{% url 'sale:ads_ad_list' %}">
+          Acheter<span class="sanscom_font">SansCom</span>
+        </a>
+      </div>
+      <nav>
+          <a class="{% if namespace == 'sale' %}active{% endif %}" href="{% url 'sale:ads_ad_list' %}">Achat · Vente</a>
           <a class="{% if namespace == 'rent' %}active{% endif %}" href="{% url 'rent:ads_ad_list' %}">Location</a>
-        </div>
-      </div>
-
-      <div>
         {% if user.is_authenticated %}
-        <div>
-          <a href="{% url 'user_account' user.username %}">Compte : {{ user }}</a>
-        </div>
-        <div>
-          <a href="{% url 'logout' %}">Se déconnecter</a>
-        </div>
+          <a href="{% url 'user_account' user.username %}" class="{% if request.path == '/accounts/'|add:request.user.username|add:'/' %}active{% endif %}">
+            Compte : {{ user }}
+          </a>
+          <a href="{% url 'logout' %}">
+            Se déconnecter
+          </a>
         {% else %}
-        <div>
-          <a href="{% url 'registration_register' %}"><span style="color:#20B2AB;">Créer un compte</span></a>
-        </div>
-        <div>
-          <a href="{% url 'login' %}">Se connecter</a>
-        </div>
+          <a href="{% url 'registration_register' %}" class="{% if request.path == '/accounts/register/' %}active{% endif %}">
+            Créer un Compte
+          </a>
+          <a href="{% url 'login' %}" class="{% if request.path == '/accounts/login/' %}active{% endif %}">
+            Se connecter
+          </a>
         {% endif %}
-      </div>
+      </nav>
 
     </header>
 
@@ -150,11 +143,17 @@
       <div>
         <a href="/">© {% now "Y" %} AcheterSansCom</a>
       </div>
-      <div>
-        <a href="{% url 'a-propos' %}">En savoir plus</a>
-        <a href="{% url 'legal' %}">Mentions légales</a>
-        <a href="{% url 'cgu' %}">Conditions d'utilisation</a>
-      </div>
+      <nav>
+        <a href="{% url 'a-propos' %}" class="{% if request.path == '/a-propos/' %}active{% endif %}">
+          En savoir plus
+        </a>
+        <a href="{% url 'legal' %}" class="{% if request.path == '/legal/' %}active{% endif %}">
+          Mentions légales
+        </a>
+        <a href="{% url 'cgu' %}" class="{% if request.path == '/cgu/' %}active{% endif %}">
+          Conditions d'utilisation
+        </a>
+      </nav>
     </footer>
   </div>
 </body>
