@@ -1,13 +1,5 @@
 @import "palette.less";
 
-@screen-sm-min: 768px;
-@screen-md-min: 992px;
-@screen-lg-min: 1200px;
-
-@container-sm: 750px;
-@container-md: 970px;
-@container-lg: 1170px;
-
 /* Positions */
 
 body {
@@ -22,6 +14,9 @@ footer, header, main {
   .flex-wrap(wrap);
   margin-left: auto;
   margin-right: auto;
+  @media(max-width:767px){
+    width:@container-xs;
+  }
   @media (min-width: @screen-sm-min) {
     width: @container-sm;
   }
@@ -37,15 +32,37 @@ footer, header, main {
 main {
   .flex(1);
   &.user-account {
-    .flex-direction(column);
-    > * {
-      width:200/3%;
+    .justify-content(center);
+    > div {
+      @media(max-width:767px){
+        .flex(1);
+      }
+      @media(min-width:768px){
+        .flex(1);
+      }
+      @media(min-width:992px){
+        .flex(3/4);
+      }
+      @media(min-width:1200px){
+        .flex(2/3);
+      }
     }
   }
   &.single {
     .justify-content(center);
     > div {
-      .flex(1/2);
+      @media(max-width:767px){
+        .flex(1);
+      }
+      @media(min-width:768px){
+        .flex(1);
+      }
+      @media(min-width:992px){
+        .flex(2/3);
+      }
+      @media(min-width:1200px){
+        .flex(1/2);
+      }
     }
   }
   &:not(.single):not(.user-account) {
@@ -146,6 +163,22 @@ footer > div, footer nav {
 }
 
 
+.media {
+  .flex-display;
+  .pull-left {
+    margin-right:10px;
+  }
+  .media-body {
+    .flex-display;
+    .flex(1);
+    .flex-direction(column);
+    .justify-content(space-between);
+    h4 {
+      margin-top: 0;
+    }
+  }
+}
+
 /* Style */
 
 main {
@@ -154,12 +187,12 @@ main {
 
 .header-back {
   background-color: #222;
-  border-bottom: 5px solid #FFB82E;
+  border-bottom: @border-width solid #FFB82E;
 }
 
 .footer-back {
   background-color: #222;
-  border-top: 5px solid #FFB82E;
+  border-top: @border-width solid #FFB82E;
   color: white;
   a {
     padding: 10px 15px;
@@ -181,7 +214,7 @@ footer > div, footer > nav {
 
 header > div, header > nav, footer > nav {
   > a:not(.brand) {
-   color:#888;
+   color:@font-color-inactive-inverse;
    padding: 10px 15px;
  }
  > a:hover {
@@ -190,7 +223,7 @@ header > div, header > nav, footer > nav {
 }
 > a.active {
     //border-bottom: 4px solid #20B2AB;
-    color:white;
+    color:@font-color-active-inverse;
   }
   > a.brand {
     padding-right: 10px;
@@ -204,12 +237,12 @@ header > div, header > nav, footer > nav {
     font-size: 1.1em;
   }
   a:not(.active) {
-    border-bottom: 2px solid #aaa;
-    color:#aaa;
+    border-bottom: @border-width solid @palette-Blue-Grey-200;
+    color:@palette-Blue-Grey-200;
   }
   a.active {
     color:@palette-Teal-700;
-    border-bottom: 2px solid @palette-Teal-700;
+    border-bottom: @border-width solid @palette-Teal-700;
     background-color: white;
   }
 }

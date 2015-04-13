@@ -1,10 +1,26 @@
 //@import "../bootstrap/less/bootstrap.less";
+
+@screen-sm-min: 768px;
+@screen-md-min: 992px;
+@screen-lg-min: 1200px;
+@screen-xs-max: 767px;
+
+@container-xs: 100%;
+@container-sm: 750px;
+@container-md: 970px;
+@container-lg: 1170px;
+
 @import "normalize.less";
 @import "flexbox.less";
 @import "containers.less";
 @import "fields.less";
 @import "palette.less";
+@import "variables.less";
+@import "tabs.less";
 
+body {
+  font-size: 0.88em;
+}
 
 // Alerts
 
@@ -21,17 +37,15 @@
   }
   &{
     .palette(@color, '500');
-    border-bottom: 4px solid @palette;
+    border-bottom: @border-width solid @palette;
   }
   &{
     .palette(@color, '600');
     color: @palette;
     hr {
-    border-top-color: @palette;
+      border-top-color: @palette;
+    }
   }
-  }
-
-
   & a {
     .palette(@color, '700');
     color: darken(@palette, 10%);
@@ -62,7 +76,6 @@
 @link-color: #20B2AB;
 @secondColor: #FFB82E;
 @brand-primary: #20B2AB;
-@navbar-height: 41px;
 @verySofthColor: #f4f4f4;
 
 @font-face {
@@ -123,12 +136,7 @@
   background-color: @secondColor;
 }
 
-.navbar.navbar-fixed-top {
-  border-bottom:5px solid @secondColor;
-}
-.navbar.navbar-fixed-bottom {
-  border-top:5px solid @secondColor;
-}
+
 .sanscom_font {
   color:@secondColor;
 }
@@ -137,53 +145,6 @@
   background-image: url("../img/icon-apartment.png");
   background-position: 0;
 }
-
-// set form-control field style without using it
-/*
-select,
-textarea,
-input[type="text"],
-input[type="password"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="week"],
-input[type="number"],
-input[type="email"],
-input[type="url"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-input[type="button"] {
-  &:extend(.form-control all);
-}
-
-
-textarea {
-  height: auto;
-}
-
-.input-group {
-  select {
-    .border-right-radius(0);
-  }
-  input {
-    &:first-child {
-      .border-right-radius(0);
-    }
-  }
-}
-*/
-
-
-
-/*
-body {
-  padding-top: 70px;
-}
-*/
 
 form li {
   list-style: none;
@@ -427,3 +388,36 @@ a {
   padding-left:32px;
 
 }
+
+.border-card-shadow {
+  border: 1px solid #ebebeb;
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+}
+
+.padding-card {
+  padding: 20px;
+}
+
+.border-simple-form {
+  .padding-card;
+  @media (min-width: @screen-sm-min) {
+    box-shadow: none;
+    border: 0px;
+  }
+  @media (min-width: @screen-md-min) {
+    .border-card-shadow;
+  }
+  @media (min-width: @screen-lg-min) {
+   .border-card-shadow;
+  }
+
+
+}
+
+
+.panel-heading .panel-title {
+  margin-top:0px;
+}
+
+
+

@@ -16,7 +16,7 @@ from floppyforms.widgets import RadioSelect as FloppyRadioSelect
 
 
 class NullBooleanRadioSelect(FloppyRadioSelect):
-    template_name = "widgets/radio.html"
+    template_name = "widgets/nullbooleanradio.html"
     def __init__(self, *args, **kwargs):
         choices = (
             (None, _('Indifférent')),
@@ -163,6 +163,7 @@ class SearchSearchForm(forms.ModelForm):
 class EditAdForm(forms.ModelForm):
 
     habitation_type = forms.ModelChoiceField(label="Type de bien", queryset=HabitationType.objects.all(), empty_label=None, widget=forms.RadioSelect(attrs={}))
+    address = forms.CharField(label="Adresse", help_text=u"Adresse complète, par exemple : 5 rue de Verneuil Paris", widget=forms.TextInput())
 
     def clean_address(self):
         address = self.cleaned_data['address']
@@ -181,7 +182,7 @@ class EditAdForm(forms.ModelForm):
         model = Ad
         exclude = ('user', 'location', 'transaction', 'json_address')
         widgets = {
-            'address': forms.TextInput(),
+            #'address': ,
             'price': forms.TextInput(),
             'surface': forms.TextInput(),
             'surface_carrez': forms.TextInput(),

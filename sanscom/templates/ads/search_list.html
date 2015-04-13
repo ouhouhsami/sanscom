@@ -13,7 +13,8 @@
 
 {% block content-title %}
 
-<nav class="second-nav">
+<div class="tabpanel">
+    <nav class="tab-select">
     {% with namespace|add:':ads_ad_list' as ads_ad_list_url %}
         <a href="{% url ads_ad_list_url %}" class="hidden-xs">
             {% if sale %}Acheteurs : Trouvez un bien{% endif %}
@@ -27,6 +28,7 @@
         </a>
     {% endwith %}
 </nav>
+</div>
 {% endblock %}
 
 {% block form %}
@@ -111,7 +113,7 @@ Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log
     {% else %}
     <input type="submit" class="btn btn-default btn-primary" value="Lancer la recherche" />
     ou
-    <a class="btn btn-warning" href="{% if sale %}{% url 'sale:ads_ad_add' %}{% else %}{% url 'rent:ads_ad_add' %}{% endif %}">Passer une annonce</a>
+    <a class="btn btn-default btn-warning" href="{% if sale %}{% url 'sale:ads_ad_add' %}{% else %}{% url 'rent:ads_ad_add' %}{% endif %}">Passer une annonce</a>
     {% endif %}
 </form>
 

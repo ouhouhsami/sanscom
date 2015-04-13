@@ -26,9 +26,9 @@ NoRectangleGeometryField = L.GeometryField.extend({
         }
         return {
             edit: {
-             featureGroup: this.drawnItems
-         },
-         draw: {
+               featureGroup: this.drawnItems
+           },
+           draw: {
             polyline: this.options.is_linestring,
             polygon: this.options.is_polygon,
                 circle: false, // Turns off this drawing tool
@@ -61,11 +61,11 @@ current_location = _feature.getBounds();
 var field;
 
 $(window).on("map:init", function (e) {
-   var detail = e.originalEvent ?
-   e.originalEvent.detail : e.detail;
-   detail.map.on('map:loadfield', function (e) {
-       field = e.field;
-   });
+ var detail = e.originalEvent ?
+ e.originalEvent.detail : e.detail;
+ detail.map.on('map:loadfield', function (e) {
+     field = e.field;
+ });
 });
 
 </script>
@@ -73,20 +73,22 @@ $(window).on("map:init", function (e) {
 {% endblock %}
 
 {% block content-title %}
-<nav class="second-nav">
-    {% with namespace|add:':ads_ad_list' as ads_ad_list_url %}
-    <a href="{% url ads_ad_list_url%}" class="active">
-        {% if sale %}Acheteurs : Trouvez un bien{% endif %}
-        {% if rent %}Locataires : Trouvez une location{% endif %}
-    </a>
-    {% endwith %}
-    {% with namespace|add:':ads_search_list' as ads_search_list_url %}
-    <a href="{% url  ads_search_list_url%}" class="hidden-xs">
-        {% if sale %}Vendeurs : Trouvez des acheteurs{% endif %}
-        {% if rent %}Bailleurs : Louez votre bien{% endif %}
-    </a>
-    {% endwith %}
-</nav>
+<div class="tabpanel">
+    <nav class="tab-select">
+        {% with namespace|add:':ads_ad_list' as ads_ad_list_url %}
+        <a href="{% url ads_ad_list_url%}" class="active">
+            {% if sale %}Acheteurs : Trouvez un bien{% endif %}
+            {% if rent %}Locataires : Trouvez une location{% endif %}
+        </a>
+        {% endwith %}
+        {% with namespace|add:':ads_search_list' as ads_search_list_url %}
+        <a href="{% url  ads_search_list_url%}" class="hidden-xs">
+            {% if sale %}Vendeurs : Trouvez des acheteurs{% endif %}
+            {% if rent %}Bailleurs : Louez votre bien{% endif %}
+        </a>
+        {% endwith %}
+    </nav>
+</div>
 {% endblock %}
 
 {% block form %}
@@ -124,12 +126,12 @@ $(window).on("map:init", function (e) {
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon">
-                    <a class="btn btn-default localize" type="button">Centrer la carte sur votre localisation
+                    <a class="localize" type="button">Centrer la carte sur votre localisation
                     </a>
                 </span>
                 <input type="text" class="form-control" id="address" placeholder="ou indiquer une adresse">
                 <span class="input-group-addon">
-                    <a class="btn btn-default address_localize" type="button">Centrer
+                    <a class="address_localize" type="button">Centrer
                     </a>
                 </span>
             </div>
@@ -154,8 +156,8 @@ $(window).on("map:init", function (e) {
 
 <div class="hidden" id="auto-zone">
     <div>
-    Chercher dans un rayon de
-</div>
+        Chercher dans un rayon de
+    </div>
     <div class="btn-group" role="group" data-toggle="buttons">
         <label class="btn btn-default btn-sm" data-radius="1">
             <input type="radio" name="options" id="option1" autocomplete="off">1 km
@@ -187,9 +189,9 @@ $(window).on("map:init", function (e) {
     {% endif %}
 </div>
 
-    <div class="alert alert-info" role="alert" style="margin-bottom: 0px;">
-        Pour dessiner une zone de recherche précise, utiliser l'icône <span id="icon-draw"></span> sur la carte ci-dessus.
-    </div>
+<div class="alert alert-info" role="alert" style="margin-bottom: 0px;">
+    Pour dessiner une zone de recherche précise, utiliser l'icône <span id="icon-draw"></span> sur la carte ci-dessus.
+</div>
 
 </div>
 <div class="fields-side">

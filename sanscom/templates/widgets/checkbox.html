@@ -1,0 +1,19 @@
+<div class="form-group {% if field.errors %}has-error{% endif %}">
+    <label class="control-label">
+        {{ field }}
+        {{ field.label }}
+    </label>
+
+    {% if help_text %}
+    <p class="help-block">
+        {{ field.help_text }}
+    </p>
+    {% endif %}
+    {% if field.errors %}
+    <p class="text-danger">
+        {% for error in field.errors %}
+        {{ error|escape }}
+        {% endfor %}
+    </p>
+    {% endif %}
+</div>

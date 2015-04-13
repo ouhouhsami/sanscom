@@ -1,0 +1,26 @@
+<div class="form-group {% if field.errors %}has-error{% endif %}">
+    <label class="control-label">
+        {{ field.label }}
+    </label>
+    {% if prepend or append %}
+    <div class="input-group">
+        {% if prepend %}<span class="input-group-addon">{{ prepend }}</span>{% endif %}
+        {% endif %}
+        {{ field }}
+        {% if prepend or append %}
+        {% if append %}<span class="input-group-addon">{{ append }}</span>{% endif %}
+    </div>
+    {% endif %}
+    {% if help_text %}
+    <p class="help-block">
+        {{ field.help_text }}
+    </p>
+    {% endif %}
+    {% if field.errors %}
+    <p class="text-danger">
+        {% for error in field.errors %}
+        {{ error|escape }}
+        {% endfor %}
+    </p>
+    {% endif %}
+</div>

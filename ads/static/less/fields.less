@@ -24,22 +24,76 @@
 }
 
 .input-group-addon {
-  background-color: rgba(147, 128, 108, 0.1);
-  color: #666666;
+  background-color: @palette-Blue-Grey-50;
+  color: @palette-Blue-Grey-500;
   font: inherit;
   font-weight: normal;
 }
 
-input, .input-group input,
-.input-group-addon{
-  border: 1px solid rgba(147, 128, 108, 0.25);
+input:not([type=file]), .input-group input, select, textarea,
+.input-group-addon, a.btn.btn-default{
+  border: 1px solid @palette-Blue-Grey-100;
   padding: 0.5em 0.75em;
 }
-.input-group input:first-child,
-.input-group-addon:first-child {
-  border-radius: 2px 0 0 2px;
+
+input[type=submit], a.btn.btn-default{
+  background-color: @palette-Blue-Grey-50;
+  color: @palette-Blue-Grey-500;
+  font-weight: bold;
+  box-sizing: border-box;
 }
-.input-group input:last-child,
-.input-group-addon:last-child {
-  border-radius: 0 2px 2px 0;
+
+input[type=submit].btn-block, a.btn.btn-default.btn-block {
+  width: 100%;
+}
+
+select, textarea {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 100%;
+}
+
+a.btn.btn-default {
+  display: inline-block;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+label + input {
+  display:block;
+  width:100%;
+  box-sizing: border-box;
+}
+
+.btn-group label {
+  display: inline;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group.has-error label {
+  color: @palette-Red-600;
+}
+
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    color:    @palette-Blue-Grey-500;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    @palette-Blue-Grey-500;
+   opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    @palette-Blue-Grey-500;
+   opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+   color:    @palette-Blue-Grey-500;
 }

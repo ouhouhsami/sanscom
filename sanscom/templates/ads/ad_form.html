@@ -92,493 +92,77 @@
         </div>
         {% endif %}
 
-        <div class="form-group {% if form.habitation_type.errors %}has-error{% endif %}">
-            <label class="control-label">{{ form.habitation_type.label }}</label>
-            {{ form.habitation_type }}
-            {% if form.habitation_type.errors %}
-            <p class="text-danger">
-                {% for error in form.habitation_type.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
+        {% include "widgets/input.html" with field=form.habitation_type %}
 
-        <div class="form-group {% if form.address.errors %}has-error{% endif %}">
-            <label class="control-label" for="{{ form.address.auto_id }}">{{ form.address.label }}</label>
-            {{ form.address }}
-            {% if form.address.errors %}
-            <p class="text-danger">
-                {% for error in form.address.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-            <p class="help-block">Adresse complète, par exemple : 5 rue de Verneuil Paris</p>
-        </div>
+        {% include "widgets/input.html" with field=form.address %}
 
-        <div class="form-group {% if form.price.errors %}has-error{% endif %}">
-            <label>{{ form.price.label }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">€{% if rent %}/mois{% endif %}</span>
-                {{ form.price }}
-            </div>
-            {% if form.price.errors %}
-            <p class="text-danger">
-                {% for error in form.price.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="form-group {% if form.surface.errors %}has-error{% endif %}">
-            <label>{{ form.surface.label }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">m<sup>2</sup></span>
-                {{ form.surface }}
-            </div>
-            {% if form.surface.errors %}
-            <p class="text-danger">
-                {% for error in form.surface.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="form-group {% if form.surface_carrez.errors %}has-error{% endif %}">
-            <label>{{ form.surface_carrez.label }} </label>
-            <div class="input-group">
-                <span class="input-group-addon">m<sup>2</sup></span>
-                {{ form.surface_carrez }}
-            </div>
-            {% if form.surface_carrez.errors %}
-            <p class="text-danger">
-                {% for error in form.surface_carrez.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="form-group {% if form.rooms.errors %}has-error{% endif %}">
-            <label>{{ form.rooms.label }} </label>
-            {{ form.rooms }}
-            {% if form.rooms.errors %}
-            <p class="text-danger">
-                {% for error in form.rooms.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="form-group {% if form.address.errors %}has-error{% endif %}">
-            <label>{{ form.bedrooms.label }}</label>
-            {{ form.bedrooms }}
-            {% if form.address.errors %}
-            <p class="text-danger">
-                {% for error in form.bedrooms.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-        {% if sale %}
-        {# Housing taxe only for sale, and not for rent #}
-
-        <div class="form-group {% if form.ad_valorem_tax.errors %}has-error{% endif %}">
-            <label>{{ form.ad_valorem_tax.label }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">€/an</span>
-                {{ form.ad_valorem_tax }}
-            </div>
-            {% if form.ad_valorem_tax.errors %}
-            <p class="text-danger">
-                {% for error in form.ad_valorem_tax.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
+        {% if rent %}
+        {% include "widgets/input.html" with field=form.price prepend="€/mois" %}
+        {% else %}
+        {% include "widgets/input.html" with field=form.price prepend="€" %}
         {% endif %}
 
-        <div class="form-group {% if form.housing_tax.errors %}has-error{% endif %}">
-            <label>{{ form.housing_tax.label }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">€/an</span>
-                {{ form.housing_tax }}
-            </div>
-            {% if form.housing_tax.errors %}
-            <p class="text-danger">
-                {% for error in form.housing_tax.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
+        {% include "widgets/input.html" with field=form.surface prepend="m²" %}
+        {% include "widgets/input.html" with field=form.surface_carrez prepend="m²" %}
 
-        <div class="form-group {% if form.maintenance_charges.errors %}has-error{% endif %}">
-            <label>{{ form.maintenance_charges.label }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">€/mois</span>
-                {{ form.maintenance_charges }}
-            </div>
-            {% if form.maintenance_charges.errors %}
-            <p class="text-danger">
-                {% for error in form.maintenance_charges.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
+        {% include "widgets/input.html" with field=form.rooms %}
+        {% include "widgets/input.html" with field=form.bedrooms %}
+
+        {% if sale %}
+        {# Housing taxe only for sale, and not for rent #}
+        {% include "widgets/input.html" with field=form.ad_valorem_tax prepend="€/an" %}
+        {% endif %}
+
+        {% include "widgets/input.html" with field=form.housing_tax prepend="€/an" %}
+
+        {% include "widgets/input.html" with field=form.maintenance_charges prepend="€/an" %}
+
+        {% include "widgets/input.html" with field=form.energy_consumption %}
+
+        {% include "widgets/input.html" with field=form.emission_of_greenhouse_gases %}
 
 
-        <div class="form-group {% if form.energy_consumption.errors %}has-error{% endif %}">
-            <label>{{ form.energy_consumption.label }}</label>
-            {{ form.energy_consumption }}
-            {% if form.energy_consumption.errors %}
-            <p class="text-danger">
-                {% for error in form.energy_consumption.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="form-group {% if form.emission_of_greenhouse_gases.errors %}has-error{% endif %}">
-            <label>{{ form.emission_of_greenhouse_gases.label }}</label>
-            {{ form.emission_of_greenhouse_gases }}
-            {% if form.emission_of_greenhouse_gases.errors %}
-            <p class="text-danger">
-                {% for error in form.emission_of_greenhouse_gases.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div id="ground_surface_container" class="form-group {% if form.ground_surface.errors %}has-error{% endif %}">
-            <label>{{ form.ground_surface.label }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">m<sup>2</sup></span>
-                {{ form.ground_surface }}
-            </div>
-            {% if form.ground_surface.errors %}
-            <p class="text-danger">
-                {% for error in form.ground_surface.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
+        {% include "widgets/input.html" with field=form.ground_surface prepend="m²" %}
 
         <div id="apartment_situation">
             <h4 class="page-header" >Situation du logement dans l'immeuble</h4>
 
-            <div class="form-group {% if form.floor.errors %}has-error{% endif %}">
-                <label>{{ form.floor.label }}</label>
-                {{ form.floor }}
-                {% if form.floor.errors %}
-                <p class="text-danger">
-                    {% for error in form.floor.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-
-            <div class="checkbox {% if form.ground_floor.errors %}has-error{% endif %}">
-                <label>{{ form.ground_floor }} {{ form.ground_floor.label }}</label>
-                {% if form.ground_floor.errors %}
-                <p class="text-danger">
-                    {% for error in form.ground_floor.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-            <div class="checkbox {% if form.top_floor.errors %}has-error{% endif %}">
-                <label>{{ form.top_floor }} {{ form.top_floor.label }}</label>
-                {% if form.top_floor.errors %}
-                <p class="text-danger">
-                    {% for error in form.top_floor.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-
-            <div class="checkbox {% if form.duplex.errors %}has-error{% endif %}">
-                <label>{{ form.duplex }} {{ form.duplex.label }}</label>
-                {% if form.duplex.errors %}
-                <p class="text-danger">
-                    {% for error in form.duplex.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-
-            <div class="checkbox {% if form.not_overlooked.errors %}has-error{% endif %}">
-                <label>{{ form.not_overlooked }} {{ form.not_overlooked.label }}</label>
-                {% if form.not_overlooked.errors %}
-                <p class="text-danger">
-                    {% for error in form.not_overlooked.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-
-            <div class="form-group {% if form.orientation.errors %}has-error{% endif %}">
-                <label>{{ form.orientation.label }}</label>
-                {{ form.orientation }}
-                {% if form.orientation.errors %}
-                <p class="text-danger">
-                    {% for error in form.orientation.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
+            {% include "widgets/input.html" with field=form.floor %}
+            {% include "widgets/input.html" with field=form.ground_floor %}
+            {% include "widgets/input.html" with field=form.top_floor %}
+            {% include "widgets/input.html" with field=form.duplex %}
+            {% include "widgets/input.html" with field=form.not_overlooked %}
+            {% include "widgets/input.html" with field=form.orientation %}
 
         </div>
 
         <div id="apartment_about">
-            <h4 class="page-header" >A propos de l'immeuble</h4>
-
-            <div class="checkbox {% if form.elevator.errors %}has-error{% endif %}">
-                <label>{{ form.elevator }} {{ form.elevator.label }}</label>
-                {% if form.elevator.errors %}
-                <p class="text-danger">
-                    {% for error in form.elevator.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-            <div class="checkbox {% if form.intercom.errors %}has-error{% endif %}">
-                <label>{{ form.intercom }} {{ form.intercom.label }}</label>
-                {% if form.intercom.errors %}
-                <p class="text-danger">
-                    {% for error in form.intercom.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-            <div class="checkbox {% if form.digicode.errors %}has-error{% endif %}">
-                <label>{{ form.digicode }} {{ form.digicode.label }}</label>
-                {% if form.digicode.errors %}
-                <p class="text-danger">
-                    {% for error in form.digicode.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
-            <div class="checkbox {% if form.doorman.errors %}has-error{% endif %}">
-                <label>{{ form.doorman }} {{ form.doorman.label }}</label>
-                {% if form.doorman.errors %}
-                <p class="text-danger">
-                    {% for error in form.doorman.errors %}
-                    {{ error|escape }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-            </div>
+            <h4 class="page-header">A propos de l'immeuble</h4>
+            {% include "widgets/input.html" with field=form.elevator %}
+            {% include "widgets/input.html" with field=form.intercom %}
+            {% include "widgets/input.html" with field=form.digicode %}
+            {% include "widgets/input.html" with field=form.doorman %}
         </div>
         <h4 class="page-header">Commodités</h4>
 
-        <div class="form-group {% if form.heating.errors %}has-error{% endif %}">
-            <label>{{ form.heating.label }}</label>
-            {{ form.heating }}
-            {% if form.heating.errors %}
-            <p class="text-danger">
-                {% for error in form.heating.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="checkbox {% if form.kitchen.errors %}has-error{% endif %}">
-            <label>{{ form.kitchen }} {{ form.kitchen.label }}</label>
-            {% if form.kitchen.errors %}
-            <p class="text-danger">
-                {% for error in form.kitchen.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="checkbox {% if form.cellar.errors %}has-error{% endif %}">
-            <label>{{ form.cellar }} {{ form.cellar.label }}</label>
-            {% if form.cellar.errors %}
-            <p class="text-danger">
-                {% for error in form.cellar.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="form-group {% if form.parking.errors %}has-error{% endif %}">
-            <label>{{ form.parking.label }}</label>
-            {{ form.parking }}
-            {% if form.parking.errors %}
-            <p class="text-danger">
-                {% for error in form.parking.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="checkbox {% if form.alarm.errors %}has-error{% endif %}">
-            <label>{{ form.alarm }} {{ form.alarm.label }}</label>
-            {% if form.alarm.errors %}
-            <p class="text-danger">
-                {% for error in form.alarm.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="form-group {% if form.balcony.errors %}has-error{% endif %}">
-            <label>{{ form.balcony.label }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">Surface (m<sup>2</sup>)</span>
-                {{ form.balcony }}
-            </div>
-            {% if form.balcony.errors %}
-            <p class="text-danger">
-                {% for error in form.balcony.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="form-group {% if form.terrace.errors %}has-error{% endif %}">
-            <label>{{ form.terrace.label }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">Surface (m<sup>2</sup>)</span>
-                {{ form.terrace }}
-            </div>
-            {% if form.terrace.errors %}
-            <p class="text-danger">
-                {% for error in form.terrace.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="form-group {% if form.fireplace.errors %}has-error{% endif %}">
-            <label>{{ form.fireplace.label }}</label>
-            {{ form.fireplace }}
-            {% if form.fireplace.errors %}
-            <p class="text-danger">
-                {% for error in form.fireplace.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="checkbox {% if form.air_conditioning.errors %}has-error{% endif %}">
-            <label>{{ form.air_conditioning }} {{ form.air_conditioning.label }}</label>
-            {% if form.air_conditioning.errors %}
-            <p class="text-danger">
-                {% for error in form.air_conditioning.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
-        <div class="checkbox {% if form.swimming_pool.errors %}has-error{% endif %}">
-            <label>{{ form.swimming_pool }} {{ form.swimming_pool.label }}</label>
-            {% if form.swimming_pool.errors %}
-            <p class="text-danger">
-                {% for error in form.swimming_pool.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
+        {% include "widgets/input.html" with field=form.heating %}
+        {% include "widgets/checkbox.html" with field=form.kitchen %}
+        {% include "widgets/checkbox.html" with field=form.cellar %}
+        {% include "widgets/input.html" with field=form.parking %}
+        {% include "widgets/checkbox.html" with field=form.alarm %}
+        {% include "widgets/input.html" with field=form.balcony prepend="Surface (m²)" %}
+        {% include "widgets/input.html" with field=form.terrace prepend="Surface (m²)" %}
+        {% include "widgets/input.html" with field=form.fireplace %}
+        {% include "widgets/checkbox.html" with field=form.air_conditioning %}
+        {% include "widgets/checkbox.html" with field=form.swimming_pool %}
 
         <h4 class="page-header">Pièces</h4>
 
-        <div class="checkbox {% if form.separate_dining_room.errors %}has-error{% endif %}">
-            <label>{{ form.separate_dining_room }} {{ form.separate_dining_room.label }}</label>
-            {% if form.separate_dining_room.errors %}
-            <p class="text-danger">
-                {% for error in form.separate_dining_room.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-        <div class="form-group {% if form.separate_toilet.errors %}has-error{% endif %}">
-            <label>{{ form.separate_toilet.label }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">Nombre</span>
-                {{ form.separate_toilet }}
-            </div>
-            {% if form.separate_toilet.errors %}
-            <p class="text-danger">
-                {% for error in form.separate_toilet.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-        <div class="form-group {% if form.bathroom.errors %}has-error{% endif %}">
-            <label>{{ form.bathroom.label }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">Nombre</span>
-                {{ form.bathroom }}
-            </div>
-            {% if form.bathroom.errors %}
-            <p class="text-danger">
-                {% for error in form.bathroom.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-        <div class="form-group {% if form.shower.errors %}has-error{% endif %}">
-            <label>{{ form.shower.label }}</label>
-            <div class="input-group">
-                <span class="input-group-addon">Nombre</span>
-                {{ form.shower }}
-            </div>
-            {% if form.shower.errors %}
-            <p class="text-danger">
-                {% for error in form.shower.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-        <div class="checkbox {% if form.separate_entrance.errors %}has-error{% endif %}">
-            <label>{{ form.separate_entrance }} {{ form.separate_entrance.label }}</label>
-            {% if form.separate_entrance.errors %}
-            <p class="text-danger">
-                {% for error in form.separate_entrance.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
-
+        {% include "widgets/checkbox.html" with field=form.separate_dining_room %}
+        {% include "widgets/input.html" with field=form.separate_toilet prepend="Nombre" %}
+        {% include "widgets/input.html" with field=form.bathroom prepend="Nombre" %}
+        {% include "widgets/input.html" with field=form.shower prepend="Nombre" %}
+        {% include "widgets/checkbox.html" with field=form.separate_entrance %}
 
         <h4 class="page-header">Photos</h4>
 
@@ -589,6 +173,9 @@
         <ul class="media-list">
             {{ formset.management_form }}
             {% for form in formset %}
+                {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+                {% endfor %}
             <li class="media">
                 <span class="pull-left">
                     {% if form.image.value.url %}
@@ -600,9 +187,7 @@
                 <div class="media-body">
                     <h4 class="media-heading">Photo n°{{ forloop.counter }}</h4>
                     <div class="form-group {% if form.image.errors %}has-error{% endif %}">
-                        {% for hidden in form.hidden_fields %}
-                        {{ hidden }}
-                        {% endfor %}
+
                         <label class="sr-only">{{ form.image.label }}</label>
                         {{ form.image }}
                         {% if form.image.errors %}
@@ -613,17 +198,8 @@
                         </p>
                         {% endif %}
                     </div>
-                    <div class="form-group {% if form.title.errors %}has-error{% endif %}">
-                        <label>{{ form.title.label }}</label>
-                        {{ form.title }}
-                        {% if form.title.errors %}
-                        <p class="text-danger">
-                            {% for error in form.title.errors %}
-                            {{ error|escape }}
-                            {% endfor %}
-                        </p>
-                        {% endif %}
-                    </div>
+
+                    {% include "widgets/input.html" with field=form.title %}
                     {% if form.image.value %}
                     <div class="checkbox">
                         <label>{{ form.DELETE }} {{ form.DELETE.label }}</label>
@@ -638,17 +214,7 @@
 
         <h4 class="page-header">Informations complémentaires</h4>
 
-        <div class="form-group {% if form.description.errors %}has-error{% endif %}">
-            <label class="sr-only">{{ form.description.label }}</label>
-            {{ form.description }}
-            {% if form.description.errors %}
-            <p class="text-danger">
-                {% for error in form.description.errors %}
-                {{ error|escape }}
-                {% endfor %}
-            </p>
-            {% endif %}
-        </div>
+        {% include "widgets/input.html" with field=form.description %}
         {{ block.super }}
         <hr />
 
