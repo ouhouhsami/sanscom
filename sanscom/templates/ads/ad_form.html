@@ -67,16 +67,7 @@
     </h2>
 
     {% if form.errors %}
-    <div class="alert alert-danger">
-        {% for field in form %}
-        {% for error in field.errors %}
-        {{ field.label }} : {{ error|escape }}<br>
-        {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-        {{ error|escape }}<br>
-        {% endfor %}
-    </div>
+    {% include "utils/form_errors.html" %}
     {% endif %}
 
     <div class="alert alert-info">
