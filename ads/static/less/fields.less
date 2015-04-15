@@ -80,25 +80,53 @@ label + input {
 
 .form-group.has-error  {
   label, .text-danger {
-  color: @palette-Red-600;
+    color: @palette-Red-600;
   }
   .text-danger{
     margin-top:3px;
   }
 }
 
+.btn-group {
+  label {
+    display:inline-block;
+  }
+  label > input[type=radio] {
+    display:none;
+  }
+  label > span {
+    display:block;
+  }
+}
+
+.btn-group {
+  label {
+    margin-right:-5px;
+    border: 1px solid @palette-Blue-Grey-100;
+    background-color: @palette-Blue-Grey-50;
+    color: @palette-Blue-Grey-500;
+  }
+  label > input[type=radio]:checked + span {
+    background-color:@palette-Blue-Grey-700;
+    color:white;
+  }
+  label > span {
+    padding: 0.5em 0.75em;
+  }
+}
+
 
 ::-webkit-input-placeholder { /* WebKit browsers */
-    color:    @palette-Blue-Grey-500;
+  color:    @palette-Blue-Grey-500;
 }
 :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-   color:    @palette-Blue-Grey-500;
-   opacity:  1;
+ color:    @palette-Blue-Grey-500;
+ opacity:  1;
 }
 ::-moz-placeholder { /* Mozilla Firefox 19+ */
-   color:    @palette-Blue-Grey-500;
-   opacity:  1;
+ color:    @palette-Blue-Grey-500;
+ opacity:  1;
 }
 :-ms-input-placeholder { /* Internet Explorer 10+ */
-   color:    @palette-Blue-Grey-500;
+ color:    @palette-Blue-Grey-500;
 }
