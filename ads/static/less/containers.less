@@ -222,13 +222,18 @@ header > div, header > nav, footer > nav {
   text-decoration: none;
   color: white;
 }
-> a.active {
+ > a.active {
     //border-bottom: 4px solid #20B2AB;
     color:@font-color-active-inverse;
   }
-  > a.brand {
+   > a.brand {
     padding-right: 10px;
   }
+}
+
+header > div {
+  .flex-display;
+  .justify-content(space-between);
 }
 
 .second-nav {
