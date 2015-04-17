@@ -73,13 +73,34 @@ main {
     > div.results {
       .flex-display;
       > .result-list {
-        .flex(2/3);
+        @media(max-width:767px){
+          .flex(1);
+        }
+        @media(min-width:768px){
+          .flex(1);
+        }
+        @media(min-width:992px){
+          .flex(2/3);
+        }
+        @media(min-width:1200px){
+          .flex(2/3);
+        }
       }
     }
     > form.ad-search {
       .flex-display;
+      @media(max-width:767px){
+        .flex-direction(column);
+      }
+
       .map-side {
-        margin-right:10px;
+        @media(max-width:767px){
+          padding:10px;
+        }
+        @media(min-width:768px){
+          margin-right:10px;
+
+        }
         .flex(2/3);
         .flex-display;
         .flex-direction(column);
@@ -99,6 +120,12 @@ main {
         }
       }
       .fields-side {
+        @media(max-width:767px){
+          padding:10px;
+        }
+        @media(min-width:768px){
+
+        }
         .flex(1/3);
         .flex-display;
         .flex-direction(column);
@@ -222,11 +249,11 @@ header > div, header > nav, footer > nav {
   text-decoration: none;
   color: white;
 }
- > a.active {
+> a.active {
     //border-bottom: 4px solid #20B2AB;
     color:@font-color-active-inverse;
   }
-   > a.brand {
+  > a.brand {
     padding-right: 10px;
   }
 }

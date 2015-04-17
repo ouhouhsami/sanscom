@@ -1,0 +1,28 @@
+<div class="tabpanel">
+    <nav class="tab-select">
+        {% with namespace|add:':ads_ad_list' as ads_ad_list_url %}
+        <a href="{% url ads_ad_list_url%}" {% if ad_list %}class="active"{% endif %}>
+            <span class="hidden-xs">
+                {% if sale %}Acheteurs : Trouvez un bien{% endif %}
+                {% if rent %}Locataires : Trouvez une location{% endif %}
+            </span>
+            <span class="visible-xs">
+                {% if sale %}Acheter{% endif %}
+                {% if rent %}A louer{% endif %}
+            </span>
+        </a>
+        {% endwith %}
+        {% with namespace|add:':ads_search_list' as ads_search_list_url %}
+        <a href="{% url  ads_search_list_url%}" {% if search_list %}class="active"{% endif %}>
+            <span class="hidden-xs">
+                {% if sale %}Vendeurs : Trouvez des acheteurs{% endif %}
+                {% if rent %}Bailleurs : Louez votre bien{% endif %}
+            </span>
+            <span class="visible-xs">
+                {% if sale %}Vendre{% endif %}
+                {% if rent %}Louer{% endif %}
+            </span>
+        </a>
+        {% endwith %}
+    </nav>
+</div>
