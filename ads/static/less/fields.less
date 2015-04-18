@@ -103,8 +103,12 @@ label + input {
   label {
     margin-right:-5px;
     border: 1px solid @palette-Blue-Grey-100;
-    background-color: @palette-Blue-Grey-50;
+    background-color: white;
     color: @palette-Blue-Grey-500;
+    font-weight: normal;
+  }
+  label:last-child {
+    border-left:0px;
   }
   label > input[type=radio]:checked + span {
     background-color:@palette-Blue-Grey-700;

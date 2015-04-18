@@ -240,7 +240,12 @@ html {
   .header {
     .flex-display;
     .justify-content(space-between);
-    .flex-wrap(wrap);
+    //.flex-wrap(wrap);
+    @media(max-width:767px){
+      .flex-direction(column);
+    }
+    @media(min-width:768px){
+    }
   }
   .content {
     .flex-display;
@@ -265,6 +270,11 @@ html {
       .focus {
         .flex-display;
         .justify-content(space-between);
+        @media(max-width:767px){
+          .flex-direction(column);
+        }
+        @media(min-width:768px){
+        }
         .highlights {
           .flex-display;
           .justify-content(flex-start);
@@ -464,5 +474,9 @@ a[type=button]{
   width: 22px;
   height: 2px;
   border-radius: 1px;
+}
+
+main > h3 {
+  padding:0px 10px;
 }
 

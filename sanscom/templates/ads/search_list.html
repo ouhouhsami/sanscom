@@ -89,16 +89,18 @@ Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log
         {% endif %}
     </div>
 
-    {% if valid %}
     <div class="btn-group" role="group">
+    {% if valid %}
+
     <input type="submit" class="btn btn-primary" name="save_ad" value="Enregistrer votre annonce">
     <input type="submit" class="btn btn-default" value="Actualiser">
-    </div>
+
     {% else %}
     <input type="submit" class="btn btn-default btn-primary" value="Lancer la recherche" />
     ou
-    <a class="btn btn-default btn-warning" href="{% if sale %}{% url 'sale:ads_ad_add' %}{% else %}{% url 'rent:ads_ad_add' %}{% endif %}">Passer une annonce</a>
+    <a class="btn btn-default btn-warning" href="{% if sale %}{% url 'sale:ads_ad_add' %}{% else %}{% url 'rent:ads_ad_add' %}{% endif %}">Déposer une annonce</a>
     {% endif %}
+</div>
 </form>
 
 {% endblock %}
