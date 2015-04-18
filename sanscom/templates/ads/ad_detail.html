@@ -36,45 +36,49 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
 </script>
 {% endblock %}
 
+{% block main-class %}ad-detail{% endblock %}
 
 {% block content %}
+<div>
+    <h2 class="page-header">{% if sale %}Vente{% endif %}{% if rent %}Location{% endif %} {{ object.habitation_type|lower }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} {{ object.surface }}m² {{ object.price|intcomma }} €{% if rent %}/mois{% endif %} {{ object.locality }}</h2>
+    <p class="small">
+        Mise en ligne par <a href="{% url 'user_account' object.user.username %}">{{ object.user }}</a> le {{ object.created|date:"SHORT_DATETIME_FORMAT" }}{#, dernière modification le {{ object.modified }}#}
+    </p>
 
-<h2 class="page-header">{% if sale %}Vente{% endif %}{% if rent %}Location{% endif %} {{ object.habitation_type|lower }} {{ object.rooms }} pièce{{ object.rooms|pluralize }} {{ object.surface }}m² {{ object.price|intcomma }} €{% if rent %}/mois{% endif %} {{ object.locality }}</h2>
-<p class="small">
-    Mise en ligne par <a href="{% url 'user_account' object.user.username %}">{{ object.user }}</a> le {{ object.created|date:"SHORT_DATETIME_FORMAT" }}{#, dernière modification le {{ object.modified }}#}
-</p>
+    {% if owner %}
 
-{% leaflet_map "map" callback="window.map_init_basic"%} <br />
+    <div class="alert alert-info">
+        Vous avez mis en ligne cette annonce, {% if sale %}<a href="{% url 'sale:ads_ad_update' object.slug %}" class="alert-link">{% endif %}{% if rent %}<a href="{% url 'rent:ads_ad_update' object.slug %}" class="alert-link">{% endif %}vous pouvez si besoin la modifier</a>.
+    </div>
 
-{% if owner %}
+    {% if object.no_contacts %}
+    <h4>Acheteurs potentiels non contactés</h4>
+    <div class="small-container">
+        {% for asr in object.no_contacts %}
+        {% include "ads/search_small.html" with object=asr.search %}
+        {% endfor %}
+    </div>
 
-<div class="alert alert-info">
-    Vous avez mis en ligne cette annonce, {% if sale %}<a href="{% url 'sale:ads_ad_update' object.slug %}" class="alert-link">{% endif %}{% if rent %}<a href="{% url 'rent:ads_ad_update' object.slug %}" class="alert-link">{% endif %}vous pouvez si besoin la modifier</a>.
-</div>
+    {% endif %}
 
-{% if object.no_contacts %}
-<h4>Acheteurs potentiels non contactés</h4>
-<div class="small-container">
-    {% for asr in object.no_contacts %}
-    {% include "ads/search_small.html" with object=asr.search %}
-    {% endfor %}
-</div>
-{% endif %}
+    {% if object.contacts %}
+    <h4>Acheteurs potentiels avec qui vous avez eu un échange</h4>
+    <div class="small-container">
+        {% for asr in object.contacts %}
+        {% include "ads/search_small.html" with object=asr.search %}
+        {% endfor %}
+    </div>
+    {% endif %}
 
-{% if object.contacts %}
-<h4>Acheteurs potentiels avec qui vous avez eu un échange</h4>
-<div class="small-container">
-    {% for asr in object.contacts %}
-    {% include "ads/search_small.html" with object=asr.search %}
-    {% endfor %}
-</div>
-{% endif %}
+    {% endif %}
 
-{% endif %}
 
-<div class="row">
+    {# Map #}
+    {% leaflet_map "map" callback="window.map_init_basic"%}
 
-    <div class="col-md-6">
+    {# Details #}
+    <div>
+        <h3>{{ object.district }}</h3>
 
         <ul class="list-group">
             <li class="list-group-item">{{ object.price|intcomma }} €{% if rent %}/mois{% endif %}</li>
@@ -131,29 +135,29 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
             {% if object.shower %}<li class="list-group-item">{{ object.shower }} salle{{ object.shower|pluralize }} d'eau (avec douche) </li>{% endif %}
         </ul>
 
-        {% if object.description %}
-        <div>
-            <h3>{{ object.district }}</h3>
-            {{ object.description|linebreaks }}
-        </div>
-        {% endif %}
-
     </div>
 
-    <div class="col-md-6">
+    {% if object.description %}
+    <div>
+        {{ object.description|linebreaks }}
+    </div>
+    {% endif %}
 
-        {# Ad Pictures #}
-        {% if object.adpicture_set.all %}
-        {% for picture in object.adpicture_set.all %}
-        <img src="{{ picture.image.url }}" class="center-block img-responsive img-thumbnail" />
+    {# Ad Pictures #}
+    {% if object.adpicture_set.all %}
+    {% for picture in object.adpicture_set.all %}
+    <div>
+        <img src="{{ picture.image.url }}"/>
         <div class="text-center">
             <b>{{ picture.title }}</b>
         </div>
-        <br />
-        {% endfor %}
-        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
 
+    <div>
         {# Contact #}
+        <h3>Contact</h3>
         {% if already_contacted %}
         <div class="alert alert-info">
             Vous avez déjà contacté ce vendeur.
@@ -172,8 +176,5 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
         {% endif %}
 
     </div>
-
 </div>
-
-
 {% endblock %}

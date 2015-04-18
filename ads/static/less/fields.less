@@ -1,3 +1,31 @@
+
+/* Used to style one element of a form: label and input for instance */
+
+.form-group {
+  .flex-display;
+  .flex-direction(column);
+  .btn-group {
+    .flex-display;
+    label {
+      .flex(1);
+    }
+  }
+}
+
+/* Reposition actions input on small screen */
+.center-actions .input-group {
+  @media(max-width: @screen-xs-max){
+    .flex-direction(column);
+    .align-items(stretch);
+    input:not(:last-child), input:not(:first-child) {
+      margin-top: 3px;
+      border-right: 1px solid  @palette-Blue-Grey-100;
+      border-left: 1px solid  @palette-Blue-Grey-100;
+      border-bottom: 0px solid transparent;
+    }
+  }
+}
+
 /* input group */
 
 .input-group {
@@ -7,11 +35,9 @@
 
 .input-group input {
   flex: 1;
-  /* field styles */
 }
 
 .input-group-addon {
-  /* item styles */
 }
 
 /* style */
@@ -31,24 +57,30 @@
 }
 
 input:not([type=file]), .input-group input, select, textarea,
-.input-group-addon, a.btn.btn-default{
+.input-group-addon, a.btn.btn-default, button{
   border: 1px solid @palette-Blue-Grey-100;
   padding: 0.5em 0.75em;
 }
 
-input[type=submit], a.btn.btn-default{
+input[type=submit], a.btn.btn-default, button{
   background-color: @palette-Blue-Grey-50;
   color: @palette-Blue-Grey-500;
   font-weight: bold;
   box-sizing: border-box;
+  text-align: center;
+  &:hover {
+    background-color: white;
+  }
 }
+
+
 
 input[type=submit].btn-block, a.btn.btn-default.btn-block {
   width: 100%;
 }
 
 select, textarea {
-  width: 100%;
+  //width: 100%;
   box-sizing: border-box;
   max-width: 100%;
   min-width: 100%;
@@ -66,8 +98,8 @@ label {
 
 label + input {
   display:block;
-  width:100%;
-  box-sizing: border-box;
+//  width:100%;
+box-sizing: border-box;
 }
 
 .btn-group label {
@@ -75,7 +107,7 @@ label + input {
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .form-group.has-error  {
@@ -101,7 +133,7 @@ label + input {
 
 .btn-group {
   label {
-    margin-right:-5px;
+    //margin-right:-5px;
     border: 1px solid @palette-Blue-Grey-100;
     background-color: white;
     color: @palette-Blue-Grey-500;
@@ -111,11 +143,13 @@ label + input {
     border-left:0px;
   }
   label > input[type=radio]:checked + span {
-    background-color:@palette-Blue-Grey-700;
-    color:white;
+    background-color:@palette-Blue-Grey-50;
+    //color:white;
+
   }
   label > span {
     padding: 0.5em 0.75em;
+    cursor: pointer;
   }
 }
 

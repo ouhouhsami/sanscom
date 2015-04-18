@@ -1,15 +1,12 @@
-<div class="btn-group">
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+  {% comment %}<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
     {{ current_sort_label }} <span class="caret"></span>
   </button>
-  <ul class="dropdown-menu" role="menu">
+  {% endcomment %}
+  <div class="order" >
     {% for sort_link in sort_link_list %}
-        <li {% if sort_link.indicator %}class="order-select disabled"{% endif %}>
-            <a href="{% if not sort_link.indicator %}{{ sort_link.path }}{% endif %}"
-            {% if sort_link.indicator %}style="color:white"{% endif %}>
+            <a {% if sort_link.indicator %}class="order-select disabled"{% endif %} href="{% if not sort_link.indicator %}{{ sort_link.path }}{% endif %}"
+            >
                 {{ sort_link.title }}
             </a>
-        </li>
     {% endfor %}
-  </ul>
-</div>
+  </div>

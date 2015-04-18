@@ -86,21 +86,12 @@ $(window).on("map:init", function (e) {
 
 {% if total %}
 <div class="alert alert-success">
-    <a class="alert-link" href="#results">{{ total }} offre{{ total|pluralize }} correspondent à votre recherche.</a>
+    <a class="alert-link" href="#results"> {{ total }} offre{{ total|pluralize }} correspondent à votre recherche.</a>
 </div>
 {% endif %}
 
 {% if form.errors %}
-<div class="alert alert-danger">
-    {% for field in form %}
-    {% for error in field.errors %}
-    {{ field.label }} : {{ error|escape }}<br>
-    {% endfor %}
-    {% endfor %}
-    {% for error in form.non_field_errors %}<br>
-    {{ error|escape }}
-    {% endfor %}
-</div>
+{% include "ads/form_errors.html" %}
 {% endif %}
 
 <form class="ad-search" role="form" method="get" action=".">
@@ -108,7 +99,7 @@ $(window).on("map:init", function (e) {
     {{ form.non_field_errors }}
 
     <div class="map-side">
-        <div class="form-group">
+        <div class="form-group center-actions">
             <div class="input-group">
                 <span class="input-group-addon">
                     <a class="localize" type="button">Centrer la carte sur votre localisation
@@ -255,14 +246,16 @@ $(window).on("map:init", function (e) {
 
 
 {% block list_title %}
-<h3>
+<h2>
     {% if valid %}
+    <a name="results">
     {{ total }} offre{{  total|pluralize }} correspondent à votre recherche
+</a>
     {% else %}
     Dernières annonces de {% if sale %}vente{% endif %}{% if rent %}location{% endif %} <small>parmi {{ paginator.count }}</small>
     {% endif %}
-    {% if valid %}{% include 'sortable_listview/sort_links.html' %}{% endif %}
-</h3>
+</h2>
+{% if valid %}{% include 'sortable_listview/sort_links.html' %}{% endif %}
 {% endblock %}
 
 

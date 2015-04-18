@@ -1,9 +1,9 @@
 //@import "../bootstrap/less/bootstrap.less";
 
+@screen-xs-max: 767px;
 @screen-sm-min: 768px;
 @screen-md-min: 992px;
 @screen-lg-min: 1200px;
-@screen-xs-max: 767px;
 
 @container-xs: 100%;
 @container-sm: 750px;
@@ -24,6 +24,10 @@ body {
 
 .hidden {
   visibility:collapse;
+}
+
+h2, h3, h4, h5, h6 {
+  font-weight: 300;
 }
 
 // Alerts
@@ -253,7 +257,12 @@ html {
     .picture {
       position: relative;
       img {
-        max-width: 100%;
+        @media(max-width:767px){
+          width: 100%;
+        }
+        @media(min-width:768px){
+          width:250px;
+        }
         padding-right:10px;
       }
       .picture-number {
@@ -264,14 +273,14 @@ html {
     }
     .detail {
       .flex-display;
-      .flex(1); /* Give full width to detail column */
+      .flex(1);
       .flex-direction(column);
       .justify-content(space-between);
       .focus {
         .flex-display;
         .justify-content(space-between);
         @media(max-width:767px){
-          .flex-direction(column);
+          //.flex-direction(column);
         }
         @media(min-width:768px){
         }
@@ -333,10 +342,6 @@ html {
   margin-bottom: 10px;
 }
 
-.ad-preview {
-
-}
-
 .value {
   font-size: 1.4em;
 }
@@ -385,6 +390,8 @@ html {
 
 .ad-preview .header h3 {
   margin-top: 0;
+  margin-bottom: 5px;
+  font-weight: 200;
 }
 
 .ad-preview .header .price {
@@ -423,7 +430,7 @@ a {
 }
 
 .padding-card {
-  padding: 20px;
+  padding: 10px;
 }
 
 .border-simple-form {
@@ -453,6 +460,7 @@ a[type=button]{
 }
 
 .navbar-toggle {
+  height:37px;
   .flex-display;
   .justify-content(space-between);
   .flex-direction(column);
@@ -476,7 +484,20 @@ a[type=button]{
   border-radius: 1px;
 }
 
-main > h3 {
+main > h2 {
   padding:0px 10px;
 }
 
+
+.order {
+  .flex-display;
+  a {
+    font-size: 0.8em;
+    border: 1px solid @palette-Blue-Grey-100;
+    color: @palette-Blue-Grey-500;
+    text-align: center;
+  }
+  a.order-select {
+    background-color: @palette-Blue-Grey-50;
+  }
+}

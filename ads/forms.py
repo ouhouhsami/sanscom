@@ -154,7 +154,7 @@ class SearchSearchForm(forms.ModelForm):
         model = Ad
         fields = ('address', 'price', 'surface', 'habitation_type', )
         widgets = {
-            'address': forms.TextInput(attrs={'placeholder': 'Adresse', }),
+            'address': forms.TextInput(attrs={'placeholder': 'Adresse du bien', }),
             'price': forms.TextInput(attrs={'placeholder': 'Prix', }),
             'surface': forms.TextInput(attrs={'placeholder': 'Surface', }),
         }
@@ -253,4 +253,3 @@ class ContactForm(forms.Form):
             self.fields['email'] = forms.EmailField()
 
     message = forms.CharField(widget=forms.Textarea)
-

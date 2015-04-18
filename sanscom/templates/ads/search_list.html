@@ -19,7 +19,7 @@
 
 {% if valid and paginator.count == 0 %}
 <div class="alert alert-warning">
-Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log(document.getElementsByName('save_ad').item(0).click());"class="alert-link">Enregistrez votre annonce</a> afin d'être tenu informé lorsque de nouvelles personnes cherchent un bien correspondant au votre.
+    Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log(document.getElementsByName('save_ad').item(0).click());"class="alert-link">Enregistrez votre annonce</a> afin d'être tenu informé lorsque de nouvelles personnes cherchent un bien correspondant au votre.
 </div>
 {% endif %}
 
@@ -27,10 +27,14 @@ Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log
 
 {% if paginator.count %}
 <div class="alert alert-success">
-<a class="alert-link" href="#results">{{ paginator.count }} offre{{ paginator.count|pluralize }} correspondent à votre recherche.</a>
+    <a class="alert-link" href="#results">{{ paginator.count }} offre{{ paginator.count|pluralize }} correspondent à votre recherche.</a>
 </div>
 {% endif %}
 
+{% endif %}
+
+{% if form.errors %}
+{% include "ads/form_errors.html" %}
 {% endif %}
 
 <form class="search-search" role="form" method="get" action=".">
@@ -89,18 +93,23 @@ Aucune demande ne correspond à votre bien. <br><a href="#" onclick="console.log
         {% endif %}
     </div>
 
-    <div class="btn-group" role="group">
+
     {% if valid %}
-
-    <input type="submit" class="btn btn-primary" name="save_ad" value="Enregistrer votre annonce">
-    <input type="submit" class="btn btn-default" value="Actualiser">
-
+    <div class="form-group" role="group">
+        <input type="submit" class="btn btn-primary" name="save_ad" value="Enregistrer votre annonce">
+    </div>
+    <div class="form-group" role="group">
+        <input type="submit" class="btn btn-default" value="Actualiser">
+    </div>
     {% else %}
-    <input type="submit" class="btn btn-default btn-primary" value="Lancer la recherche" />
-    ou
-    <a class="btn btn-default btn-warning" href="{% if sale %}{% url 'sale:ads_ad_add' %}{% else %}{% url 'rent:ads_ad_add' %}{% endif %}">Déposer une annonce</a>
+    <div class="form-group" role="group">
+        <button type="submit" class="btn btn-default btn-primary" value="">Chercher des acheteurs</button>
+    </div>
+    <div class="form-group" role="group">
+        <a class="btn btn-default btn-warning" href="{% if sale %}{% url 'sale:ads_ad_add' %}{% else %}{% url 'rent:ads_ad_add' %}{% endif %}">Déposer votre annonce</a>
+    </div>
     {% endif %}
-</div>
+
 </form>
 
 {% endblock %}
