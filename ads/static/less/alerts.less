@@ -1,0 +1,43 @@
+/* Styles */
+
+.alert {
+  padding:10px;
+  margin-top:5px;
+  margin-bottom: 10px;
+}
+
+.alert-variant(@color) {
+  &{
+    .palette(@color, '50');
+    background-color: @palette;
+  }
+  &{
+    .palette(@color, '500');
+    border-bottom: @border-width solid @palette;
+  }
+  &{
+    .palette(@color, '600');
+    color: @palette;
+    hr {
+      border-top-color: @palette;
+    }
+  }
+  & a {
+    .palette(@color, '700');
+    color: darken(@palette, 10%);
+    font-weight: bold;
+  }
+}
+
+.alert.alert-success {
+  .alert-variant('Green')
+}
+.alert.alert-info {
+  .alert-variant('Blue')
+}
+.alert.alert-warning {
+  .alert-variant('Orange')
+}
+.alert.alert-danger {
+  .alert-variant('Red')
+}

@@ -1,0 +1,27 @@
+.sr-only {
+  display: none;
+}
+
+.hidden {
+  visibility:collapse;
+}
+
+.visible-xs {
+  @media(max-width:@screen-xs-max){
+  }
+  @media(min-width:@screen-sm-min){
+    display: none;
+  }
+}
+
+.hidden-xs {
+  @media(max-width:@screen-xs-max){
+    display: none;
+  }
+  @media(min-width:@screen-sm-min){
+  }
+}
+
+.relative {
+  position: relative;
+}

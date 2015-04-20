@@ -1,0 +1,180 @@
+
+/* Used to style one element of a form: label and input for instance */
+
+.form-group {
+  .flex-display;
+  .flex-direction(column);
+  .btn-group {
+    .flex-display;
+    label {
+      .flex(1);
+    }
+  }
+}
+
+/* Reposition custom actions input on small screens */
+.center-actions .input-group {
+  @media(max-width: @screen-xs-max){
+    .flex-direction(column);
+    .align-items(stretch);
+    input:not(:last-child), input:not(:first-child) {
+      margin-top: 3px;
+      border-right: 1px solid  @palette-Blue-Grey-100;
+      border-left: 1px solid  @palette-Blue-Grey-100;
+      border-bottom: 0px solid transparent;
+    }
+  }
+}
+
+/* input group */
+
+.input-group {
+  display: flex;
+  .align-items(center);
+}
+
+.input-group input {
+  flex: 1;
+}
+
+.input-group-addon {
+}
+
+/* Style */
+
+form ul {
+  padding: 0;
+  margin: 0;
+  li {
+    list-style: none;
+    label {
+      font-weight: normal;
+    }
+  }
+}
+
+input[type=file]{
+  color:transparent;
+}
+
+.input-group input:not(:first-child) {
+  border-left: 0;
+}
+.input-group input:not(:last-child) {
+  border-right: 0;
+}
+
+.input-group-addon {
+  background-color: @palette-Blue-Grey-50;
+  color: @palette-Blue-Grey-500;
+  font-weight: normal;
+}
+
+input:not([type=file]), .input-group input, select, textarea,
+.input-group-addon, a.btn.btn-default, button{
+  border: 1px solid @palette-Blue-Grey-100;
+  padding: 0.5em 0.75em;
+}
+
+input[type=submit], a.btn.btn-default, button{
+  background-color: @palette-Blue-Grey-50;
+  color: @palette-Blue-Grey-500;
+  font-weight: bold;
+  box-sizing: border-box;
+  text-align: center;
+  &:hover {
+    background-color: white;
+  }
+}
+
+input[type=submit].btn-block, a.btn.btn-default.btn-block {
+  width: 100%;
+}
+
+select, textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 100%;
+}
+
+a.btn{
+  cursor: pointer;
+}
+
+a.btn.btn-default {
+  display: inline-block;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+label + input {
+  display:block;
+  box-sizing: border-box;
+}
+
+.form-group {
+  margin-bottom: 10px;
+  label {
+    color:@palette-Black-Text;
+  }
+  &.has-error{
+    label, .text-danger {
+      color: @palette-Red-600;
+    }
+    .text-danger{
+      margin-top:3px;
+    }
+  }
+}
+
+.btn-group {
+  label {
+    display:inline-block;
+  }
+  label > input[type=radio] {
+    display:none;
+  }
+  label > span {
+    display:block;
+  }
+  label {
+    border: 1px solid @palette-Blue-Grey-100;
+    background-color: white;
+    color: @palette-Blue-Grey-500;
+    font-weight: normal;
+  }
+  label:last-child {
+    border-left:0px;
+  }
+  label > input[type=radio]:checked + span {
+    background-color:@palette-Blue-Grey-50;
+  }
+  label > span {
+    padding: 0.5em 0.75em;
+    cursor: pointer;
+  }
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+  color:    @palette-Blue-Grey-500;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+ color:    @palette-Blue-Grey-500;
+ opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+ color:    @palette-Blue-Grey-500;
+ opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+ color:    @palette-Blue-Grey-500;
+}
+
+@-moz-document url-prefix() {
+  fieldset { display: table-cell; }
+}
+
