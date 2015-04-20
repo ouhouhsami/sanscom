@@ -4,18 +4,16 @@
 
 {% block content %}
 <div>
-    <div class="panel panel-default border-simple-form">
-      <div class="panel-heading">
+    <div class="border-simple-form">
         <h2 class="panel-title">
             {% block panel-title %}
             {% endblock %}
         </h2>
+        <div class="panel-body">
+            {% block panel-body %}
+            {% endblock %}
+        </div>
     </div>
-    <div class="panel-body">
-        {% block panel-body %}
-        {% endblock %}
-    </div>
-</div>
 
 </div>
 {% endblock %}
