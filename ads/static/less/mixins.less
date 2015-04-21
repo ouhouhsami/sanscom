@@ -1,0 +1,24 @@
+
+.responsive-width(@xs-width: @container-xs, @sm-width: @container-sm, @md-width: @container-md, @lg-width: @container-lg){
+    @media(max-width: @screen-xs-max){
+        width: @xs-width;
+    }
+    @media (min-width: @screen-sm-min) {
+        width: @sm-width;
+    }
+    @media (min-width: @screen-md-min) {
+        width: @md-width;
+    }
+    @media (min-width: @screen-lg-min) {
+        width: @lg-width;
+    }
+}
+
+.center-div {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.responsive-img {
+    width: 100%;
+}

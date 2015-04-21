@@ -1,0 +1,19 @@
+.pagination {
+    .flex-display;
+    //.justify-content(space-between);
+    a {
+        text-align: center;
+        background-color: white;
+        padding: 15px;
+        font-weight: bold;
+    }
+    a.disabled {
+        color:#eee;
+    }
+    a.active {
+        color:@primary-color;
+    }
+    a:not(.active){
+        color:#000;
+    }
+}
