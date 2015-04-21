@@ -17,6 +17,9 @@
     .flex-wrap(wrap);
     .picture {
       position: relative;
+      @media(min-width:@screen-sm-min){
+        padding-right:10px;
+      }
       img {
         @media(max-width:@screen-xs-max){
           width: 100%;
@@ -24,7 +27,7 @@
         @media(min-width:@screen-sm-min){
           width:250px;
         }
-        padding-right:10px;
+
       }
       .picture-number {
         position: absolute;
@@ -50,13 +53,12 @@
         }
         .actions {
           .flex-display;
-          .justify-content(flex-end);
-          a {
-            .flex-display;
-            .flex-direction(column);
-            .align-items(center);
-            .justify-content(center);
-            text-align: center;
+          .align-items(flex-end);
+          > a {
+
+            &:not(last-child){
+              margin-right: 2px;
+            }
           }
         }
       }
@@ -94,10 +96,15 @@
 /* Style */
 
 .ad-preview, .ad-small, .search-small {
-  background-color: @palette-Grey-50;
-  padding:10px;
-  border-bottom:@border-width solid #eee;
+  line-height: 1.5em;
+  //background-color: @palette-Grey-50;
+  padding:10px 0;
+  border-bottom:1px solid @palette-Blue-Grey-100;
   margin-bottom: 10px;
+}
+
+.ad-preview:first-child{
+  border-top:1px solid @palette-Blue-Grey-100;
 }
 
 .value {
@@ -118,13 +125,13 @@
 }
 
 .ad-preview .district {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .ad-preview .header h3 {
   margin-top: 0;
   margin-bottom: 5px;
-  font-weight: 200;
+  font-weight: 500;
 }
 
 .ad-preview .header .price {
@@ -136,13 +143,12 @@
 
 .ad-small .district {
   font-size: 0.9em;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .ad-small .summary {
   font-size: 0.8em;
 }
-
 
 .ad-preview, .ad-small, .search-small {
   cursor: pointer;

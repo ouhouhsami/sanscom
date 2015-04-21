@@ -11,14 +11,13 @@
     </div>
     <div class="subtitle">{{ object.modified|naturalday|title }}</div>
     <div class="content">
+        {% if object.adpicture_set.all %}
         <div class="picture">
-            {% if object.adpicture_set.all %}
+
             <img src="{% thumbnail object.adpicture_set.all.0.image 747 560 %}" alt="{{ object.adpicture_set.all.0.title }}">
             <div class="item picture-number">Photo{{ object.adpicture_set.all|length|pluralize }}<br/><span class="value">{{ object.adpicture_set.all|length }}</span></div>
-            {% else %}
-            {#<img src="{{ STATIC_URL }}img/no-image.png" class="hidden-x" alt="">#}
-            {% endif %}
         </div>
+        {% endif %}
         <div class="detail">
             <div class="description hidden-xs">
                 <span class="district">{{ object.district }}.</span>

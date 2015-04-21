@@ -25,7 +25,7 @@ $(function(){
 </script>
 {% endblock %}
 
-{% block main-class %}user-account{% endblock %}
+{% block main-class %}detail{% endblock %}
 
 {% block content %}
 
@@ -36,21 +36,23 @@ $(function(){
     {% if user == object.user %}
 
 
-    <div class="border-card-shadow">
-        <h3>
-            Votre compte : {{ object }}
-        </h3>
-        <div class="panel-body">
-            Téléphone : {{object.phone }}
-            <br />
-            <a class="btn btn-default" href="{% url 'user_account_update' object.user.username %}">
-                Modifier vos informations personnelles
-            </a>
-            <a class="btn btn-default" href="{% url 'password_change' %}">
-                Changer de mot de passe
-            </a>
-        </div>
+
+    <h2>
+        Votre compte : {{ object }}
+    </h2>
+    <div class="panel-body">
+        Téléphone : {{object.phone }}
     </div>
+    <div><br>
+        <a class="btn btn-default" href="{% url 'user_account_update' object.user.username %}">
+            Modifier vos informations personnelles
+        </a>
+        <a class="btn btn-default" href="{% url 'password_change' %}">
+            Changer de mot de passe
+        </a>
+    </div>
+    <hr />
+
 
     {% else %}
     <h2>Profil de {{ object }}</h2>
@@ -133,13 +135,13 @@ $(function(){
             </div>
 
             <div role="tabpanel" class="tab-pane" id="rent_search">
-             {% if rent_searches %}
-             {% for search in rent_searches %}
-             {% include "ads/search_preview.html" with object=search manage=owner %}
-             {% endfor %}
-             {% endif %}
-             {% if owner %}
-             <div>
+               {% if rent_searches %}
+               {% for search in rent_searches %}
+               {% include "ads/search_preview.html" with object=search manage=owner %}
+               {% endfor %}
+               {% endif %}
+               {% if owner %}
+               <div>
                 <a class="btn btn-default btn-primary btn-block" href="{% url 'rent:ads_search_add' %}">
                     Ajouter une annonce de recherche de location
                 </a>

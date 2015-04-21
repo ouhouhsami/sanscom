@@ -4,12 +4,14 @@
 @import "normalize.less";
 @import "flexbox.less";
 @import "palette.less";
+@import "mixins.less";
 
 @import "variables.less";
 @import "utils.less";
 @import "containers.less";
 @import "custom-types.less";
 @import "tabs.less";
+@import "pagination.less";
 @import "form.less";
 @import "responsive-menu.less";
 @import "alerts.less";
@@ -43,6 +45,14 @@ h1, h2, h3, h4, h5, h6 {
 
 a {
   text-decoration: none;
+}
+
+hr {
+  height: 1px;
+  padding: 0;
+  color: @palette-Blue-Grey-100;
+  background-color: @palette-Blue-Grey-100;
+  border: 0;
 }
 
 /* Local style rules */

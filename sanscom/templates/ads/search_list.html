@@ -11,6 +11,9 @@
 {{ form.media.js }}
 {% endblock %}
 
+
+{% block main-class %}search{% endblock %}
+
 {% block content-title %}
 {% include "ads/second_nav.html" with search_list=True %}
 {% endblock %}
@@ -119,7 +122,7 @@
     {% if valid %}
     {{ paginator.count }} biens correspondent à votre recherche
     {% else %}
-    Les dernières annonces de recherche <small>parmi {{ paginator.count }}</small>
+    Les dernières annonces de recherche <small>parmi {{ paginator.count }} annonces</small>
     {% endif %}
     {% if valid %}{% include 'sortable_listview/sort_links.html' %}{% endif %}
 </h3>

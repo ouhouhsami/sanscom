@@ -2,12 +2,12 @@
 
 <div class="ad-preview" onclick="document.location='{{ object.get_absolute_url }}';">
     <div class="header">
-        <div class="title">
+        <h3>
             {% if object.sale %}Achat{% else %}Location{% endif %} {{ object.habitation_types.all|join:', '|lower }} {{ object.rooms_min }} pièce{{ object.rooms|pluralize }} min. {{ object.surface_min }} m² min.
-        </div>
-        <div class="price">
+        </h3>
+        <h3 class="price">
             {{ object.price_max|intcomma }} €{% if object.rent %}/mois{% endif %} max.
-        </div>
+        </h3>
     </div>
     <div class="subtitle">{{ object.modified|naturalday|title }}</div>
     <div class="content">

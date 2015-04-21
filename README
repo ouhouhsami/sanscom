@@ -9,3 +9,28 @@ CREATE EXTENSION postgis_topology;
 # coverage test
 coverage run --source='.' manage.py test ads
 coverage html
+
+# Website pages
+
+* search ad - search
+* search search - search
+
+* user account - .detail
+* user account update - .form
+
+* ad detail - .detail
+* ad form create - .form
+* ad form update - .form
+* ad form delete - .form
+
+* search detail - .detail
+* search form create - .form
+* search form update - .form
+* search form delete - .form
+
+* flatpages
+
+form
+detail
+center
+search

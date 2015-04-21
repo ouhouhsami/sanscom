@@ -149,26 +149,32 @@ class Ad(BaseModel):
 
     @property
     def district(self):
-        address_components = self.json_address['results'][0]['address_components']
-        for component in address_components:
-            if "locality" in component["types"]:
-                locality = component["long_name"]
-            if "postal_code" in component["types"]:
-                postal_code = component["long_name"]
-        if locality and postal_code:
-            return u"%s, %s" % (locality, postal_code)
-        else:
+        try:
+            address_components = self.json_address['results'][0]['address_components']
+            for component in address_components:
+                if "locality" in component["types"]:
+                    locality = component["long_name"]
+                if "postal_code" in component["types"]:
+                    postal_code = component["long_name"]
+            if locality and postal_code:
+                return u"%s, %s" % (locality, postal_code)
+            else:
+                return False
+        except:
             return False
 
     @property
     def locality(self):
-        address_components = self.json_address['results'][0]['address_components']
-        for component in address_components:
-            if "locality" in component["types"]:
-                locality = component["long_name"]
-        if locality:
-            return u"%s" % locality
-        else:
+        try:
+            address_components = self.json_address['results'][0]['address_components']
+            for component in address_components:
+                if "locality" in component["types"]:
+                    locality = component["long_name"]
+            if locality:
+                return u"%s" % locality
+            else:
+                return False
+        except:
             return False
 
     @property

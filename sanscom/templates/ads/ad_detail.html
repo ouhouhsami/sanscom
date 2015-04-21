@@ -36,7 +36,7 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
 </script>
 {% endblock %}
 
-{% block main-class %}ad-detail{% endblock %}
+{% block main-class %}detail{% endblock %}
 
 {% block content %}
 <div>
@@ -147,7 +147,7 @@ L.Icon.Default.imagePath = '/static/leaflet/images/'
     {% if object.adpicture_set.all %}
     {% for picture in object.adpicture_set.all %}
     <div>
-        <img src="{{ picture.image.url }}"/>
+        <img class="responsive-img" src="{{ picture.image.url }}"/>
         <div class="text-center">
             <b>{{ picture.title }}</b>
         </div>

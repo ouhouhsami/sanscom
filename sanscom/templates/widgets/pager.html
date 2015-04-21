@@ -1,18 +1,18 @@
 
 {% if is_paginated %}
-<ul class="pagination">
+<div class="pagination">
     {% if page_obj.has_previous %}
-    <li><a href="?page={{ page_obj.previous_page_number }}{{ urlencode_get }}">&laquo;</a></li>
+    <a href="?page={{ page_obj.previous_page_number }}{{ urlencode_get }}">&laquo;</a>
     {% else %}
-    <li class="disabled"><a>&laquo;</a></li>
+    <a class="disabled">&laquo;</a>
     {% endif %}
     {% for i in paginator_page_range %}
-    <li {% if page_obj.number == i %}class="active"{% endif %}><a href="?page={{ i }}{{ urlencode_get }}">{{ i }}</a></li>
+    <a class="{% if page_obj.number == i %}active{% endif %}" href="?page={{ i }}{{ urlencode_get }}">{{ i }}</a>
     {% endfor %}
     {% if page_obj.has_next %}
-    <li><a href="?page={{ page_obj.next_page_number }}{{ urlencode_get }}">&raquo;</a></li>
+    <a href="?page={{ page_obj.next_page_number }}{{ urlencode_get }}">&raquo;</a>
     {% else %}
-    <li class="disabled"><a>&raquo;</a></li>
+     <a class="disabled">&raquo;</a>
     {% endif %}
-</ul>
+</div>
 {% endif %}

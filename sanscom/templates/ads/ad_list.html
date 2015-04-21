@@ -72,6 +72,8 @@ $(window).on("map:init", function (e) {
 
 {% endblock %}
 
+{% block main-class %}search{% endblock %}
+
 {% block content-title %}
 {% include "ads/second_nav.html" with ad_list=True %}
 {% endblock %}
@@ -252,7 +254,7 @@ $(window).on("map:init", function (e) {
     {{ total }} offre{{  total|pluralize }} correspondent à votre recherche
 </a>
     {% else %}
-    Dernières annonces de {% if sale %}vente{% endif %}{% if rent %}location{% endif %} <small>parmi {{ paginator.count }}</small>
+    Dernières annonces de {% if sale %}vente{% endif %}{% if rent %}location{% endif %} <small>parmi {{ paginator.count }} annonces</small>
     {% endif %}
 </h2>
 {% if valid %}{% include 'sortable_listview/sort_links.html' %}{% endif %}
