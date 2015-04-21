@@ -85,7 +85,7 @@ $('.show-marker').on('click', function(evt){
 
 enableAutoLocationZone = function(latlng, address){
     var latlng = latlng;
-    $('#auto-zone').removeClass('hidden');
+    $('#auto-zone').addClass('show');
     if(address !== 'geolocated')
         $('#user-address').html('autour de : '+address)
     $('#user-address').removeClass('hidden');

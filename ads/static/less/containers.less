@@ -66,8 +66,12 @@ main {
         .flex-direction(column);
         .justify-content(space-between);
         #auto-zone {
-          .flex-display;
+          //.flex-display;
+          display:none;
           .align-items(baseline);
+        }
+        #auto-zone.show{
+          .flex-display;
         }
       }
       .fields-side {
