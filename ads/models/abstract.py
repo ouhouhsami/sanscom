@@ -16,6 +16,7 @@ class BaseModel(TimeStampedModel):
     description = models.TextField(_('description'), blank=True, null=True)
     user = models.ForeignKey(User)
     transaction = models.CharField(choices=TRANSACTION_CHOICES, max_length=4)
+    valid = models.NullBooleanField()
 
     @property
     def sale(self):
