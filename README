@@ -12,25 +12,21 @@ coverage html
 
 # Website pages
 
-* search ad - search
-* search search - search
+* search ad - search - all valid
+* search search - search - all valid
 
-* user account - .detail
+* user account - .detail - valid + other if user = request.user
 * user account update - .form
 
-* ad detail - .detail
+* ad detail - .detail - valid + other if user = request.user
 * ad form create - .form
-* ad form update - .form
-* ad form delete - .form
+* ad form update - .form - all of user = request.user
+* ad form delete - .form - all of user = request.user
 
-* search detail - .detail
+* search detail - .detail - valid + other if user = request.user
 * search form create - .form
-* search form update - .form
-* search form delete - .form
+* search form update - .form - all of user = request.user
+* search form delete - .form - all of user = request.user
 
 * flatpages
 
-form
-detail
-center
-search

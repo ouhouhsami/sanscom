@@ -1,8 +1,6 @@
 #-*- coding: utf-8 -*-
 from PIL import Image
 
-import json
-
 from django.db import models
 from django.db.models import Q
 from django.contrib.gis.db import models
@@ -27,7 +25,7 @@ class HabitationType(models.Model):
 
     class Meta:
         db_table = 'ads_habitationtype'
-        app_label= 'ads'
+        app_label = 'ads'
 
 
 class AdManager(models.GeoManager):
@@ -96,7 +94,7 @@ class Ad(BaseModel):
                                choices=PARKING_CHOICES, null=True, blank=True)
     orientation = models.CharField(_(u"Orientation"), max_length=255, null=True, blank=True)
 
-    objects = AdManager() #models.GeoManager()
+    objects = AdManager()  # models.GeoManager()
 
     @models.permalink
     def get_absolute_url(self):
@@ -189,7 +187,7 @@ class Ad(BaseModel):
 
     class Meta:
         db_table = 'ads_ad'
-        app_label= 'ads'
+        app_label = 'ads'
 
 
 class AdPicture(models.Model):
@@ -209,4 +207,4 @@ class AdPicture(models.Model):
 
     class Meta:
         db_table = 'ads_adpicture'
-        app_label= 'ads'
+        app_label = 'ads'

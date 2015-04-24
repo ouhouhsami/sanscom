@@ -112,7 +112,6 @@ class AdListView(CustomSortableListView):
     _total = False
     _urlencode_get = ''
 
-
     def get(self, request, *args, **kwargs):
         get = super(AdListView, self).get(request, *args, **kwargs)
         if 'save_ad' in self.request.GET and self._valid:
@@ -121,7 +120,7 @@ class AdListView(CustomSortableListView):
         return get
 
     def get_queryset(self):
-        q = super(AdListView, self).get_queryset() #.order_by('-modified')
+        q = super(AdListView, self).get_queryset()  # .order_by('-modified')
         # Filter by transaction (sale or rent)
         q = q.select_related('habitation_type')
         q = q.filter(transaction=self.transaction)
