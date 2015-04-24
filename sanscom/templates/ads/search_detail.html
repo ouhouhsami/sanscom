@@ -79,6 +79,7 @@ function map_init_basic (map, options) {
             </li>
             <li class="list-group-item">Type d'habitation : {{ object.habitation_types.all|join:', ' }} </li>
             <li class="list-group-item">Surface minimale : {{ object.surface_min }} m² </li>
+            <li class="list-group-item">Prix m² maximal : {{ object.square_meter_max_price|intcomma }} €{% if rent %}/mois{% endif %}</li>
             {% if object.rooms_min %}
             <li class="list-group-item">Nombre de pièce minimal : {{ object.rooms_min }} </li>
             {% endif %}
@@ -116,7 +117,7 @@ function map_init_basic (map, options) {
     </div>
     <div>
         {# Contact #}
-        <h3>Contact</h3>
+        <h3><a anchor="contact">Contact</a></h3>
         {% if already_contacted %}
         <div class="alert alert-info">
             Vous avez déjà contacté ce vendeur.

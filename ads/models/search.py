@@ -125,6 +125,10 @@ class Search(BaseModel):
     def contacts(self):
         return self.adsearchrelation_set.all().filter(valid=True).filter(Q(ad_contacted__isnull=False) | Q(search_contacted__isnull=False))
 
+    @property
+    def square_meter_max_price(self):
+        return self.price_max / self.surface_min
+
     def __unicode__(self):
         unity = u'€'
         if self.transaction == 'rent':
