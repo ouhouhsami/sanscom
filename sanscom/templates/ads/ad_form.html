@@ -119,20 +119,20 @@
             <h4 class="page-header" >Situation du logement dans l'immeuble</h4>
 
             {% include "widgets/input.html" with field=form.floor %}
-            {% include "widgets/input.html" with field=form.ground_floor %}
-            {% include "widgets/input.html" with field=form.top_floor %}
-            {% include "widgets/input.html" with field=form.duplex %}
-            {% include "widgets/input.html" with field=form.not_overlooked %}
+            {% include "widgets/checkbox.html" with field=form.ground_floor %}
+            {% include "widgets/checkbox.html" with field=form.top_floor %}
+            {% include "widgets/checkbox.html" with field=form.duplex %}
+            {% include "widgets/checkbox.html" with field=form.not_overlooked %}
             {% include "widgets/input.html" with field=form.orientation %}
 
         </div>
 
         <div id="apartment_about">
             <h4 class="page-header">A propos de l'immeuble</h4>
-            {% include "widgets/input.html" with field=form.elevator %}
-            {% include "widgets/input.html" with field=form.intercom %}
-            {% include "widgets/input.html" with field=form.digicode %}
-            {% include "widgets/input.html" with field=form.doorman %}
+            {% include "widgets/checkbox.html" with field=form.elevator %}
+            {% include "widgets/checkbox.html" with field=form.intercom %}
+            {% include "widgets/checkbox.html" with field=form.digicode %}
+            {% include "widgets/checkbox.html" with field=form.doorman %}
         </div>
         <h4 class="page-header">Commodités</h4>
 
