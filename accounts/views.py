@@ -1,8 +1,10 @@
-from .models import UserProfile
 from django.views.generic import DetailView, UpdateView
 from django.shortcuts import redirect
+
 from ads.models import Ad, Search
 from ads.views import AssureOwnerMixin
+
+from .models import UserProfile
 from .forms import EditUserAccountForm
 
 
@@ -12,14 +14,19 @@ class UserAccount(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(UserAccount, self).get_context_data(**kwargs)
+        ad_manager = Ad.valid_objects
+        search_manager = Search.valid_objects
         user_profile = self.get_object()
-        context['ads'] = Ad.objects.filter(user=user_profile.user)
-        context['rentals'] = Ad.objects.filter(user=user_profile.user, transaction="rent")
-        context['sales'] = Ad.objects.filter(user=user_profile.user, transaction="sale")
-        context['rent_searches'] = Search.objects.filter(user=user_profile.user, transaction="rent")
-        context['sale_searches'] = Search.objects.filter(user=user_profile.user, transaction="sale")
         if user_profile.user == self.request.user:
             context['owner'] = True
+            ad_manager = Ad.objects
+            search_manager = Search.objects
+        # Fill appropriate context variables
+        context['ads'] = ad_manager.filter(user=user_profile.user)
+        context['rentals'] = ad_manager.filter(user=user_profile.user, transaction="rent")
+        context['sales'] = ad_manager.filter(user=user_profile.user, transaction="sale")
+        context['rent_searches'] = search_manager.filter(user=user_profile.user, transaction="rent")
+        context['sale_searches'] = search_manager.filter(user=user_profile.user, transaction="sale")
         return context
 
 

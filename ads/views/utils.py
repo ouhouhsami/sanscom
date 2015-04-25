@@ -79,6 +79,25 @@ class FillInitialForm(object):
         return initial
 
 # Utils
+
+
+class ModeratedDetailView(DetailView):
+    model = None
+
+    def get_object(self, queryset=None):
+        # If object belongs to user, even if it's not valid, user can access it
+        user = self.request.user
+        slug = self.kwargs.get(self.slug_url_kwarg, None)
+        try:
+            obj = self.model.objects.get(slug=slug, user=user)
+        except self.model.objects.DoesNotExist:
+            try:
+                obj = self.model.valid_objects.get(slug=slug)
+            except self.model.valid_objects.DoesNotExist:
+                raise Http404
+        return obj
+
+
 class MessageView(SingleObjectMixin, FormView):
 
     def post(self, request, *args, **kwargs):

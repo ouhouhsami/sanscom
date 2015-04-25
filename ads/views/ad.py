@@ -3,12 +3,12 @@ from extra_views import CreateWithInlinesView, UpdateWithInlinesView, InlineForm
 
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
-from django.views.generic import DetailView, DeleteView, ListView
+from django.views.generic import DeleteView
 
 from ads.models import Ad, AdPicture, AdSearchRelation
 from ads.forms import EditAdForm, EditAdFormWithLogin, ContactForm, SearchAdForm, AdPictureForm
 
-from .utils import SetUserAndTransactionMixin, FillInitialForm, MessageDetailView, LoginRequiredMixin, AssureOwnerMixin, CustomSortableListView
+from .utils import SetUserAndTransactionMixin, FillInitialForm, MessageDetailView, LoginRequiredMixin, AssureOwnerMixin, CustomSortableListView, ModeratedDetailView
 
 
 class AdPictureInline(InlineFormSet):
@@ -37,7 +37,7 @@ class CreateAdView(SetUserAndTransactionMixin, FillInitialForm, CreateWithInline
         return super(CreateAdView, self).dispatch(request, *args, **kwargs)
 
 
-class ReadAdView(DetailView):
+class ReadAdView(ModeratedDetailView):
     model = Ad
     contact_form = ContactForm
     owner = False

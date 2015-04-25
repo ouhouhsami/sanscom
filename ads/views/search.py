@@ -1,14 +1,14 @@
 #-*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
-from django.views.generic import (CreateView, DetailView, UpdateView,
-                                  DeleteView, ListView)
+from django.views.generic import (CreateView, UpdateView,
+                                  DeleteView)
 
 from ads.models import Search, AdSearchRelation
 from ads.forms import EditSearchForm, EditSearchFormWithLogin, ContactForm, SearchSearchForm
 from ads.utils import geo_from_address
 
-from .utils import SetUserAndTransactionMixin, FillInitialForm, MessageDetailView, LoginRequiredMixin, AssureOwnerMixin, CustomSortableListView
+from .utils import SetUserAndTransactionMixin, FillInitialForm, MessageDetailView, LoginRequiredMixin, AssureOwnerMixin, CustomSortableListView, ModeratedDetailView
 
 
 class CreateSearchView(SetUserAndTransactionMixin, FillInitialForm, CreateView):
@@ -27,7 +27,7 @@ class CreateSearchView(SetUserAndTransactionMixin, FillInitialForm, CreateView):
         return super(CreateSearchView, self).dispatch(request, *args, **kwargs)
 
 
-class ReadSearchView(DetailView):
+class ReadSearchView(ModeratedDetailView):
     model = Search
     contact_form = ContactForm
 
