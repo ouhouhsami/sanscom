@@ -76,11 +76,12 @@ class DeleteAdView(LoginRequiredMixin, AssureOwnerMixin, DeleteView):
 
     def get_success_url(self):
         slug = self.request.user.username
-        return reverse_lazy('user_account', kwargs={'slug':slug, })
+        return reverse_lazy('user_account', kwargs={'slug': slug, })
 
 
 class AdListView(CustomSortableListView):
-    model = Ad
+    #model = Ad
+    queryset = Ad.valid_objects
     paginate_by = 10
 
     transaction = None

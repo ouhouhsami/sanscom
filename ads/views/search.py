@@ -51,7 +51,8 @@ class ReadSearchView(ModeratedDetailView):
 
 
 class SearchListView(CustomSortableListView):
-    model = Search
+    # model = Search
+    queryset = Search.valid_objects
     paginate_by = 10
     transaction = None
 
