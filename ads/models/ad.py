@@ -30,6 +30,11 @@ class HabitationType(models.Model):
 
 class AdManager(models.GeoManager):
     def get_queryset(self):
+        return super(AdManager, self).get_queryset().filter(valid=True).select_related('habitation_type').prefetch_related('adpicture_set')
+
+
+class ModerationAdManager(models.GeoManager):
+    def get_queryset(self):
         return super(AdManager, self).get_queryset().select_related('habitation_type').prefetch_related('adpicture_set')
 
 
@@ -94,7 +99,8 @@ class Ad(BaseModel):
                                choices=PARKING_CHOICES, null=True, blank=True)
     orientation = models.CharField(_(u"Orientation"), max_length=255, null=True, blank=True)
 
-    objects = AdManager()  # models.GeoManager()
+    objects = AdManager()
+    included_not_validated_objects = ModerationAdManager()
 
     @models.permalink
     def get_absolute_url(self):
