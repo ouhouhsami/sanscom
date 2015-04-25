@@ -88,8 +88,8 @@ class Search(BaseModel):
     #                                                choices=EMISSION_OF_GREENHOUSE_GASES_CHOICES,
     #                                                null=True, blank=True)
 
-    objects = SearchManager()
-    included_not_validated_objects = ModerationSearchManager()
+    objects = ModerationSearchManager()
+    valid_objects = SearchManager()
 
     @models.permalink
     def get_absolute_url(self):

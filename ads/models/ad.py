@@ -99,8 +99,8 @@ class Ad(BaseModel):
                                choices=PARKING_CHOICES, null=True, blank=True)
     orientation = models.CharField(_(u"Orientation"), max_length=255, null=True, blank=True)
 
-    objects = AdManager()
-    included_not_validated_objects = ModerationAdManager()
+    objects = ModerationAdManager()
+    valid_objects = AdManager()
 
     @models.permalink
     def get_absolute_url(self):
