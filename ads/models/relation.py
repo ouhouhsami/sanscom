@@ -24,8 +24,9 @@ class AdSearchRelation(TimeStampedModel):
     ad_notified = models.DateTimeField(null=True, blank=True)
     search_notified = models.DateTimeField(null=True, blank=True)
     ad_contacted = models.DateTimeField(null=True, blank=True)
-    search_contacted =  models.DateTimeField(null=True, blank=True)
+    search_contacted = models.DateTimeField(null=True, blank=True)
     valid = models.BooleanField(default=False)
+    moderated = models.BooleanField(default=False)
 
     valid_objects = AdSearchRelationManager()
     objects = models.Manager()
