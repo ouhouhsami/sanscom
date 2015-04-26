@@ -12,7 +12,7 @@ from search import Search
 
 class AdSearchRelationManager(models.Manager):
     def get_queryset(self):
-        return super(AdSearchRelationManager, self).get_queryset().filter(valid=True)
+        return super(AdSearchRelationManager, self).get_queryset().filter(valid=True, moderated=True)
 
 
 class AdSearchRelation(TimeStampedModel):
