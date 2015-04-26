@@ -59,16 +59,19 @@ def update_adsearch_relation_from_ad(sender, instance, **kwargs):
     for search in s:
         if search not in asr_search:
             a = AdSearchRelation(ad=ad, search=search, valid=True)
+            a.moderated = ad.valid and search.valid
             a.save()
     # Search in s and in asr_search => nothing
     for search in asr_search:
         if search in s:
             a = AdSearchRelation.objects.get(ad=ad, search=search)
             a.valid = True
+            a.moderated = ad.valid and search.valid
             a.save()
         else:
             a = AdSearchRelation.objects.get(ad=ad, search=search)
             a.valid = False
+            a.moderated = ad.valid and search.valid
             a.save()
 
 
@@ -134,15 +137,18 @@ def update_adsearch_relation_from_search(sender, instance, **kwargs):
     for ad in asr_ad:
         if ad not in q_ad:
             a = AdSearchRelation.objects.get(ad=ad, search=search)
+            a.moderated = ad.valid and search.valid
             a.valid = False
         else:
             a = AdSearchRelation.objects.get(ad=ad, search=search)
+            a.moderated = ad.valid and search.valid
             a.valid = True
         a.save()
     for ad in q_ad:
         if ad not in asr_ad:
             a, create = AdSearchRelation.objects.get_or_create(ad=ad, search=search)
             a.valid = True
+            a.moderated = ad.valid and search.valid
             a.save()
 
 
