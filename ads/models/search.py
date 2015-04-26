@@ -31,7 +31,7 @@ class SearchManager(models.GeoManager):
 
 class ModerationSearchManager(models.GeoManager):
     def get_queryset(self):
-        return super(SearchManager, self).get_queryset().select_related('habitation_types')
+        return super(ModerationSearchManager, self).get_queryset().select_related('habitation_types')
 
 
 class Search(BaseModel):

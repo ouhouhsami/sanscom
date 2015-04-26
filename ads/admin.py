@@ -22,6 +22,12 @@ class AdAdmin(LeafletGeoAdmin):
 class SearchAdmin(LeafletGeoAdmin):
     list_display = ['slug', 'price_max', 'surface_min', 'location']
 
+    def save_model(self, request, obj, form, change):
+        # Override admin save_model
+        # If obj.valid = True => accepted, send mail to user
+        # If obj.valid = False => not accepted, send mail to user
+        obj.save(valid=obj.valid)
+
 
 admin.site.register(Ad, AdAdmin)
 admin.site.register(AdPicture)

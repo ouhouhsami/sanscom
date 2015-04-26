@@ -2,7 +2,7 @@
 from django.db.models.signals import post_save, m2m_changed
 from django.db.models import Q
 
-from .ad import Ad
+from .ad import Ad, AdPicture, HabitationType
 from .search import Search
 from .relation import AdSearchRelation
 from .choices import *

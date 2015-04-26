@@ -35,7 +35,7 @@ class AdManager(models.GeoManager):
 
 class ModerationAdManager(models.GeoManager):
     def get_queryset(self):
-        return super(AdManager, self).get_queryset().select_related('habitation_type').prefetch_related('adpicture_set')
+        return super(ModerationAdManager, self).get_queryset().select_related('habitation_type').prefetch_related('adpicture_set')
 
 
 class Ad(BaseModel):
