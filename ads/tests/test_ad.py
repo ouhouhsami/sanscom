@@ -30,7 +30,7 @@ class ReadAdsViewTestCase(TestCase):
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.has_key('contact_form'), True)
+        self.assertTrue('contact_form' in response.context_data)
 
     def test_ad_read_logged_user_no_adsearch_for_ad(self):
         ad = AdFactory.create()
@@ -41,7 +41,7 @@ class ReadAdsViewTestCase(TestCase):
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.has_key('contact_form'), True)
+        self.assertTrue('contact_form' in response.context_data)
 
     def test_ad_read_logged_user_adsearch_for_ad(self):
         house, create = HabitationType.objects.get_or_create(label="Maison")
@@ -67,7 +67,7 @@ class ReadAdsViewTestCase(TestCase):
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.has_key('contact_form'), True)
+        self.assertTrue('contact_form' in response.context_data)
         # We should then be able to contact the vendor
         request = RequestFactory().post('/fake-path', {'message': 'hi there'})
         request.user = ad_search.user
@@ -81,7 +81,7 @@ class ReadAdsViewTestCase(TestCase):
         add_namespace_to_request(request, ad_search)
         view = AdDetailView.as_view()
         response = view(request, slug=ad.slug)
-        self.assertEqual(response.context_data.has_key('already_contacted'), True)
+        self.assertTrue('already_contacted' in response.context_data)
 
 
 class CreateAdsViewTestCase(TestCase):
@@ -162,7 +162,7 @@ class CreateAdsViewTestCase(TestCase):
         ad_dict.update(user_credentials)
         request = RequestFactory().post('/fake-path', ad_dict, format="multipart")
         request.user = AnonymousUser()
-        add_session_to_request(request) # Trick to add session even with an anonyomous user and RequestFactory
+        add_session_to_request(request)  # Trick to add session even with an anonyomous user and RequestFactory
         add_namespace_to_request(request, ad)
         view = CreateAdView.as_view()
         response = view(request)
@@ -206,7 +206,7 @@ class CreateAdsViewTestCase(TestCase):
         ad_dict.update(user_credentials)
         request = RequestFactory().post('/fake-path', ad_dict, format="multipart")
         request.user = AnonymousUser()
-        add_session_to_request(request) # Trick to add session even with an anonyomous user and RequestFactory
+        add_session_to_request(request)  # Trick to add session even with an anonyomous user and RequestFactory
         add_namespace_to_request(request, ad)
         view = CreateAdView.as_view()
         response = view(request)
@@ -296,11 +296,11 @@ class AdListViewTestCase(TestCase):
         response = view(request)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context_data['form'].__class__ == SearchAdForm)
-        self.assertTrue(response.context_data['valid'] == False)
+        self.assertTrue(response.context_data['valid'] is False)
 
     def test_create_search_from_ad_list(self):
         # need to have a clean search
-        search = SearchFactory.create(habitation_types = HabitationType.objects.all())
+        search = SearchFactory.create(habitation_types=HabitationType.objects.all())
         search_dict = none_to_empty_string(model_to_dict(search, exclude=('id')))
         search_dict['location'] = search_dict['location'].geojson
         search_dict['save_ad'] = True
@@ -315,4 +315,3 @@ class AdListViewTestCase(TestCase):
         self.assertEqual(int(params['rooms_min']), search_dict['rooms_min'])
         self.assertEqual(params['location'], str(search_dict['location']))
         self.assertEqual(map(lambda x: int(x), params.getlist('habitation_types')), search_dict['habitation_types'])
-

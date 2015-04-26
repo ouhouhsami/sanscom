@@ -1,5 +1,4 @@
 #-*- coding: utf-8 -*-
-import string
 import numpy as np
 from random import randint, random
 
@@ -25,12 +24,8 @@ FUZZY_KITCHEN_CHOICES = dict(KITCHEN_CHOICES).keys()
 FUZZY_PARKING_CHOICES = dict(PARKING_CHOICES).keys()
 FUZZY_FIREPLACE_CHOICES = dict(FIREPLACE_CHOICES).keys()
 
-
-#house, created = HabitationType.objects.get_or_create(label="Maison")
-#apartment, created = HabitationType.objects.get_or_create(label="Appartement")
-
 house = HabitationType.objects.get(label="Maison")
-apartment =  HabitationType.objects.get(label="Appartement")
+apartment = HabitationType.objects.get(label="Appartement")
 
 # Around Paris
 TOP = 48.89
@@ -41,7 +36,7 @@ LEFT = 2.21
 
 class FuzzyPoint(FuzzyText):
     def fuzz(self):
-        return 'POINT (' + '%s %s' % (random.uniform(LEFT, RIGHT)  , random.uniform(TOP, BOTTOM)  ) + ')'
+        return 'POINT (' + '%s %s' % (random.uniform(LEFT, RIGHT), random.uniform(TOP, BOTTOM)) + ')'
 
 
 class FuzzyAddress(FuzzyText):
@@ -122,7 +117,7 @@ def shower_number(ad):
 
 
 def parking_choice(ad):
-    if random.random()>0.2:
+    if random.random() > 0.2:
         return None
     else:
         return random.choice(['1', '2'])
@@ -205,7 +200,7 @@ class AdFactory(BaseFactory):
     rooms = FuzzyRooms()
     bedrooms = factory.LazyAttribute(lambda o: 1 if o.rooms <= 2 else random.randint(1, o.rooms-1))
     energy_consumption = FuzzyChoice(choices=FUZZY_ENERGY_CONSUMPTION_CHOICES)
-    ad_valorem_tax = factory.LazyAttribute(ad_valorem_tax)#FuzzyInteger(100, 3000, 20)
+    ad_valorem_tax = factory.LazyAttribute(ad_valorem_tax)
     housing_tax = FuzzyInteger(100, 3000, 30)
     maintenance_charges = FuzzyInteger(50, 400, 10)
     emission_of_greenhouse_gases = FuzzyChoice(choices=FUZZY_EMISSION_OF_GREENHOUSE_GASES_CHOICES)
@@ -225,16 +220,16 @@ class AdFactory(BaseFactory):
     alarm = factory.LazyAttribute(lambda o: True if random.random() < 0.05 else False)
     air_conditioning = factory.LazyAttribute(lambda o: True if random.random() < 0.02 else False)
     fireplace = FuzzyChoice(choices=FUZZY_FIREPLACE_CHOICES)
-    terrace = factory.LazyAttribute(lambda o: random.randint(8, 50) if random.random()< 0.01 else None)
-    balcony = factory.LazyAttribute(lambda o: random.randint(2, 20) if random.random()< 0.08 else None)
+    terrace = factory.LazyAttribute(lambda o: random.randint(8, 50) if random.random() < 0.01 else None)
+    balcony = factory.LazyAttribute(lambda o: random.randint(2, 20) if random.random() < 0.08 else None)
     separate_dining_room = factory.LazyAttribute(lambda o: True if o.rooms-o.bedrooms >= 1 else False)
     separate_toilet = factory.LazyAttribute(lambda o: 1 if random.random() < 0.15 else 0)
-    bathroom = factory.LazyAttribute(bathroom_number) #FuzzyInteger(0, 2)
+    bathroom = factory.LazyAttribute(bathroom_number)
     shower = factory.LazyAttribute(shower_number)
     separate_entrance = factory.LazyAttribute(lambda o: True if random.random() < 0.1 else False)
     cellar = factory.LazyAttribute(lambda o: True if random.random() < 0.2 else False)
-    parking = factory.LazyAttribute(parking_choice) # FuzzyChoice(choices=FUZZY_PARKING_CHOICES)
-    orientation =  FuzzyChoice(choices=['', 'sud', 'sud-est', 'sud-ouest', 'nord', 'nord-ouest', 'nord-est'])
+    parking = factory.LazyAttribute(parking_choice)
+    orientation = FuzzyChoice(choices=['', 'sud', 'sud-est', 'sud-ouest', 'nord', 'nord-ouest', 'nord-est'])
 
 
 class FakeAddressAdFactory(AdFactory):
@@ -281,7 +276,6 @@ class SearchFactory(BaseFactory):
     separate_entrance = FuzzyChoice(choices=[None, True, False])
     cellar = FuzzyChoice(choices=[None, True, False])
     parking = FuzzyChoice(choices=[None, True, False])
-
 
     @factory.post_generation
     def habitation_types(self, create, extracted, **kwargs):

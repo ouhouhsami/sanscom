@@ -21,7 +21,7 @@ class CreateSearchViewTestCase(TestCase):
 
     def test_search_create_logged_user(self):
         # Get the view
-        search = SearchFactory.create(habitation_types = HabitationType.objects.all())
+        search = SearchFactory.create(habitation_types=HabitationType.objects.all())
         #print search.__dict__
         request = RequestFactory().get('/fake-path')
         request.user = search.user
@@ -44,7 +44,7 @@ class CreateSearchViewTestCase(TestCase):
 
     def test_search_create_not_logged_user(self):
         # Get the view
-        search = SearchFactory.create(habitation_types = HabitationType.objects.all())
+        search = SearchFactory.create(habitation_types=HabitationType.objects.all())
         request = RequestFactory().get('/fake-path')
         request.user = AnonymousUser()
         add_namespace_to_request(request, search)
@@ -66,7 +66,7 @@ class CreateSearchViewTestCase(TestCase):
         request = RequestFactory().post('/fake-path', search_dict, format="multipart")
         request.user = AnonymousUser()
         add_namespace_to_request(request, search)
-        add_session_to_request(request) # Trick to add session even with an anonyomous user and RequestFactory
+        add_session_to_request(request)  # Trick to add session even with an anonyomous user and RequestFactory
         view = CreateSearchView.as_view()
         response = view(request)
         # Redirection
@@ -76,8 +76,8 @@ class CreateSearchViewTestCase(TestCase):
         self.assertEqual(Search.objects.get(user__username=search_dict['username']).user.username, user_credentials['username'])
 
     def test_search_create_not_logged_user_but_having_username(self):
-       # Get the view
-        search = SearchFactory.create(habitation_types = HabitationType.objects.all())
+        # Get the view
+        search = SearchFactory.create(habitation_types=HabitationType.objects.all())
         username = "sam"
         password = "gld"
         user = User.objects.create_user(
@@ -98,7 +98,7 @@ class CreateSearchViewTestCase(TestCase):
         search_dict.update(user_credentials)
         request = RequestFactory().post('/fake-path', search_dict, format="multipart")
         request.user = AnonymousUser()
-        add_session_to_request(request) # Trick to add session even with an anonyomous user and RequestFactory
+        add_session_to_request(request)  # Trick to add session even with an anonyomous user and RequestFactory
         add_namespace_to_request(request, search)
         view = CreateSearchView.as_view()
         response = view(request)
@@ -119,7 +119,7 @@ class ReadSearchViewTestCase(TestCase):
         view = SearchDetailView.as_view()
         response = view(request, slug=search.slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.has_key('contact_form'), True)
+        self.assertTrue('contact_form' in response.context_data)
 
     def test_search_read_logged_user_no_ad_for_search(self):
         search = SearchFactory.create()
@@ -130,7 +130,7 @@ class ReadSearchViewTestCase(TestCase):
         view = SearchDetailView.as_view()
         response = view(request, slug=search.slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.has_key('contact_form'), True)
+        self.assertTrue('contact_form' in response.context_data)
 
     def test_search_read_logged_user_ad_for_search(self):
         house, create = HabitationType.objects.get_or_create(label="Maison")
@@ -150,14 +150,13 @@ class ReadSearchViewTestCase(TestCase):
         self.assertTrue(ad_search_full_url.encode('utf8') in mail.outbox[0].message().as_string())
         self.assertTrue(ad_full_url.encode('utf8') in mail.outbox[1].message().as_string())
 
-
         request = RequestFactory().get('/fake-path')
         request.user = ad.user
         add_namespace_to_request(request, ad)
         view = SearchDetailView.as_view()
         response = view(request, slug=ad_search.slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data.has_key('contact_form'), True)
+        self.assertTrue('contact_form' in response.context_data)
         # We should then be able to contact the vendor
         request = RequestFactory().post('/fake-path', {'message': 'hi there'})
         request.user = ad.user
@@ -222,7 +221,7 @@ class SearchListViewTestCase(TestCase):
         response = view(request)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context_data['form'].__class__ == SearchSearchForm)
-        self.assertTrue(response.context_data['valid'] == False)
+        self.assertTrue(response.context_data['valid'] is False)
 
     def test_create_ad_from_ad_list(self):
         # need to have a clean search

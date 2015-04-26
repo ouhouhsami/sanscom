@@ -58,6 +58,7 @@ class HackyTransactionTestCase(TransactionTestCase):
         signals.post_migrate.connect(create_default_site, sender=apps.get_app_config('sites'))
 # End of hacky part
 
+
 # Hacky part - part 2
 def add_session_to_request(request):
     """Annotate a request object with a session"""
@@ -66,9 +67,9 @@ def add_session_to_request(request):
     request.session.save()
 # End of hacky part 2
 
+
 # To get a clean dictionnary from a model instance
 # which will transform None to empty string
-
 def none_to_empty_string(dict):
     return {key: (value if value is not None else "") for key, value in dict.items()}
 
@@ -139,44 +140,46 @@ def search_for_ad_factory(ad):
     search = SearchFactory(**search_dict)
     return search
 
+
 def search_dict_for_ad(ad):
     return {
-        "transaction":ad.transaction,
-        "location":geos.MultiPolygon(ad.location.buffer(2)),
-        "surface_min":ad.surface,
-        "rooms_min":ad.rooms,
-        "price_max":ad.price,
-        "habitation_types":[ad.habitation_type, ],
-        "bedrooms_min":ad.bedrooms,
-        "ground_surface_min":ad.ground_surface,
-        "ground_floor":None,
-        "top_floor":None,
-        "not_overlooked":None,
-        "elevator":None,
-        "intercom":None,
-        "digicode":None,
-        "doorman":None,
-        "kitchen":None,
-        "duplex":None,
-        "swimming_pool":None,
-        "alarm":None,
-        "air_conditioning":None,
-        "fireplace":None,
-        "terrace":None,
-        "balcony":None,
-        "separate_dining_room":None,
-        "separate_toilet":None,
-        "bathroom":None,
-        "shower":None,
-        "separate_entrance":None,
-        "cellar":None,
-        "parking":None
+        "transaction": ad.transaction,
+        "location": geos.MultiPolygon(ad.location.buffer(2)),
+        "surface_min": ad.surface,
+        "rooms_min": ad.rooms,
+        "price_max": ad.price,
+        "habitation_types": [ad.habitation_type, ],
+        "bedrooms_min": ad.bedrooms,
+        "ground_surface_min": ad.ground_surface,
+        "ground_floor": None,
+        "top_floor": None,
+        "not_overlooked": None,
+        "elevator": None,
+        "intercom": None,
+        "digicode": None,
+        "doorman": None,
+        "kitchen": None,
+        "duplex": None,
+        "swimming_pool": None,
+        "alarm": None,
+        "air_conditioning": None,
+        "fireplace": None,
+        "terrace": None,
+        "balcony": None,
+        "separate_dining_room": None,
+        "separate_toilet": None,
+        "bathroom": None,
+        "shower": None,
+        "separate_entrance": None,
+        "cellar": None,
+        "parking": None
     }
 
 
 def change_search_to_no_more_correspond_to_the_ad(search, ad):
     search.rooms_min = ad.rooms + 1
     search.save()
+
 
 def change_search_to_correspond_to_the_ad(search, ad):
     search.rooms_min = ad.rooms

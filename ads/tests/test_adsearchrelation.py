@@ -69,7 +69,6 @@ class NotificationTestCase(HackyTransactionTestCase):
         self.assertEqual(AdSearchRelation.valid_objects.all().count(), 1)
 
 
-
 class MiscellaneousTestCase(HackyTransactionTestCase):
 
     serialized_rollback = True
@@ -98,4 +97,3 @@ class MiscellaneousTestCase(HackyTransactionTestCase):
         self.assertEqual(AdSearchRelation.valid_objects.count(), 0)
         change_search_to_correspond_to_the_ad(search, ad)
         self.assertEqual(AdSearchRelation.valid_objects.count(), 1)
-
