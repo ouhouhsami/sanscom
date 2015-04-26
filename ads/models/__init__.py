@@ -53,17 +53,13 @@ def update_adsearch_relation_from_ad(sender, instance, **kwargs):
             #.filter(Q(rooms_max__gte=ad.rooms) | Q(rooms_max=None))\
             #.filter(Q(bedrooms_min__lte=ad.bedrooms) | Q(bedrooms_min=None))\
             #.filter(Q(bedrooms_max__gte=ad.bedrooms) | Q(bedrooms_max=None))\
-    #asr = AdSearchRelation.objects.filter(ad=ad).values_list('search', flat=True)
-    #asr_search = Search.objects.filter(id__in=asr)
+
     asr_search = Search.objects.filter(adsearchrelation__ad=ad)
     # Search in s and not in asr_search => add
     for search in s:
         if search not in asr_search:
             a = AdSearchRelation(ad=ad, search=search, valid=True)
             a.save()
-            #a, created = AdSearchRelation.objects.get_or_create(ad=ad, search=search)
-            #a.valid = True
-            #a.save()
     # Search in s and in asr_search => nothing
     for search in asr_search:
         if search in s:
@@ -134,8 +130,6 @@ def update_adsearch_relation_from_search(sender, instance, **kwargs):
     if search.parking:
             q_ad = q_ad.filter(parking=search.parking)
 
-    #asr = AdSearchRelation.objects.filter(search=search).values_list('ad', flat=True)
-    #asr_ad = Ad.objects.filter(id__in=asr)
     asr_ad = Ad.objects.filter(adsearchrelation__search=search)
     for ad in asr_ad:
         if ad not in q_ad:
