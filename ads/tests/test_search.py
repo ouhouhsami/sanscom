@@ -112,7 +112,7 @@ class CreateSearchViewTestCase(TestCase):
 class ReadSearchViewTestCase(TestCase):
 
     def test_search_read_anonymous_user(self):
-        search = SearchFactory.create()
+        search = SearchFactory.create(valid=True)
         request = RequestFactory().get('/fake-path')
         request.user = AnonymousUser()
         add_namespace_to_request(request, search)
@@ -122,7 +122,7 @@ class ReadSearchViewTestCase(TestCase):
         self.assertTrue('contact_form' in response.context_data)
 
     def test_search_read_logged_user_no_ad_for_search(self):
-        search = SearchFactory.create()
+        search = SearchFactory.create(valid=True)
         request = RequestFactory().get('/fake-path')
         request.user = User.objects.create_user(
             username='jacob', email='jacob@cool.net', password='top_secret')
@@ -136,10 +136,10 @@ class ReadSearchViewTestCase(TestCase):
         house, create = HabitationType.objects.get_or_create(label="Maison")
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
         # Create an ad
-        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
+        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment, valid=True)
         pnt = GEOSGeometry(geo_from_address(u"22 rue esquirol Paris"))
         # Create a search with ad.location inside search.location
-        ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction=ad.transaction)
+        ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction=ad.transaction, valid=True)
 
         # Here, 2 mails should have been sent
         self.assertEqual(len(mail.outbox), 2)

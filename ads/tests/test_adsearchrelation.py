@@ -17,7 +17,7 @@ class NotificationTestCase(HackyTransactionTestCase):
         house, create = HabitationType.objects.get_or_create(label="Maison")
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
         # Create an ad
-        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
+        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment, valid=True)
         # Create a search with ad.location inside search.location
         search = search_for_ad_factory(ad)
         # Here we should have results ...
@@ -28,9 +28,9 @@ class NotificationTestCase(HackyTransactionTestCase):
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
         # Create a search with search.location contaning ad.location
         pnt = GEOSGeometry(geo_from_address("22 rue esquirol Paris"))
-        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction='sale')
+        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction='sale', valid=True)
         # Create an ad
-        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment, transaction=search.transaction)
+        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment, transaction=search.transaction, valid=True)
         # here we should have results ...
         self.assertEqual(AdSearchRelation.valid_objects.all().count(), 1)
 
@@ -38,10 +38,10 @@ class NotificationTestCase(HackyTransactionTestCase):
         house, create = HabitationType.objects.get_or_create(label="Maison")
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
         # Create an ad
-        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
+        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment, valid=True)
         pnt = GEOSGeometry(geo_from_address(u"52 W 52nd St, New York, NY 10019, États-Unis"))
         # Create a search with ad.location outside search.location
-        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction=ad.transaction)
+        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction=ad.transaction, valid=True)
         # Here we should have no results ...
         self.assertEqual(AdSearchRelation.valid_objects.all().count(), 0)
         search.location = geos.MultiPolygon(ad.location.buffer(2))
@@ -57,9 +57,9 @@ class NotificationTestCase(HackyTransactionTestCase):
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
         # Create a search with search.location contaning ad.location
         pnt = GEOSGeometry(geo_from_address("22 rue esquirol Paris"))
-        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction='sale')
+        search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction='sale', valid=True)
         # Create an ad
-        ad = AdFactory(address=u"52 W 52nd St, New York, NY 10019, États-Unis", price=600000, surface=60, habitation_type=apartment, transaction=search.transaction)
+        ad = AdFactory(address=u"52 W 52nd St, New York, NY 10019, États-Unis", price=600000, surface=60, habitation_type=apartment, transaction=search.transaction, valid=True)
         # here we should have results ...
         self.assertEqual(AdSearchRelation.valid_objects.all().count(), 0)
         ad.address = "22 rue esquirol Paris"
@@ -75,9 +75,9 @@ class MiscellaneousTestCase(HackyTransactionTestCase):
 
     def test_first(self):
         # Create Search
-        search = SearchFactory(habitation_types=random_habitation_types())
+        search = SearchFactory(habitation_types=random_habitation_types(), valid=True)
         # Create Ad
-        ad = AdFactory(habitation_type=random_habitation_type())
+        ad = AdFactory(habitation_type=random_habitation_type(), valid=True)
         # Test if ad is in search (lucky you)
         # We would then modify search so that it doesn't fit anymore
         if AdSearchRelation.valid_objects.all().count() == 1:
@@ -86,7 +86,7 @@ class MiscellaneousTestCase(HackyTransactionTestCase):
 
     def test_second(self):
         # Create ad
-        ad = AdFactory(habitation_type=random_habitation_type())
+        ad = AdFactory(habitation_type=random_habitation_type(), valid=True)
         # Check AdSearchRelation is empty
         self.assertEqual(AdSearchRelation.valid_objects.count(), 0)
         # Create search which corresponds to an add

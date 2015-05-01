@@ -6,6 +6,7 @@ from .ad import Ad, AdPicture, HabitationType
 from .search import Search
 from .relation import AdSearchRelation
 from .choices import *
+from .abstract import BaseModel
 
 
 def update_adsearch_relation_from_ad(sender, instance, **kwargs):

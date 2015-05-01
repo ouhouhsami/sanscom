@@ -19,9 +19,9 @@ class BaseModel(TimeStampedModel):
     transaction = models.CharField(choices=TRANSACTION_CHOICES, max_length=4)
     valid = models.NullBooleanField()
 
-    def save(self, valid=None, *args, **kwargs):
-        self.valid = valid
-        super(BaseModel, self).save(*args, **kwargs)
+    #def save(self, *args, **kwargs):
+        #self.valid = valid
+    #    super(BaseModel, self).save(*args, **kwargs)
 
     @property
     def full_url(self):

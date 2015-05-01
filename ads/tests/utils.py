@@ -106,33 +106,38 @@ def random_habitation_type():
         return house
 
 
-def low_criteria_search_factory(location, price_max, surface_min, habitation_types, transaction):
-    return SearchFactory(location=location, price_max=price_max, surface_min=surface_min, habitation_types=habitation_types, transaction=transaction,
-        rooms_min = None,
-        bedrooms_min = None,
-        ground_surface_min = None,
-        ground_floor = None,
-        top_floor = None,
-        not_overlooked = None,
-        elevator = None,
-        intercom = None,
-        digicode = None,
-        doorman = None,
-        kitchen = None,
-        duplex = None,
-        swimming_pool = None,
-        alarm = None,
-        air_conditioning = None,
-        fireplace = None,
-        terrace = None,
-        balcony = None,
-        separate_dining_room = None,
-        separate_toilet = None,
-        bathroom = None,
-        shower = None,
-        separate_entrance = None,
-        cellar = None,
-        parking = None)
+def low_criteria_search_factory(location, price_max, surface_min, habitation_types, transaction, valid=None):
+    return SearchFactory(location=location,
+                         price_max=price_max,
+                         surface_min=surface_min,
+                         habitation_types=habitation_types,
+                         transaction=transaction,
+                         rooms_min=None,
+                         bedrooms_min=None,
+                         ground_surface_min=None,
+                         ground_floor=None,
+                         top_floor=None,
+                         not_overlooked=None,
+                         elevator=None,
+                         intercom=None,
+                         digicode=None,
+                         doorman=None,
+                         kitchen=None,
+                         duplex=None,
+                         swimming_pool=None,
+                         alarm=None,
+                         air_conditioning=None,
+                         fireplace=None,
+                         terrace=None,
+                         balcony=None,
+                         separate_dining_room=None,
+                         separate_toilet=None,
+                         bathroom=None,
+                         shower=None,
+                         separate_entrance=None,
+                         cellar=None,
+                         parking=None,
+                         valid=valid)
 
 
 def search_for_ad_factory(ad):
@@ -172,7 +177,8 @@ def search_dict_for_ad(ad):
         "shower": None,
         "separate_entrance": None,
         "cellar": None,
-        "parking": None
+        "parking": None,
+        "valid": ad.valid
     }
 
 

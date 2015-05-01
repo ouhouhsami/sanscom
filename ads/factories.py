@@ -175,6 +175,7 @@ class BaseFactory(factory.django.DjangoModelFactory):
     description = FuzzyAttribute(lambda: '\n'.join(paragraphs(2)))
     user = factory.SubFactory(UserFactory)
     transaction = FuzzyChoice(choices=['sale', 'rent'])
+    valid = None
 
 
 class HabitationTypeFactory(factory.django.DjangoModelFactory):
@@ -184,14 +185,13 @@ class HabitationTypeFactory(factory.django.DjangoModelFactory):
 
 
 class AdFactory(BaseFactory):
-    '''
+    """
     AdFactory
     Some data provided by http://www.cartesfrance.fr/Paris-75000/logement-Paris.html
-    '''
+    """
     FACTORY_FOR = Ad
 
     location = FuzzyPoint()
-    #address = FuzzyAddress()
     address = factory.LazyAttribute(address)
     price = factory.LazyAttribute(price)
     habitation_type = factory.LazyAttribute(lambda i: house if random.random() < 0.009 else apartment)

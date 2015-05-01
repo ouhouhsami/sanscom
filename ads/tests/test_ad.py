@@ -22,8 +22,8 @@ from ads.tests.utils import add_namespace_to_request, low_criteria_search_factor
 
 class ReadAdsViewTestCase(TestCase):
 
-    def test_ad_read_anonymous_user(self):
-        ad = AdFactory.create()
+    def test_anonymous_user_valid_ad(self):
+        ad = AdFactory.create(valid=True)
         request = RequestFactory().get('/fake-path')
         request.user = AnonymousUser()
         add_namespace_to_request(request, ad)
@@ -32,8 +32,24 @@ class ReadAdsViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('contact_form' in response.context_data)
 
-    def test_ad_read_logged_user_no_adsearch_for_ad(self):
-        ad = AdFactory.create()
+    def test_anonymous_user_invalid_ad(self):
+        ad = AdFactory.create(valid=False)
+        request = RequestFactory().get('/fake-path')
+        request.user = AnonymousUser()
+        add_namespace_to_request(request, ad)
+        view = AdDetailView.as_view()
+        self.assertRaises(Http404, view, request, slug=ad.slug)
+
+    def test_anonymous_user_not_valided_ad(self):
+        ad = AdFactory.create()  # valid is set to None by default
+        request = RequestFactory().get('/fake-path')
+        request.user = AnonymousUser()
+        add_namespace_to_request(request, ad)
+        view = AdDetailView.as_view()
+        self.assertRaises(Http404, view, request, slug=ad.slug)
+
+    def test_logged_user_no_adsearch_for_ad(self):
+        ad = AdFactory.create(valid=True)
         request = RequestFactory().get('/fake-path')
         request.user = User.objects.create_user(
             username='jacob', email='jacob@cool.net', password='top_secret')
@@ -43,14 +59,14 @@ class ReadAdsViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('contact_form' in response.context_data)
 
-    def test_ad_read_logged_user_adsearch_for_ad(self):
+    def test_logged_user_adsearch_for_ad(self):
         house, create = HabitationType.objects.get_or_create(label="Maison")
         apartment, create = HabitationType.objects.get_or_create(label="Appartement")
         # Create an ad
-        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment)
+        ad = AdFactory(address="22 rue esquirol Paris", price=600000, surface=60, habitation_type=apartment, valid=True)
         pnt = GEOSGeometry(geo_from_address(u"22 rue esquirol Paris"))
         # Create a search with ad.location inside search.location
-        ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction=ad.transaction)
+        ad_search = low_criteria_search_factory(location=geos.MultiPolygon(pnt.buffer(2)), price_max=700000, surface_min=50, habitation_types=[apartment, ], transaction=ad.transaction, valid=True)
 
         # Here, 2 mails should have been sent
         self.assertEqual(len(mail.outbox), 2)
@@ -86,7 +102,7 @@ class ReadAdsViewTestCase(TestCase):
 
 class CreateAdsViewTestCase(TestCase):
 
-    def test_ad_create_logged_user(self):
+    def test_logged_user(self):
         # Get the view
         ad = AdFactory.create()
         request = RequestFactory().get('/fake-path')
@@ -131,7 +147,7 @@ class CreateAdsViewTestCase(TestCase):
         view = UpdateAdView.as_view()
         response = view(request, slug=ad.slug)
 
-    def test_ad_create_not_logged_user(self):
+    def test_not_logged_user(self):
         # Get the view
         ad = AdFactory.create()
         request = RequestFactory().get('/fake-path')
@@ -173,7 +189,7 @@ class CreateAdsViewTestCase(TestCase):
         self.assertEqual(len(Ad.objects.filter(user=User.objects.get(username="ouhouhsami"))[0].adpicture_set.all()), 1)
         self.assertEqual(len(Ad.objects.all()), 2)
 
-    def test_ad_create_not_logged_user_but_having_username(self):
+    def test_not_logged_user_but_having_username(self):
         # Get the view
         ad = AdFactory.create()
         username = "sam"

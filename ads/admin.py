@@ -61,7 +61,8 @@ class BaseAdmin(LeafletGeoAdmin):
         if obj.valid is not None:
             mail = EmailMessage(subject, message, sender, recipients, [sender])
             mail.send()
-        obj.save(valid=obj.valid)
+        #obj.save(valid=obj.valid)
+        obj.save()
 
 
 class AdAdmin(BaseAdmin):

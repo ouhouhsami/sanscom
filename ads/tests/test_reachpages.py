@@ -38,10 +38,10 @@ class ReachSaleAndRentPages(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_reach_ad_detail_not_logged(self):
-        ad = AdFactory.create(transaction="sale")
+        ad = AdFactory.create(transaction="sale", valid=True)
         response = self.client.get(reverse('sale:ads_ad_detail', kwargs={'slug': ad.slug}))
         self.assertEqual(response.status_code, 200)
-        ad = AdFactory.create(transaction="rent")
+        ad = AdFactory.create(transaction="rent", valid=True)
         response = self.client.get(reverse('rent:ads_ad_detail', kwargs={'slug': ad.slug}))
         self.assertEqual(response.status_code, 200)
 

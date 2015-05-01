@@ -88,13 +88,19 @@ class ModeratedDetailView(DetailView):
         # If object belongs to user, even if it's not valid, user can access it
         user = self.request.user
         slug = self.kwargs.get(self.slug_url_kwarg, None)
-        try:
-            obj = self.model.objects.get(slug=slug, user=user)
-        except self.model.objects.DoesNotExist:
+        if user.is_anonymous():
             try:
                 obj = self.model.valid_objects.get(slug=slug)
-            except self.model.valid_objects.DoesNotExist:
+            except self.model.DoesNotExist:
                 raise Http404
+        else:
+            try:
+                obj = self.model.objects.get(slug=slug, user=user)
+            except self.model.DoesNotExist:
+                try:
+                    obj = self.model.valid_objects.get(slug=slug)
+                except self.model.DoesNotExist:
+                    raise Http404
         return obj
 
 
