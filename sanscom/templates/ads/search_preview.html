@@ -10,6 +10,23 @@
         </h3>
     </div>
     <div class="subtitle">{{ object.modified|naturalday|title }}</div>
+    {% if manage %}
+    {% if object.valid == False %}
+    <div class="alert alert-danger">
+        Recherche refusée. Modifiez-la afin qu'elle puisse être modérée de nouveau.
+    </div>
+    {% endif %}
+    {% if object.valid == None %}
+    <div class="alert alert-warning">
+        Recherche en cours de modération. Vous recevrez un mail lorsqu'elle sera modérée.
+    </div>
+    {% endif %}
+    {% if object.valid == True %}
+    <div class="alert alert-info">
+        Recherche en ligne.
+    </div>
+    {% endif %}
+    {% endif %}
     <div class="content">
         <div class="detail">
             <div class="description">
